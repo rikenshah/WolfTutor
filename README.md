@@ -1,7 +1,7 @@
 # aleka
 Software Engineering Spring 2018 project
 
-Consolidated social media presence aggregator
+Peer-to-peer tutoring system based on validating reviews and rewards
 
 ## Installing Prerequisites
 
