@@ -172,7 +172,7 @@ We present Wolftutor, a peer to peer collaborative tutoring system that aims to 
 % We no longer use \terms command
 %\terms{Theory}
 
-keywords{Peer Tutoring System, Tutor, Tutee, Students, University, Credibility, Predictability, Availability, Security, Adaptability, Incentive, Cost model}
+\keywords{Peer Tutoring System, Tutor, Tutee, Students, University, Credibility, Predictability, Availability, Security, Adaptability, Incentive, Cost model}
 
 \section{Introduction}
 Tutoring is a learning experience itself. However, the free tutoring services that are currently available, are not very effective and cannot cater to the personalized student requirements and those services which provide personalized training are not very affordable and accessible at ground level to students who need them. Hence, we came up with this idea of peer tutoring in order to fill this niche\cite{Kim:PeerTutoring}. 
@@ -207,7 +207,7 @@ We used data gathered from around 70 students across graduate and undergraduate 
 
 \textbf {1. How often do you discuss concepts and problems with your friends?}
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
 \centering
 \includegraphics{Q1SE}
 \caption{Concept Discussion with friends.}
@@ -217,48 +217,53 @@ The data represented that 58 percent students discussed concepts and problems wi
 
 \textbf {2. Did you ever need help in understanding some core concepts and specific problems?}
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
 \centering
 \includegraphics{Q2SE}
 \caption{Need help in Understanding core concepts.}
+\label{Q2SE}
 \end{figure}
-
-With 78.3 percent students needing help in the learning of concepts, it becomes clear that peer-to-peer tutoring would be in demand and with right approach and execution. 
+As we can see in Figure 2. With 78.3 percent students needing help in the learning of concepts, it becomes clear that peer-to-peer tutoring would be in demand and with right approach and execution.
+ 
 
 \textbf {3. Do you often go to TA for help during the semester?}
-\begin{figure}[ht]
+\begin{figure}[h!t]
 \centering
 \includegraphics{Q3SE}
+\label{Q3SE}
 \caption{Concept Discussion with friends.}
 \end{figure}
 
-In the survey, 60.3 percent students responded that they do not to TA for seeking help. That shows that in spite of university providing excellent resources to cater to student needs, there is some gap between what is expected and what is offered. Or, there might just be the general mentality to avoid dealing with TAs since they have the control over students grades. Hence, the system calls for additional resources and not replacing existing ones. 
+As we can see in Figure 3. 60.3 percent students responded that they do not to TA for seeking help. That shows that in spite of university providing excellent resources to cater to student needs, there is some gap between what is expected and what is offered. Or, there might just be the general mentality to avoid dealing with TAs since they have the control over students grades. Hence, the system calls for additional resources and not replacing existing ones. 
 
 \textbf {4. Would you trust a fellow NC State student to tutor you in their field of expertise (based on peer reviews).}
-\begin{figure}[ht]
+\begin{figure}[h!t]
 \centering
 \includegraphics{Q4SE}
 \caption{Trusting Fellow Students.}
+\label{Q4SE}
 \end{figure}
 
-With 71 percent students accepting the idea of being tutored by their fellow students, it shows the great potential for the expansion and execution of the idea. Also, it is a validation based system hence only NCSU students can sign up to be tutors or to be tutored. University affiliation also gives a sense of confidentiality since both the parties are connected to the university and appropriate actions can be taken on violation of any policies. 
+As we can see in Figure 4. With 71 percent students accepting the idea of being tutored by their fellow students, it shows the great potential for the expansion and execution of the idea. Also, it is a validation based system hence only NCSU students can sign up to be tutors or to be tutored. University affiliation also gives a sense of confidentiality since both the parties are connected to the university and appropriate actions can be taken on violation of any policies. 
 
 \textbf {5. Are you willing to tutor fellow NC State students in your free time?}
-\begin{figure}[ht]
+\begin{figure}[h!t]
 \centering
 \includegraphics{Q5SE}
+\label{Q5SE}
 \caption{Willing to tutor.}
 \end{figure}
 
-Even if 49.3 percent of the students agree to tutor, we can have a very good population of tutors available at all times. Only 17.4 percent students denied to tutor and hence with correct marketing and execution, we can have a very good population of tutor community.
+As we can see in Figure 5. Even if 49.3 percent of the students agree to tutor, we can have a very good population of tutors available at all times. Only 17.4 percent students denied to tutor and hence with correct marketing and execution, we can have a very good population of tutor community.
 
 \textbf {6. Will you do tutoring free or only if being paid?}
-\begin{figure}[ht]
+\begin{figure}[htb]
 \centering
 \includegraphics{Q6SE}
+\label{Q6SE}
 \caption{Paid Vs Free Tutoring.}
 \end{figure}
-Majority of the students, 71 percent expect some kind of payment for their tutoring efforts, which is only fair. Hence, we plan to integrate some rewards system wherein tutors can gain tangible rewards for their efforts like coupons or cash.
+As we can see in Figure 6. Majority of the students, 71 percent expect some kind of payment for their tutoring efforts, which is only fair. Hence, we plan to integrate some rewards system wherein tutors can gain tangible rewards for their efforts like coupons or cash.
 
 \section{Features}
 In this section, we propose some of the key features of our application which we are planning to implement throughout our development cycle.
@@ -287,18 +292,18 @@ On sign up, each user will receive some points which they can use to get the tut
 For the user interface we will be using the slack user interface. So, the user will be sending the input as chat messages and our application server will process the request and display the output on the same page. The main advantage of this is that the user will find it user friendly and the user do not need to learn and understand the application to use it.
 
 \subsection{Application server}
-Application server will be developed using NodeJS which will communicate with the front-end module (slack-bot to process user queries. The queries that would be supported are find a tutor, arrange a meeting, review a tutor, etc. The data related to those will be stored in the database. The application server would be where the business logic resides. It will be the point of communication between the sla
+Application server will be developed using NodeJS which will communicate with the front-end module (slack-bot to process user queries. The queries that would be supported are find a tutor, arrange a meeting, review a tutor, etc. The data related to those will be stored in the database. The application server would be where the business logic resides. It will be the point of communication between the slack-bot and database.
 
 \subsection{Database server}
-For storing the data we will be using the no SQL database where we will be storing the information about tutors, meetings and transactions.
+For storing the data we will be using the no SQL database where we will be storing the information about tutors, reviews, course material, meetings and transactions. 
 
 
 
-\section{Evaluation}
+\section{Methodologies and Evaluation}
 
-We propose four different methodologies for solving the peer to peer tutoring problem. The first approach is the traditional approach in which there is a tutoring center where a tutor is available and the students can go there and he can get help. If the tutor is not available then an official can schedule the student when the tutor is available. The second methodology is a scheduling mechanism where the tutor and students are registered to our platform and the students can book the tutor and they can schedule the time and place to meet. The third methodology is an on-demand mechanism where the students can request the topic for which the help is needed.  The tutors will see the requests and will try to serve the requests. If someone has requested a similar video before then the students can watch that video immediately. The fourth methodology is a real-time mechanism in which we will have an online platform where the students can get help in real-time. In this methodology, the students can select the tutor who is available and a real-time session will be created between the tutor and the students.
+We have found these four different methodologies for solving the peer to peer tutoring problem. The first approach is the traditional approach in which there is a tutoring center where a tutor is available and the students can go there and he can get help. If the tutor is not available then an official can schedule the student when the tutor is available. The second methodology is a scheduling mechanism where the tutor and students are registered to our platform and the students can book the tutor and they can schedule the time and place to meet. The third methodology is an on-demand mechanism where the students can request the topic for which the help is needed.  The tutors will see the requests and will try to serve the requests. If someone has requested a similar video before then the students can watch that video immediately. The fourth methodology is a real-time mechanism in which we will have an online platform where the students can get help in real-time. In this methodology, the students can select the tutor who is available and a real-time session will be created between the tutor and the students.
 
-\begin{table}[ht]
+\begin{table}[h]
 \centering
 \caption{Evaluation of Different Methodology}
 \begin{tabular}{|c|c|c|c|c|c|1|} \hline
@@ -337,6 +342,9 @@ The real-time methodology would be the fastest as the student can get help anyti
 
 The real-time methodology will be the most costly as we will need to have a tutor always available. The traditional methodology will also be costly as the tutor will come to the tutoring center irrespective of the student being there or not. The Scheduled methodology will be cheaper as the tutor only gets paid for the hours that he tutors. The on-demand will be the cheapest as the tutor only creates video and gets paid when there is a request from the student.
 
+\subsection{Evaluation Plan}
+
+We are using a combination of scheduled and on demand methodologies hence combining the advantages of both. We plan to test the effectiveness of out peer tutoring system by evaluation among the classmates and tell them to test it in real-time environment, once they are done using the system we will ask them to fill a short survey asking them to rate the application on our comparison catalogue parameters-Predictability, Availability, Security, Adaptability, Speed, Cost. Also we intend to approach our peers and senior students, enrolled in other courses to test WolfTutor and fill the effectiveness survey. Finally based on the survey results, we intend to compare our system with existing systems and establish its overall effectiveness.
 
 \section{Conclusion}
 
