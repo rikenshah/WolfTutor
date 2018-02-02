@@ -1,4 +1,4 @@
-# aleka
+# WOLFTUTOR
 Software Engineering Spring 2018 project
 
 Peer-to-peer tutoring system based on validating reviews and rewards
