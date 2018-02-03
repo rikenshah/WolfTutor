@@ -6,16 +6,7 @@
             \/_____/   \/_____/     \/_/   \/_/\/_/   \/_/     \/_/
 
 
-This is a sample Slack bot built with Botkit.
-
-This bot demonstrates many of the core features of Botkit:
-
-* Connect to Slack using the real time API
-* Receive messages based on "spoken" patterns
-* Reply to messages
-* Use the conversation system to ask questions
-* Use the built in storage system to store and retrieve information
-  for a user.
+This is a sample Slack bot built with Botkit and Typescript.
 
 # RUN THE BOT:
 
@@ -23,9 +14,13 @@ This bot demonstrates many of the core features of Botkit:
 
     -> http://my.slack.com/services/new/bot
 
+  Compile typescript to javascript:
+
+    tsc typescript_bot.ts
+
   Run your bot from the command line:
 
-    token=<MY TOKEN> node slack_bot.js
+    token=<MY TOKEN> node typescript_bot.js
 
 # USE THE BOT:
 
@@ -63,20 +58,25 @@ This bot demonstrates many of the core features of Botkit:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+declare let process: {
+   env: {
+       token: string;
+   };
+   exit(status?: number);
+};
+
+import Botkit = require('../lib/botkit');
 
 if (!process.env.token) {
-    console.log('Error: Specify token in environment');
-    process.exit(1);
+  console.log('Error: Specify token in environment');
+  process.exit(1);
 }
 
-var Botkit = require('../lib/Botkit.js');
-var os = require('os');
-
-var controller = Botkit.slackbot({
+const controller = Botkit.slackbot({
     debug: true,
 });
 
-var bot = controller.spawn({
+const bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
@@ -212,34 +212,3 @@ controller.hears(['shutdown'], 'direct_message,direct_mention,mention', function
         ]);
     });
 });
-
-
-controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'],
-    'direct_message,direct_mention,mention', function(bot, message) {
-
-        var hostname = os.hostname();
-        var uptime = formatUptime(process.uptime());
-
-        bot.reply(message,
-            ':robot_face: I am a bot named <@' + bot.identity.name +
-             '>. I have been running for ' + uptime + ' on ' + hostname + '.');
-
-    });
-
-function formatUptime(uptime) {
-    var unit = 'second';
-    if (uptime > 60) {
-        uptime = uptime / 60;
-        unit = 'minute';
-    }
-    if (uptime > 60) {
-        uptime = uptime / 60;
-        unit = 'hour';
-    }
-    if (uptime != 1) {
-        unit = unit + 's';
-    }
-
-    uptime = uptime + ' ' + unit;
-    return uptime;
-}
