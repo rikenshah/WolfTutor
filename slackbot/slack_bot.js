@@ -81,11 +81,11 @@ var bot = controller.spawn({
 }).startRTM();
 
 controller.hears(['I want to teach','I want to become a tutor'], 'direct_message,direct_mention,mention', function(bot, message) {
-    
+    console.log(message);
 });
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-
+    bot.botkit.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++"+message);
     bot.api.reactions.add({
         timestamp: message.ts,
         channel: message.channel,
