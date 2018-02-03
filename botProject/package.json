@@ -1,5 +1,5 @@
 {
-  "name": "botkit",
+  "name": "botProject",
   "version": "0.6.9",
   "description": "Building blocks for Building Bots",
   "main": "lib/Botkit.js",
@@ -9,6 +9,8 @@
     "back": "^1.0.1",
     "body-parser": "^1.17.1",
     "botbuilder": "^3.8.4",
+    "botkit": "^0.6.9",
+    "botkit-storage-mongo": "^1.0.7",
     "botkit-studio-sdk": "^1.0.7",
     "ciscospark": "1.8.0",
     "clone": "2.1.1",
