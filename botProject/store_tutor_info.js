@@ -3,19 +3,10 @@ var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seproju
 
 var controller = Botkit.slackbot({
 			        storage: mongoStorage,
-    			},print_users);
-
-exports.controller = controller
-
-function print_users() {
-	var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
-	controller.storage.user.save(beans);
-}
+    			});
 
 controller.storage.user.all(function(err,users) {
-
   console.log(users)
-
   if (err) {
     throw new Error(err);
   }
