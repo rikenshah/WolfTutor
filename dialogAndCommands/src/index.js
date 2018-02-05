@@ -71,7 +71,7 @@ app.post('/commands', (req, res) => {
     axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
       .then((result) => {
         debug('dialog.open: %o', result.data);
-        console.log("cdjnscnjdscnkdsjcnjdskc");
+        console.log("Dialog Opened sucessful");
         res.send('');
       }).catch((err) => {
         debug('dialog.open call failed: %o', err);
@@ -106,6 +106,13 @@ app.post('/interactive-component', (req, res) => {
   }
 });
 
+app.post('/botactivity', (req, res) => {
+  console.log(req['body']['event']['text']);
+  res.send("I am here");
+});
+
+
 app.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}!`);
 });
+
