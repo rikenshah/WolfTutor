@@ -4,7 +4,7 @@ const axios = require('axios');
 const express = require('express');
 const bodyParser = require('body-parser');
 const qs = require('querystring');
-const ticket = require('./ticket');
+const tutor = require('./tutor');
 const debug = require('debug')('slash-command-template:index');
 
 const app = express();
@@ -21,10 +21,10 @@ app.get('/', (req, res) => {
 });
 
 /*
- * Endpoint to receive /helpdesk slash command from Slack.
+ * Endpoint to receive /wolftutor slash command from Slack.
  * Checks verification token and opens a dialog to capture more info.
  */
-app.post('/commands', (req, res) => {
+app.post('/message', (req, res) => {
   // extract the verification token, slash command text,
   // and trigger ID from payload
   const { token, text, trigger_id } = req.body;
@@ -36,32 +36,71 @@ app.post('/commands', (req, res) => {
       token: process.env.SLACK_ACCESS_TOKEN,
       trigger_id,
       dialog: JSON.stringify({
-        title: 'Submit a helpdesk ticket',
-        callback_id: 'submit-ticket',
+        title: 'Become a Tutor',
+        callback_id: 'submit-tutor',
         submit_label: 'Submit',
         elements: [
           {
-            label: 'Title',
-            type: 'text',
-            name: 'title',
-            value: text,
-            hint: '30 second summary of the problem',
-          },
-          {
-            label: 'Description',
-            type: 'textarea',
-            name: 'description',
-            optional: true,
-          },
-          {
-            label: 'Urgency',
+            label: 'Major',
             type: 'select',
-            name: 'urgency',
+            name: 'major',
             options: [
-              { label: 'Low', value: 'Low' },
-              { label: 'Medium', value: 'Medium' },
-              { label: 'High', value: 'High' },
+              { label: 'Computer Science', value: 'Computer Science' },
+              { label: 'Computer Engineering', value: 'Computer Engineering' },
+              { label: 'Electrical Engineering', value: 'Electrical Engineering' },
+              { label: 'Mechanical Engineering', value: 'Mechanical Engineering' },
+              { label: 'Chemical Engineering', value: 'Chemical Engineering' },
             ],
+          },
+          {
+            label: 'Degree',
+            type: 'select',
+            name: 'degree',
+            options: [
+              { label: 'Bachelors', value: 'Bachelors' },
+              { label: 'Masters', value: 'Masters' },
+              { label: 'Associate', value: 'Associate' },
+              { label: 'High School GED', value: 'High School GED' },
+            ],
+          },
+          {
+            label: 'Subjects',
+            type: 'select',
+            name: 'subject',
+            options: [
+              { label: 'Operating Systems', value: 'Operating Systems' },
+              { label: 'Algorithms', value: 'Algorithms' },
+              { label: 'Software Engineering', value: 'Software Engineering' },
+              { label: 'Processor Design', value: 'Processor Design' },
+            ],
+          },
+          {
+            label: 'Rate',
+            type: 'text',
+            subtype: 'number',
+            name: 'rate',
+            hint: 'If you want to tutor for free then type 0 above',
+          },
+          // {
+          //   label: 'Availability',
+          //   type: 'select',
+          //   name: 'availability',
+          //   options: [
+          //     { label: 'Monday', value: 'Monday' },
+          //     { label: 'Tuesday', value: 'Tuesday' },
+          //     { label: 'Wednesday', value: 'Wednesday' },
+          //     { label: 'Thursday', value: 'Thursday' },
+          //     {label: 'Friday', value: 'Friday'},
+          //     {label: 'Saturday', value: 'Saturday'},
+          //     {label: 'Sunday', value: 'Saturday'},
+          //   ],
+          // },
+
+          {
+            label: 'Summary',
+            type: 'textarea',
+            name: 'summary',
+            optional: true,
           },
         ],
       }),
@@ -79,13 +118,14 @@ app.post('/commands', (req, res) => {
       });
   } else {
     debug('Verification token mismatch');
+    console.log('Failed Here');
     res.sendStatus(403);
   }
 });
 
 /*
  * Endpoint to receive the dialog submission. Checks the verification token
- * and creates a Helpdesk ticket
+ * and creates a Helpdesk tutor
  */
 app.post('/interactive-component', (req, res) => {
   const body = JSON.parse(req.body.payload);
@@ -98,8 +138,8 @@ app.post('/interactive-component', (req, res) => {
     // Slack know the command was received
     res.send('');
 
-    // create Helpdesk ticket
-    ticket.create(body.user.id, body.submission);
+    // create tutor
+    tutor.create(body.user.id, body.submission);
   } else {
     debug('Token mismatch');
     res.sendStatus(500);
@@ -110,10 +150,23 @@ app.post('/botactivity', (req, res) => {
   console.log(req['body']['event']['text']);
   // Will need to verify the challenge parameter first
   res.send("I am here");
+  //console.log(req['body']['event']['text']);
+  //res.send("I am here");
+  const query = req.body.event.text;
+  console.log(query);
+  if(query.match(/become a tutor/i)) {
+    console.log('Yes He wants to bocome a Tutor');
+  }
+  else {
+    console.log('No ');
+  }
+  //console.log(req['body']);
+  //res.send(req.body.challenge);
+  //console.log(req);
+  // res.send('');
 });
 
 
 app.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}!`);
 });
-
