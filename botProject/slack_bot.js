@@ -68,12 +68,22 @@ if (!process.env.token) {
     console.log('Error: Specify token in environment');
     process.exit(1);
 }
+/*
 
 var Botkit = require('./lib/Botkit.js');
 var os = require('os');
 
 var controller = Botkit.slackbot({
     debug: true,
+});
+*/
+
+var Botkit = require('botkit');
+var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
+var os = require('os');
+
+var controller = Botkit.slackbot({
+    storage: mongoStorage,
 });
 
 var bot = controller.spawn({
@@ -224,6 +234,25 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
             ':robot_face: I am a bot named <@' + bot.identity.name +
              '>. I have been running for ' + uptime + ' on ' + hostname + '.');
 
+    });
+
+controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
+    'direct_message,direct_mention,mention', function(bot, message) {
+
+        controller.storage.user.all(function(err,users) {
+            console.log(users)
+            if (err) {
+                throw new Error(err);
+            }
+        });
+
+        bot.startConversation(message,function(err,convo) {
+            var subs="";
+            controller.storage.subjects.all(function(error, subjects){
+                for(var s in subjects)
+                    console.log(s);
+            });
+        });
     });
 
 function formatUptime(uptime) {
