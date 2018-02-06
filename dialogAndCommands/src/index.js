@@ -108,6 +108,7 @@ app.post('/interactive-component', (req, res) => {
 
 app.post('/botactivity', (req, res) => {
   console.log(req['body']['event']['text']);
+  // Will need to verify the challenge parameter first
   res.send("I am here");
 });
 
