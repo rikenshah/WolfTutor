@@ -4,7 +4,7 @@ const axios = require('axios');
 const express = require('express');
 const bodyParser = require('body-parser');
 const qs = require('querystring');
-const ticket = require('./ticket');
+const tutor = require('./tutor');
 const debug = require('debug')('slash-command-template:index');
 
 const app = express();
@@ -21,10 +21,10 @@ app.get('/', (req, res) => {
 });
 
 /*
- * Endpoint to receive /helpdesk slash command from Slack.
+ * Endpoint to receive /wolftutor slash command from Slack.
  * Checks verification token and opens a dialog to capture more info.
  */
-app.post('/commands', (req, res) => {
+app.post('/wolftutor', (req, res) => {
   // extract the verification token, slash command text,
   // and trigger ID from payload
   const { token, text, trigger_id } = req.body;
@@ -37,7 +37,7 @@ app.post('/commands', (req, res) => {
       trigger_id,
       dialog: JSON.stringify({
         title: 'Become a Tutor',
-        callback_id: 'submit-ticket',
+        callback_id: 'submit-tutor',
         submit_label: 'Submit',
         elements: [
           {
@@ -118,13 +118,14 @@ app.post('/commands', (req, res) => {
       });
   } else {
     debug('Verification token mismatch');
+    console.log('Failed Here');
     res.sendStatus(403);
   }
 });
 
 /*
  * Endpoint to receive the dialog submission. Checks the verification token
- * and creates a Helpdesk ticket
+ * and creates a Helpdesk tutor
  */
 app.post('/interactive-component', (req, res) => {
   const body = JSON.parse(req.body.payload);
@@ -137,8 +138,8 @@ app.post('/interactive-component', (req, res) => {
     // Slack know the command was received
     res.send('');
 
-    // create Helpdesk ticket
-    ticket.create(body.user.id, body.submission);
+    // create tutor
+    tutor.create(body.user.id, body.submission);
   } else {
     debug('Token mismatch');
     res.sendStatus(500);
