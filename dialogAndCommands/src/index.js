@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
  * Endpoint to receive /wolftutor slash command from Slack.
  * Checks verification token and opens a dialog to capture more info.
  */
-app.post('/wolftutor', (req, res) => {
+app.post('/message', (req, res) => {
   // extract the verification token, slash command text,
   // and trigger ID from payload
   const { token, text, trigger_id } = req.body;
@@ -147,8 +147,20 @@ app.post('/interactive-component', (req, res) => {
 });
 
 app.post('/botactivity', (req, res) => {
-  console.log(req['body']['event']['text']);
-  res.send("I am here");
+  //console.log(req['body']['event']['text']);
+  //res.send("I am here");
+  const query = req.body.event.text;
+  console.log(query);
+  if(query.match(/become a tutor/i)) {
+    console.log('Yes He wants to bocome a Tutor');
+  }
+  else {
+    console.log('No ');
+  }
+  //console.log(req['body']);
+  //res.send(req.body.challenge);
+  //console.log(req);
+  res.send('');
 });
 
 

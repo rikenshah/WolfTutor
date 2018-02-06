@@ -14,7 +14,7 @@ const sendConfirmation = (tutor) => {
     text: 'Tutor created!',
     attachments: JSON.stringify([
       {
-        title: `tutor created for ${tutor.userEmail}`,
+        title: `Tutor profile created for ${tutor.userName}`,
         // Get this from the 3rd party helpdesk system
         //title_link: 'http://example.com',
         text: tutor.text,
@@ -60,14 +60,16 @@ const create = (userId, submission) => {
   const fetchUserEmail = new Promise((resolve, reject) => {
     users.find(userId).then((result) => {
       debug(`Find user: ${userId}`);
-      resolve(result.data.user.profile.email);
+      resolve(result.data.user.profile);
+      //console.log(result.data.user.profile.real_name);
     }).catch((err) => { reject(err); });
   });
 // ##################### Fetch User name as well, result.data.user.profile.real_name
 
   fetchUserEmail.then((result) => {
     tutor.userId = userId;
-    tutor.userEmail = result;
+    tutor.userName = result.real_name;
+    tutor.userEmail = result.email;
     tutor.major = submission.major;
     tutor.degree = submission.degree;
     tutor.subject = submission.subject;
@@ -75,6 +77,7 @@ const create = (userId, submission) => {
     tutor.summary = submission.summary;
     sendConfirmation(tutor);
     console.log(tutor);
+    //console.log(result);
     return tutor;
   }).catch((err) => { console.error(err); });
 };
