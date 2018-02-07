@@ -239,7 +239,7 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
     'direct_message,direct_mention,mention', function(bot, message) {
 
-
+            //TODO put in a method
             var sub_list = '';
             controller.storage.subject.all(function(err,subjects) {
                 //console.log(subjects);
@@ -255,8 +255,13 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
                // bot.reply(message, subjects_display_list);
                 bot.startConversation(message,function(err,convo) {
                     convo.addQuestion(subjects_display_list,function(response,convo) {
-                        convo.say('Cool, you selected: ' + response.text);
-                       // controller.storage.
+                        console.log(response.text);
+                       // convo.say('Cool, you selected: ' + response.text);
+                        //convo.sayFirst('Cool, you selected: ' + response.text);
+                        bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                        //+'\n Here is the tutor list :- ' +
+                       //     ''+tutorList);
+
                     });
                 });
 
@@ -280,4 +285,22 @@ function formatUptime(uptime) {
 
     uptime = uptime + ' ' + unit;
     return uptime;
+}
+
+function getTutorsForSubject(subject){
+    //TODO //if subject is not one of the subjects in the table, throw exception
+
+    var tutorList=new Array();
+
+    controller.storage.tutor.all(function(err,tutors){
+        for(var tutor in tutors) {
+            tsubjects=tutor.subjects;
+            for(var tsubject in tsubjects){
+                if(tsubject.name==subject)
+                    tutorList.push(tutor.major);
+            }
+        }
+    });
+    return tutorList;
+
 }
