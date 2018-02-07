@@ -239,25 +239,28 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
     'direct_message,direct_mention,mention', function(bot, message) {
 
-    	var sub_list = String();
-        controller.storage.subject.all(function(err,subjects) {
-            //console.log(subjects);
-      		for(var temp in subjects)
-      		{
-      			sub_list = sub_list + subjects[temp].name.toString() + ' ';
-      			//console.log(subjects[temp].name);
-      		}
-      		console.log(sub_list)
-            if (err) {
-                throw new Error(err);
-            }
-        });
 
-        bot.startConversation(message,function(err,convo) {
-        	sub_list = 'For subject ' + String(sub_list);
-        	console.log(sub_list);
-        	bot.reply(message, sub_list);
- 	    });
+            var sub_list = '';
+            controller.storage.subject.all(function(err,subjects) {
+                //console.log(subjects);
+                for(var temp in subjects) {
+                    sub_list = sub_list + subjects[temp].name.toString() + '\n ';
+                }
+                    //TODO- how to handle the error-string statement?
+                  if (err) {
+                      throw new Error(err);
+                  }
+                var subjects_display_list = 'Choose one of the subjects :-' +'\n' +sub_list;
+                //console.log(subjects_display_list);
+               // bot.reply(message, subjects_display_list);
+                bot.startConversation(message,function(err,convo) {
+                    convo.addQuestion(subjects_display_list,function(response,convo) {
+                        convo.say('Cool, you selected: ' + response.text);
+                       // controller.storage.
+                    });
+                });
+
+            });
 
     });
 
