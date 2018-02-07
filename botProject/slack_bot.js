@@ -239,20 +239,26 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
     'direct_message,direct_mention,mention', function(bot, message) {
 
-        controller.storage.user.all(function(err,users) {
-            console.log(users)
+    	var sub_list = String();
+        controller.storage.subject.all(function(err,subjects) {
+            //console.log(subjects);
+      		for(var temp in subjects)
+      		{
+      			sub_list = sub_list + subjects[temp].name.toString() + ' ';
+      			//console.log(subjects[temp].name);
+      		}
+      		console.log(sub_list)
             if (err) {
                 throw new Error(err);
             }
         });
 
         bot.startConversation(message,function(err,convo) {
-            var subs="";
-            controller.storage.subjects.all(function(error, subjects){
-                for(var s in subjects)
-                    console.log(s);
-            });
-        });
+        	sub_list = 'For subject ' + String(sub_list);
+        	console.log(sub_list);
+        	bot.reply(message, sub_list);
+ 	    });
+
     });
 
 function formatUptime(uptime) {
