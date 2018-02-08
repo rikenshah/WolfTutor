@@ -261,7 +261,11 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
                         bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
                         //+'\n Here is the tutor list :- ' +
                        //     ''+tutorList);
+                        //var tutorList=
+                        //TODO this method directly prints the list of tutors, TODO get name based on user id
+                        getTutorsForSubject(response.text);
 
+                        console.log(tutorList);
                     });
                 });
 
@@ -291,16 +295,22 @@ function getTutorsForSubject(subject){
     //TODO //if subject is not one of the subjects in the table, throw exception
 
     var tutorList=new Array();
-
+    
     controller.storage.tutor.all(function(err,tutors){
-        for(var tutor in tutors) {
-            tsubjects=tutor.subjects;
-            for(var tsubject in tsubjects){
-                if(tsubject.name==subject)
-                    tutorList.push(tutor.major);
+        //console.log('The chosen subject is '+subject);
+        for(var i in tutors) {
+            //console.log(tutors[i]);
+            var tsubjects=tutors[i].subjects;
+            //console.log(tsubjects);
+            for(var j in tsubjects){
+                //console.log(tsubjects[j].name);
+                if(tsubjects[j].name.toLowerCase()==subject.toLowerCase()) {
+                    console.log(tutors[i]);
+                   // tutorList.push(tutors[i]);
+                }
             }
         }
     });
-    return tutorList;
+//    return tutorList;
 
 }
