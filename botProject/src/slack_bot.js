@@ -117,6 +117,7 @@ function formatUptime(uptime) {
 }
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
+    console.log(message);
     bot.reply(message, {
         attachments:[
             {
@@ -190,15 +191,121 @@ app.get('/', (req, res) => {
 
 app.post('/message', (req, res) => {
   var payload = JSON.parse(req.body.payload);
-  //console.log(req.body.payload);
   var callbackId = payload.callback_id;
   const token = payload.token;
+  const trigger_id = payload.trigger_id;
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
+
     if(callbackId=='become_tutor_prompt'){
-      open_dialog_tutor_info(payload);
-    } // End of If
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no') {
+        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+          token: process.env.SLACK_ACCESS_TOKEN,
+          channel: payload.channel.id,
+          // Edit the text that you want to send to the bot
+          text: 'OK',
+        })).then((result) => {
+          debug('sendConfirmation: %o', result.data);
+        }).catch((err) => {
+          debug('sendConfirmation error: %o', err);
+          console.error(err);
+        });
+      }
+      else {
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify({
+            title: 'Become a Tutor',
+            callback_id: 'submit_tutor_info',
+            submit_label: 'Submit',
+            elements: [
+              {
+                label: 'Major',
+                type: 'select',
+                name: 'major',
+                options: [
+                  { label: 'Computer Science', value: 'Computer Science' },
+                  { label: 'Computer Engineering', value: 'Computer Engineering' },
+                  { label: 'Electrical Engineering', value: 'Electrical Engineering' },
+                  { label: 'Mechanical Engineering', value: 'Mechanical Engineering' },
+                  { label: 'Chemical Engineering', value: 'Chemical Engineering' },
+                ],
+              },
+              {
+                label: 'Degree',
+                type: 'select',
+                name: 'degree',
+                options: [
+                  { label: 'Bachelors', value: 'Bachelors' },
+                  { label: 'Masters', value: 'Masters' },
+                  { label: 'Associate', value: 'Associate' },
+                  { label: 'High School GED', value: 'High School GED' },
+                ],
+              },
+              {
+                label: 'Subjects',
+                type: 'select',
+                name: 'subject',
+                options: [
+                  { label: 'Operating Systems', value: 'Operating Systems' },
+                  { label: 'Algorithms', value: 'Algorithms' },
+                  { label: 'Software Engineering', value: 'Software Engineering' },
+                  { label: 'Processor Design', value: 'Processor Design' },
+                ],
+              },
+              {
+                label: 'Rate',
+                type: 'text',
+                subtype: 'number',
+                name: 'rate',
+                hint: 'If you want to tutor for free then type 0 above',
+              },
+              // {
+              //   label: 'Availability',
+              //   type: 'select',
+              //   name: 'availability',
+              //   options: [
+              //     { label: 'Monday', value: 'Monday' },
+              //     { label: 'Tuesday', value: 'Tuesday' },
+              //     { label: 'Wednesday', value: 'Wednesday' },
+              //     { label: 'Thursday', value: 'Thursday' },
+              //     {label: 'Friday', value: 'Friday'},
+              //     {label: 'Saturday', value: 'Saturday'},
+              //     {label: 'Sunday', value: 'Saturday'},
+              //   ],
+              // },
+
+              {
+                label: 'Summary',
+                type: 'textarea',
+                name: 'summary',
+                optional: true,
+              },
+            ],
+          }),
+        };
+
+        // open the dialog by calling dialogs.open method and sending the payload
+        axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
+          .then((result) => {
+            debug('dialog.open: %o', result.data);
+            console.log("Dialog Opened sucessful");
+            res.send('');
+          }).catch((err) => {
+            debug('dialog.open call failed: %o', err);
+            res.sendStatus(500);
+          });
+        } // End of Else
+      } // End of If
+
     else if(callbackId='submit_tutor_info'){
-      save_tutor_info(payload);
+      // immediately respond with a empty 200 response to let
+      // Slack know the command was received
+      res.send('');
+
+      // create tutor
+      tutor.create(payload.user.id, payload.submission);
     } // End of else if
   } else {
     debug('Verification token mismatch');
@@ -254,99 +361,3 @@ app.post('/botactivity', (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}!`);
 });
-
-function open_dialog_tutor_info(payload){
-  const dialog = {
-  token: process.env.SLACK_ACCESS_TOKEN,
-  payload.trigger_id,
-  dialog: JSON.stringify({
-    title: 'Become a Tutor',
-    callback_id: 'submit_tutor_info',
-    submit_label: 'Submit',
-    elements: [
-      {
-        label: 'Major',
-        type: 'select',
-        name: 'major',
-        options: [
-          { label: 'Computer Science', value: 'Computer Science' },
-          { label: 'Computer Engineering', value: 'Computer Engineering' },
-          { label: 'Electrical Engineering', value: 'Electrical Engineering' },
-          { label: 'Mechanical Engineering', value: 'Mechanical Engineering' },
-          { label: 'Chemical Engineering', value: 'Chemical Engineering' },
-        ],
-      },
-      {
-        label: 'Degree',
-        type: 'select',
-        name: 'degree',
-        options: [
-          { label: 'Bachelors', value: 'Bachelors' },
-          { label: 'Masters', value: 'Masters' },
-          { label: 'Associate', value: 'Associate' },
-          { label: 'High School GED', value: 'High School GED' },
-        ],
-      },
-      {
-        label: 'Subjects',
-        type: 'select',
-        name: 'subject',
-        options: [
-          { label: 'Operating Systems', value: 'Operating Systems' },
-          { label: 'Algorithms', value: 'Algorithms' },
-          { label: 'Software Engineering', value: 'Software Engineering' },
-          { label: 'Processor Design', value: 'Processor Design' },
-        ],
-      },
-      {
-        label: 'Rate',
-        type: 'text',
-        subtype: 'number',
-        name: 'rate',
-        hint: 'If you want to tutor for free then type 0 above',
-      },
-      // {
-      //   label: 'Availability',
-      //   type: 'select',
-      //   name: 'availability',
-      //   options: [
-      //     { label: 'Monday', value: 'Monday' },
-      //     { label: 'Tuesday', value: 'Tuesday' },
-      //     { label: 'Wednesday', value: 'Wednesday' },
-      //     { label: 'Thursday', value: 'Thursday' },
-      //     {label: 'Friday', value: 'Friday'},
-      //     {label: 'Saturday', value: 'Saturday'},
-      //     {label: 'Sunday', value: 'Saturday'},
-      //   ],
-      // },
-
-      {
-        label: 'Summary',
-        type: 'textarea',
-        name: 'summary',
-        optional: true,
-      },
-    ],
-  }),
-};
-
-// open the dialog by calling dialogs.open method and sending the payload
-axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-  .then((result) => {
-    debug('dialog.open: %o', result.data);
-    console.log("Dialog Opened sucessful");
-    res.send('');
-  }).catch((err) => {
-    debug('dialog.open call failed: %o', err);
-    res.sendStatus(500);
-  });
-}
-
-function save_tutor_info(payload){
-  // immediately respond with a empty 200 response to let
-  // Slack know the command was received
-  res.send('');
-
-  // create tutor
-  tutor.create(payload.user.id, payload.submission);
-}
