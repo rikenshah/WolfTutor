@@ -236,12 +236,12 @@ function formatUptime(uptime) {
 
 // });
 
-controller.hears('interactive', 'direct_message', function(bot, message) {
+controller.hears('become a tutor', 'direct_message', function(bot, message) {
 
     bot.reply(message, {
         attachments:[
             {
-                title: 'Do you want to interact with my buttons?',
+                title: 'Do you want become a tutor',
                 callback_id: '123',
                 attachment_type: 'default',
                 actions: [
