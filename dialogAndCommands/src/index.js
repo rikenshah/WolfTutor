@@ -147,9 +147,6 @@ app.post('/interactive-component', (req, res) => {
 });
 
 app.post('/botactivity', (req, res) => {
-  console.log(req['body']['event']['text']);
-  // Will need to verify the challenge parameter first
-  res.send("I am here");
   //console.log(req['body']['event']['text']);
   //res.send("I am here");
   const query = req.body.event.text;
@@ -163,7 +160,7 @@ app.post('/botactivity', (req, res) => {
   //console.log(req['body']);
   //res.send(req.body.challenge);
   //console.log(req);
-  // res.send('');
+  res.send('');
 });
 
 
