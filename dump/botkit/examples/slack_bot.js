@@ -68,22 +68,12 @@ if (!process.env.token) {
     console.log('Error: Specify token in environment');
     process.exit(1);
 }
-/*
 
-var Botkit = require('./lib/Botkit.js');
+var Botkit = require('../lib/Botkit.js');
 var os = require('os');
 
 var controller = Botkit.slackbot({
     debug: true,
-});
-*/
-
-var Botkit = require('botkit');
-var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
-var os = require('os');
-
-var controller = Botkit.slackbot({
-    storage: mongoStorage,
 });
 
 var bot = controller.spawn({
@@ -236,38 +226,6 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 
     });
 
-controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
-    'direct_message,direct_mention,mention', function(bot, message) {
-
-            //TODO put in a method
-            var sub_list = '';
-            controller.storage.subject.all(function(err,subjects) {
-                //console.log(subjects);
-                for(var temp in subjects) {
-                    sub_list = sub_list + subjects[temp].name.toString() + '\n ';
-                }
-                    //TODO- how to handle the error-string statement?
-                  if (err) {
-                      throw new Error(err);
-                  }
-                var subjects_display_list = 'Choose one of the subjects :-' +'\n' +sub_list;
-                //console.log(subjects_display_list);
-               // bot.reply(message, subjects_display_list);
-                bot.startConversation(message,function(err,convo) {
-                    convo.addQuestion(subjects_display_list,function(response,convo) {
-                      //  console.log(response.text);
-                        bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                        //TODO this method directly prints the list of tutors, TODO get name based on user id
-                        getTutorsForSubject(response.text);
-
-                        console.log(tutorList);
-                    });
-                });
-
-            });
-
-    });
-
 function formatUptime(uptime) {
     var unit = 'second';
     if (uptime > 60) {
@@ -284,28 +242,4 @@ function formatUptime(uptime) {
 
     uptime = uptime + ' ' + unit;
     return uptime;
-}
-
-function getTutorsForSubject(subject){
-    //TODO //if subject is not one of the subjects in the table, throw exception
-
-    var tutorList=new Array();
-
-    controller.storage.tutor.all(function(err,tutors){
-        //console.log('The chosen subject is '+subject);
-        for(var i in tutors) {
-            //console.log(tutors[i]);
-            var tsubjects=tutors[i].subjects;
-            //console.log(tsubjects);
-            for(var j in tsubjects){
-                //console.log(tsubjects[j].name);
-                if(tsubjects[j].name.toLowerCase()==subject.toLowerCase()) {
-                    console.log(tutors[i]);
-                   // tutorList.push(tutors[i]);
-                }
-            }
-        }
-    });
-//    return tutorList;
-
 }

@@ -6,11 +6,10 @@
             \/_____/   \/_____/     \/_/   \/_/\/_/   \/_/     \/_/
 
 
-This is a sample Slack bot built with Botkit.
+This is a sample Console bot built with Botkit.
 
 This bot demonstrates many of the core features of Botkit:
 
-* Connect to Slack using the real time API
 * Receive messages based on "spoken" patterns
 * Reply to messages
 * Use the conversation system to ask questions
@@ -19,17 +18,11 @@ This bot demonstrates many of the core features of Botkit:
 
 # RUN THE BOT:
 
-  Get a Bot token from Slack:
-
-    -> http://my.slack.com/services/new/bot
-
   Run your bot from the command line:
 
-    token=<MY TOKEN> node slack_bot.js
+    node console_bot.js
 
 # USE THE BOT:
-
-  Find your bot inside Slack to send it a direct message.
 
   Say: "Hello"
 
@@ -63,45 +56,16 @@ This bot demonstrates many of the core features of Botkit:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-
-if (!process.env.token) {
-    console.log('Error: Specify token in environment');
-    process.exit(1);
-}
-/*
-
-var Botkit = require('./lib/Botkit.js');
+var Botkit = require('../lib/Botkit.js');
 var os = require('os');
 
-var controller = Botkit.slackbot({
-    debug: true,
-});
-*/
-
-var Botkit = require('botkit');
-var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
-var os = require('os');
-
-var controller = Botkit.slackbot({
-    storage: mongoStorage,
+var controller = Botkit.consolebot({
+    debug: false,
 });
 
-var bot = controller.spawn({
-    token: process.env.token
-}).startRTM();
+var bot = controller.spawn();
 
-controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-
-    bot.api.reactions.add({
-        timestamp: message.ts,
-        channel: message.channel,
-        name: 'robot_face',
-    }, function(err, res) {
-        if (err) {
-            bot.botkit.log('Failed to add emoji reaction :(', err);
-        }
-    });
-
+controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
 
     controller.storage.users.get(message.user, function(err, user) {
         if (user && user.name) {
@@ -112,7 +76,7 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
     });
 });
 
-controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
+controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', function(bot, message) {
     var name = message.match[1];
     controller.storage.users.get(message.user, function(err, user) {
         if (!user) {
@@ -127,7 +91,7 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_men
     });
 });
 
-controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention,mention', function(bot, message) {
+controller.hears(['what is my name', 'who am i'], 'message_received', function(bot, message) {
 
     controller.storage.users.get(message.user, function(err, user) {
         if (user && user.name) {
@@ -196,7 +160,7 @@ controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention
 });
 
 
-controller.hears(['shutdown'], 'direct_message,direct_mention,mention', function(bot, message) {
+controller.hears(['shutdown'], 'message_received', function(bot, message) {
 
     bot.startConversation(message, function(err, convo) {
 
@@ -225,46 +189,13 @@ controller.hears(['shutdown'], 'direct_message,direct_mention,mention', function
 
 
 controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'],
-    'direct_message,direct_mention,mention', function(bot, message) {
+    'message_received', function(bot, message) {
 
         var hostname = os.hostname();
         var uptime = formatUptime(process.uptime());
 
         bot.reply(message,
-            ':robot_face: I am a bot named <@' + bot.identity.name +
-             '>. I have been running for ' + uptime + ' on ' + hostname + '.');
-
-    });
-
-controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
-    'direct_message,direct_mention,mention', function(bot, message) {
-
-            //TODO put in a method
-            var sub_list = '';
-            controller.storage.subject.all(function(err,subjects) {
-                //console.log(subjects);
-                for(var temp in subjects) {
-                    sub_list = sub_list + subjects[temp].name.toString() + '\n ';
-                }
-                    //TODO- how to handle the error-string statement?
-                  if (err) {
-                      throw new Error(err);
-                  }
-                var subjects_display_list = 'Choose one of the subjects :-' +'\n' +sub_list;
-                //console.log(subjects_display_list);
-               // bot.reply(message, subjects_display_list);
-                bot.startConversation(message,function(err,convo) {
-                    convo.addQuestion(subjects_display_list,function(response,convo) {
-                      //  console.log(response.text);
-                        bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                        //TODO this method directly prints the list of tutors, TODO get name based on user id
-                        getTutorsForSubject(response.text);
-
-                        console.log(tutorList);
-                    });
-                });
-
-            });
+            ':robot_face: I am ConsoleBot. I have been running for ' + uptime + ' on ' + hostname + '.');
 
     });
 
@@ -284,28 +215,4 @@ function formatUptime(uptime) {
 
     uptime = uptime + ' ' + unit;
     return uptime;
-}
-
-function getTutorsForSubject(subject){
-    //TODO //if subject is not one of the subjects in the table, throw exception
-
-    var tutorList=new Array();
-
-    controller.storage.tutor.all(function(err,tutors){
-        //console.log('The chosen subject is '+subject);
-        for(var i in tutors) {
-            //console.log(tutors[i]);
-            var tsubjects=tutors[i].subjects;
-            //console.log(tsubjects);
-            for(var j in tsubjects){
-                //console.log(tsubjects[j].name);
-                if(tsubjects[j].name.toLowerCase()==subject.toLowerCase()) {
-                    console.log(tutors[i]);
-                   // tutorList.push(tutors[i]);
-                }
-            }
-        }
-    });
-//    return tutorList;
-
 }
