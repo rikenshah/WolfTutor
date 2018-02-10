@@ -237,7 +237,6 @@ function formatUptime(uptime) {
 // });
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
-
     bot.reply(message, {
         attachments:[
             {
@@ -264,43 +263,43 @@ controller.hears('become a tutor', 'direct_message', function(bot, message) {
 });
 
 // receive an interactive message, and reply with a message that will replace the original
-controller.on('interactive_message_callback', function(bot, message) {
+// controller.on('interactive_message_callback', function(bot, message) {
 
-    // check message.actions and message.callback_id to see what action to take...
-    console.log(message);
-    bot.replyInteractive(message, {
-        text: 'yes',
-        attachments: [
-            {
-                title: 'My buttons',
-                callback_id: '123',
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"yes",
-                        "text": "Yes!",
-                        "value": "yes",
-                        "type": "button",
-                    },
-                    {
-                       "text": "No!",
-                        "name": "no",
-                        "value": "delete",
-                        "style": "danger",
-                        "type": "button",
-                        "confirm": {
-                          "title": "Are you sure?",
-                          "text": "This will do something!",
-                          "ok_text": "Yes",
-                          "dismiss_text": "No"
-                        }
-                    }
-                ]
-            }
-        ]
-    });
+//     // check message.actions and message.callback_id to see what action to take...
+//     console.log(message);
+//     bot.replyInteractive(message, {
+//         text: 'yes',
+//         attachments: [
+//             {
+//                 title: 'My buttons',
+//                 callback_id: '123',
+//                 attachment_type: 'default',
+//                 actions: [
+//                     {
+//                         "name":"yes",
+//                         "text": "Yes!",
+//                         "value": "yes",
+//                         "type": "button",
+//                     },
+//                     {
+//                        "text": "No!",
+//                         "name": "no",
+//                         "value": "delete",
+//                         "style": "danger",
+//                         "type": "button",
+//                         "confirm": {
+//                           "title": "Are you sure?",
+//                           "text": "This will do something!",
+//                           "ok_text": "Yes",
+//                           "dismiss_text": "No"
+//                         }
+//                     }
+//                 ]
+//             }
+//         ]
+//     });
 
-});
+// });
 
 
 

@@ -2,6 +2,14 @@ const axios = require('axios');
 const debug = require('debug')('slash-command-template:tutor');
 const qs = require('querystring');
 const users = require('./users');
+const MongoClient = require('mongodb').MongoClient;
+const url = process.env.MONGO_CONNECTION_STRING;
+
+// Uncomment the lines below to test the connection with the database
+// MongoClient.connect(url, function (err) {
+//     if (err) throw err;
+//     console.log('Connection to the Database Successful');
+// });
 
 /*
  *  Send tutor creation confirmation via
@@ -15,8 +23,6 @@ const sendConfirmation = (tutor) => {
     attachments: JSON.stringify([
       {
         title: `Tutor profile created for ${tutor.userName}`,
-        // Get this from the 3rd party helpdesk system
-        //title_link: 'http://example.com',
         text: tutor.text,
         fields: [
           {
@@ -64,8 +70,6 @@ const create = (userId, submission) => {
       //console.log(result.data.user.profile.real_name);
     }).catch((err) => { reject(err); });
   });
-// ##################### Fetch User name as well, result.data.user.profile.real_name
-
   fetchUserEmail.then((result) => {
     tutor.userId = userId;
     tutor.userName = result.real_name;
@@ -76,10 +80,21 @@ const create = (userId, submission) => {
     tutor.rate = submission.rate;
     tutor.summary = submission.summary;
     sendConfirmation(tutor);
-    console.log(tutor);
+    //console.log(tutor);
     //console.log(result);
-    return tutor;
+    MongoClient.connect(url, function (err, db) {
+        if(err) throw err;
+        var dbo = db.db("wolftutor");
+        dbo.collection("testtutors").insertOne(tutor, function(err, res) {
+        if (err) throw err;
+        console.log("1 Tutor inserted");
+        db.close();
+      });
+    });
+
+    //return tutor;
   }).catch((err) => { console.error(err); });
 };
+
 
 module.exports = { create, sendConfirmation };
