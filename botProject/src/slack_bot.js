@@ -15,13 +15,19 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-/*********************** BOT *****************************************/
-// Bot Kit additions
-
 if (!process.env.BOT_TOKEN) {
-    console.log('Error: Specify BOT_TOKEN in environment');
+    console.log('Error: Specify token in environment');
     process.exit(1);
 }
+/*
+
+var Botkit = require('./lib/Botkit.js');
+var os = require('os');
+
+var controller = Botkit.slackbot({
+    debug: true,
+});
+*/
 
 var Botkit = require('botkit');
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
@@ -32,11 +38,11 @@ var controller = Botkit.slackbot({
 });
 
 var bot = controller.spawn({
-    BOT_TOKEN: process.env.BOT_TOKEN
+    token: process.env.BOT_TOKEN
 }).startRTM();
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-    console.log("Got message");
+
     bot.api.reactions.add({
         timestamp: message.ts,
         channel: message.channel,
@@ -56,7 +62,125 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
         }
     });
 });
-/********************** END BOT **************************************/
+
+controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
+    var name = message.match[1];
+    controller.storage.users.get(message.user, function(err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        user.name = name;
+        controller.storage.users.save(user, function(err, id) {
+            bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+        });
+    });
+});
+
+
+controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
+    'direct_message,direct_mention,mention', function(bot, message) {
+
+        controller.storage.user.all(function(err,users) {
+            console.log(users)
+            if (err) {
+                throw new Error(err);
+            }
+        });
+
+        bot.startConversation(message,function(err,convo) {
+            var subs="";
+            controller.storage.subjects.all(function(error, subjects){
+                for(var s in subjects)
+                    console.log(s);
+            });
+        });
+    });
+
+function formatUptime(uptime) {
+    var unit = 'second';
+    if (uptime > 60) {
+        uptime = uptime / 60;
+        unit = 'minute';
+    }
+    if (uptime > 60) {
+        uptime = uptime / 60;
+        unit = 'hour';
+    }
+    if (uptime != 1) {
+        unit = unit + 's';
+    }
+
+    uptime = uptime + ' ' + unit;
+    return uptime;
+}
+
+controller.hears('become a tutor', 'direct_message', function(bot, message) {
+    bot.reply(message, {
+        attachments:[
+            {
+                title: 'Do you want become a tutor',
+                callback_id: 'become_tutor_prompt',
+                attachment_type: 'default',
+                actions: [
+                    {
+                        "name":"yes",
+                        "text": "Yes",
+                        "value": "yes",
+                        "type": "button",
+                    },
+                    {
+                        "name":"no",
+                        "text": "No",
+                        "value": "no",
+                        "type": "button",
+                    }
+                ]
+            }
+        ]
+    });
+});
+
+// receive an interactive message, and reply with a message that will replace the original
+// controller.on('interactive_message_callback', function(bot, message) {
+
+//     // check message.actions and message.callback_id to see what action to take...
+//     console.log(message);
+//     bot.replyInteractive(message, {
+//         text: 'yes',
+//         attachments: [
+//             {
+//                 title: 'My buttons',
+//                 callback_id: '123',
+//                 attachment_type: 'default',
+//                 actions: [
+//                     {
+//                         "name":"yes",
+//                         "text": "Yes!",
+//                         "value": "yes",
+//                         "type": "button",
+//                     },
+//                     {
+//                        "text": "No!",
+//                         "name": "no",
+//                         "value": "delete",
+//                         "style": "danger",
+//                         "type": "button",
+//                         "confirm": {
+//                           "title": "Are you sure?",
+//                           "text": "This will do something!",
+//                           "ok_text": "Yes",
+//                           "dismiss_text": "No"
+//                         }
+//                     }
+//                 ]
+//             }
+//         ]
+//     });
+
+// });
+
 
 
 app.get('/', (req, res) => {
@@ -64,24 +188,20 @@ app.get('/', (req, res) => {
   ' instructions in the README to configure the Slack App and your environment variables.</p>');
 });
 
-/*
- * Endpoint to receive /wolftutor slash command from Slack.
- * Checks verification token and opens a dialog to capture more info.
- */
 app.post('/message', (req, res) => {
-  // extract the verification token, slash command text,
-  // and trigger ID from payload
-  const { token, text, trigger_id } = req.body;
-  // check that the verification token matches expected value
+  var payload = JSON.parse(req.body.payload);
+  //console.log(req.body.payload);
+  var callbackId = payload.callback_id;
+  const token = payload.token;
+  const trigger_id = payload.trigger_id;
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
-    // create the dialog payload - includes the dialog structure, Slack API token,
-    // and trigger ID
-    const dialog = {
+    if(callbackId=='become_tutor_prompt'){
+      const dialog = {
       token: process.env.SLACK_ACCESS_TOKEN,
       trigger_id,
       dialog: JSON.stringify({
         title: 'Become a Tutor',
-        callback_id: 'submit-tutor',
+        callback_id: 'submit_tutor_info',
         submit_label: 'Submit',
         elements: [
           {
@@ -160,6 +280,15 @@ app.post('/message', (req, res) => {
         debug('dialog.open call failed: %o', err);
         res.sendStatus(500);
       });
+    } // End of If
+    else if(callbackId='submit_tutor_info'){
+      // immediately respond with a empty 200 response to let
+      // Slack know the command was received
+      res.send('');
+
+      // create tutor
+      tutor.create(payload.user.id, payload.submission);
+    } // End of else if
   } else {
     debug('Verification token mismatch');
     console.log('Failed Here');
@@ -191,20 +320,20 @@ app.post('/interactive-component', (req, res) => {
 });
 
 app.post('/botactivity', (req, res) => {
-  // console.log(req['body']['event']['text']);
-  // // Will need to verify the challenge parameter first
-  // res.send("I am here");
-  // //console.log(req['body']['event']['text']);
-  // //res.send("I am here");
-  // const query = req.body.event.text;
-  // console.log(query);
-  // if(query.match(/become a tutor/i)) {
-  //   console.log('Yes He wants to bocome a Tutor');
-  // }
-  // else {
-  //   console.log('No ');
-  // }
-  //console.log(req['body']);
+  console.log(req['body']['event']['text']);
+  // Will need to verify the challenge parameter first
+  res.send("I am here");
+  //console.log(req['body']['event']['text']);
+  //res.send("I am here");
+  const query = req.body.event.text;
+  console.log(query);
+  if(query.match(/become a tutor/i)) {
+    console.log('Yes He wants to bocome a Tutor');
+  }
+  else {
+    console.log('No ');
+  }
+  console.log(req['body']);
   res.send(req.body.challenge);
   // console.log(req);
   // res.send('');
@@ -214,4 +343,3 @@ app.post('/botactivity', (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}!`);
 });
-
