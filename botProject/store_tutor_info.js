@@ -1,5 +1,5 @@
 var Botkit = require('botkit');
-var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
+var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
 
 var controller = Botkit.slackbot({
 			        storage: mongoStorage,
