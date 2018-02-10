@@ -295,7 +295,7 @@ function getTutorsForSubject(subject){
     //TODO //if subject is not one of the subjects in the table, throw exception
 
     var tutorList=new Array();
-    
+
     controller.storage.tutor.all(function(err,tutors){
         //console.log('The chosen subject is '+subject);
         for(var i in tutors) {
