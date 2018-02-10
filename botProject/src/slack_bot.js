@@ -78,114 +78,6 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_men
     });
 });
 
-controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention,mention', function(bot, message) {
-
-    controller.storage.users.get(message.user, function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Your name is ' + user.name);
-        } else {
-            bot.startConversation(message, function(err, convo) {
-                if (!err) {
-                    convo.say('I do not know your name yet!');
-                    convo.ask('What should I call you?', function(response, convo) {
-                        convo.ask('You want me to call you `' + response.text + '`?', [
-                            {
-                                pattern: 'yes',
-                                callback: function(response, convo) {
-                                    // since no further messages are queued after this,
-                                    // the conversation will end naturally with status == 'completed'
-                                    convo.next();
-                                }
-                            },
-                            {
-                                pattern: 'no',
-                                callback: function(response, convo) {
-                                    // stop the conversation. this will cause it to end with status == 'stopped'
-                                    convo.stop();
-                                }
-                            },
-                            {
-                                default: true,
-                                callback: function(response, convo) {
-                                    convo.repeat();
-                                    convo.next();
-                                }
-                            }
-                        ]);
-
-                        convo.next();
-
-                    }, {'key': 'nickname'}); // store the results in a field called nickname
-
-                    convo.on('end', function(convo) {
-                        if (convo.status == 'completed') {
-                            bot.reply(message, 'OK! I will update my dossier...');
-
-                            controller.storage.users.get(message.user, function(err, user) {
-                                if (!user) {
-                                    user = {
-                                        id: message.user,
-                                    };
-                                }
-                                user.name = convo.extractResponse('nickname');
-                                controller.storage.users.save(user, function(err, id) {
-                                    bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
-                                });
-                            });
-
-
-
-                        } else {
-                            // this happens if the conversation ended prematurely for some reason
-                            bot.reply(message, 'OK, nevermind!');
-                        }
-                    });
-                }
-            });
-        }
-    });
-});
-
-
-controller.hears(['shutdown'], 'direct_message,direct_mention,mention', function(bot, message) {
-
-    bot.startConversation(message, function(err, convo) {
-
-        convo.ask('Are you sure you want me to shutdown?', [
-            {
-                pattern: bot.utterances.yes,
-                callback: function(response, convo) {
-                    convo.say('Bye!');
-                    convo.next();
-                    setTimeout(function() {
-                        process.exit();
-                    }, 3000);
-                }
-            },
-        {
-            pattern: bot.utterances.no,
-            default: true,
-            callback: function(response, convo) {
-                convo.say('*Phew!*');
-                convo.next();
-            }
-        }
-        ]);
-    });
-});
-
-
-controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'],
-    'direct_message,direct_mention,mention', function(bot, message) {
-
-        var hostname = os.hostname();
-        var uptime = formatUptime(process.uptime());
-
-        bot.reply(message,
-            ':robot_face: I am a bot named <@' + bot.identity.name +
-             '>. I have been running for ' + uptime + ' on ' + hostname + '.');
-
-    });
 
 controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select a tutor' ],
     'direct_message,direct_mention,mention', function(bot, message) {
@@ -224,24 +116,12 @@ function formatUptime(uptime) {
     return uptime;
 }
 
-
-// // set up a botkit app to expose oauth and webhook endpoints
-// controller.setupWebserver(process.env.port,function(err,webserver) {
-
-//   // set up web endpoints for oauth, receiving webhooks, etc.
-//   controller
-//     .createHomepageEndpoint(controller.webserver)
-//     .createOauthEndpoints(controller.webserver,function(err,req,res) { ... })
-//     .createWebhookEndpoints(controller.webserver);
-
-// });
-
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, {
         attachments:[
             {
                 title: 'Do you want become a tutor',
-                callback_id: '123',
+                callback_id: 'become_tutor_prompt',
                 attachment_type: 'default',
                 actions: [
                     {
@@ -308,29 +188,20 @@ app.get('/', (req, res) => {
   ' instructions in the README to configure the Slack App and your environment variables.</p>');
 });
 
-/*
- * Endpoint to receive /wolftutor slash command from Slack.
- * Checks verification token and opens a dialog to capture more info.
- */
 app.post('/message', (req, res) => {
-  // extract the verification token, slash command text,
-  // and trigger ID from payload
-  // const { token, text, trigger_id } = req.body;
   var payload = JSON.parse(req.body.payload);
+  //console.log(req.body.payload);
+  var callbackId = payload.callback_id;
   const token = payload.token;
   const trigger_id = payload.trigger_id;
-  // console.log(payload.token);
-  // console.log(process.env.SLACK_VERIFICATION_TOKEN);
-  // check that the verification token matches expected value
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
-    // create the dialog payload - includes the dialog structure, Slack API token,
-    // and trigger ID
-    const dialog = {
+    if(callbackId=='become_tutor_prompt'){
+      const dialog = {
       token: process.env.SLACK_ACCESS_TOKEN,
       trigger_id,
       dialog: JSON.stringify({
         title: 'Become a Tutor',
-        callback_id: 'submit-tutor',
+        callback_id: 'submit_tutor_info',
         submit_label: 'Submit',
         elements: [
           {
@@ -409,6 +280,15 @@ app.post('/message', (req, res) => {
         debug('dialog.open call failed: %o', err);
         res.sendStatus(500);
       });
+    } // End of If
+    else if(callbackId='submit_tutor_info'){
+      // immediately respond with a empty 200 response to let
+      // Slack know the command was received
+      res.send('');
+
+      // create tutor
+      tutor.create(payload.user.id, payload.submission);
+    } // End of else if
   } else {
     debug('Verification token mismatch');
     console.log('Failed Here');
