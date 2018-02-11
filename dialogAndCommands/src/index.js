@@ -15,6 +15,50 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+/*********************** BOT *****************************************/
+// Bot Kit additions
+
+if (!process.env.BOT_TOKEN) {
+    console.log('Error: Specify BOT_TOKEN in environment');
+    process.exit(1);
+}
+
+var Botkit = require('botkit');
+var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
+var os = require('os');
+
+var controller = Botkit.slackbot({
+    storage: mongoStorage,
+});
+
+var bot = controller.spawn({
+    BOT_TOKEN: process.env.BOT_TOKEN
+}).startRTM();
+
+controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
+    console.log("Got message");
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'robot_face',
+    }, function(err, res) {
+        if (err) {
+            bot.botkit.log('Failed to add emoji reaction :(', err);
+        }
+    });
+
+
+    controller.storage.users.get(message.user, function(err, user) {
+        if (user && user.name) {
+            bot.reply(message, 'Hello ' + user.name + '!!');
+        } else {
+            bot.reply(message, 'Hello.');
+        }
+    });
+});
+/********************** END BOT **************************************/
+
+
 app.get('/', (req, res) => {
   res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
   ' instructions in the README to configure the Slack App and your environment variables.</p>');
@@ -147,23 +191,27 @@ app.post('/interactive-component', (req, res) => {
 });
 
 app.post('/botactivity', (req, res) => {
-  //console.log(req['body']['event']['text']);
-  //res.send("I am here");
-  const query = req.body.event.text;
-  console.log(query);
-  if(query.match(/become a tutor/i)) {
-    console.log('Yes He wants to bocome a Tutor');
-  }
-  else {
-    console.log('No ');
-  }
+  // console.log(req['body']['event']['text']);
+  // // Will need to verify the challenge parameter first
+  // res.send("I am here");
+  // //console.log(req['body']['event']['text']);
+  // //res.send("I am here");
+  // const query = req.body.event.text;
+  // console.log(query);
+  // if(query.match(/become a tutor/i)) {
+  //   console.log('Yes He wants to bocome a Tutor');
+  // }
+  // else {
+  //   console.log('No ');
+  // }
   //console.log(req['body']);
-  //res.send(req.body.challenge);
-  //console.log(req);
-  res.send('');
+  res.send(req.body.challenge);
+  // console.log(req);
+  // res.send('');
 });
 
 
 app.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}!`);
 });
+
