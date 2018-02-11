@@ -243,6 +243,7 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
             var sub_list = '';
             controller.storage.subject.all(function(err,subjects) {
                 //console.log(subjects);
+                //Commenting old plain text logic of subjects
                 for(var temp in subjects) {
                     sub_list = sub_list + subjects[temp].name.toString() + '\n ';
                 }
@@ -250,23 +251,73 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
                   if (err) {
                       throw new Error(err);
                   }
+
                 var subjects_display_list = 'Choose one of the subjects :-' +'\n' +sub_list;
+                //for(var sub in subjects) {
+                    var reply_with_attachments = {
+                        'attachments': [
+                            {
+                                fields: [
+                                    {
+                                        value: subjects_display_list,//subjects[sub].name,
+                                        short:true,
+                                    },]
+
+                            }
+                        ],
+                    }
+
+                   // bot.reply(message, reply_with_attachments);
+                //}
+
                 //console.log(subjects_display_list);
                // bot.reply(message, subjects_display_list);
                 bot.startConversation(message,function(err,convo) {
-                    convo.addQuestion(subjects_display_list,function(response,convo) {
-                      //  console.log(response.text);
-                        bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                        //TODO this method directly prints the list of tutors, TODO get name based on user id
-                        getTutorsForSubject(response.text);
 
-                        console.log(tutorList);
-                    });
+                    convo.addQuestion(reply_with_attachments,function(response,convo) {
+                      //  console.log(response.text);
+
+
+                        //convo.say was not working
+                        isValidSubject(response.text,function(flag){
+                            if(flag == true)
+                                bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                            else {
+                                bot.reply(convo.source_message, 'Please select a valid subject.');
+                                convo.repeat();
+                            }
+                        });
+
+                        //TODO this method directly prints the list of tutors, TODO get name based on user id
+                        //getTutorsForSubject(response.text);
+
+                        //console.log(tutorList);
+                        convo.next();
+                    },{},'default');
+                    //});
                 });
 
             });
 
     });
+
+//Added test method- to be removed.
+controller.hears(['question me'], 'message_received', function(bot,message) {
+
+    // start a conversation to handle this response.
+    bot.startConversation(message,function(err,convo) {
+        console.log('blah');
+        convo.addQuestion('How are you?',function(response,convo) {
+
+            bot.reply('Cool, you said: ' + response.text);
+            convo.next();
+
+        },{},'default');
+
+    })
+
+});
+
 
 function formatUptime(uptime) {
     var unit = 'second';
@@ -300,6 +351,7 @@ function getTutorsForSubject(subject){
             for(var j in tsubjects){
                 //console.log(tsubjects[j].name);
                 if(tsubjects[j].name.toLowerCase()==subject.toLowerCase()) {
+
                     console.log(tutors[i]);
                    // tutorList.push(tutors[i]);
                 }
@@ -307,5 +359,20 @@ function getTutorsForSubject(subject){
         }
     });
 //    return tutorList;
+}
+function isValidSubject(mysubject,callback){
+    var flag = false;
+    controller.storage.subject.find({name: { $regex : new RegExp(mysubject.toString(), "i") }/*subject.toString()*/},
+        function(error, subject){
+        if(error){
+            //return false;
+        }
+        if(mysubject.toString().toLowerCase()==subject[0].name.toLowerCase()) {
+            console.log('valid subject');
+            flag = true;
+        }
+
+            callback(flag);
+    });
 
 }
