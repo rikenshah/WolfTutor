@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const qs = require('querystring');
 const tutor = require('./tutor');
 const dialogs = require('./dialog');
+const prompts = require('./prompt');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
 
@@ -118,29 +119,7 @@ function formatUptime(uptime) {
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
     console.log(message);
-    bot.reply(message, {
-        attachments:[
-            {
-                title: 'Do you want become a tutor',
-                callback_id: 'become_tutor_prompt',
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"yes",
-                        "text": "Yes",
-                        "value": "yes",
-                        "type": "button",
-                    },
-                    {
-                        "name":"no",
-                        "text": "No",
-                        "value": "no",
-                        "type": "button",
-                    }
-                ]
-            }
-        ]
-    });
+    bot.reply(message, prompts.become_tutor_prompt);
 });
 
 // receive an interactive message, and reply with a message that will replace the original
@@ -212,7 +191,6 @@ app.post('/message', (req, res) => {
         });
       }
       else {
-          console.log(dialogs);
           const dialog = {
           token: process.env.SLACK_ACCESS_TOKEN,
           trigger_id,
