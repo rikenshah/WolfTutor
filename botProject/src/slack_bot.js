@@ -149,45 +149,67 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
                                   {
                                     bot.reply(message, 
                                     {
-                                      attachments:
-                                      [
-                                        {
-                                        fields: 
-                                          [
-                                                {
-                                                    title: 'Name',
-                                                    value: json_file[i].name,
-                                                    short:true,
-                                            },
+                                        "text": "Tutor Details",
+                                        "attachments": [
                                             {
-                                                    title: 'Email',
-                                                    value: json_file[i].email,
-                                                    short:true,
-                                            },
-                                            {
-                                                    title: 'Major',
-                                                    value: json_file[i].major,
-                                                    short:true,
-                                            },
-                                            {
-                                                    title: 'Degree',
-                                                    value: json_file[i].degree,
-                                                    short:true,
-                                            },
-                                            {
-                                                    title: 'Summary',
-                                                    value: json_file[i].summary,
-                                                    short:true,
-                                            },
-                                            {
-                                                    title: 'Rate',
-                                                    value: json_file[i].rate,
-                                                    short:true,
-                                            },
+                                                
+                                                "fields": 
+                                                [
+                                                 {
+                                                    "title": 'Name',
+                                                    "value": json_file[i].name,
+                                                    "short":true,
+                                                  },
+                                                  {
+                                                    "title": 'Email',
+                                                    "value": json_file[i].email,
+                                                    "short":true,
+                                                  },
+                                                  {
+                                                    "title": 'Major',
+                                                    "value": json_file[i].major,
+                                                    "short":true,
+                                                  },
+                                                  {
+                                                    "title": 'Degree',
+                                                    "value": json_file[i].degree,
+                                                    "short":true,
+                                                  },
+                                                  {
+                                                    "title": 'Summary',
+                                                    "value": json_file[i].summary,
+                                                    "short":true,
+                                                  },
+                                                  {
+                                                    "title": 'Rate',
+                                                    "value": json_file[i].rate,
+                                                    "short":true,
+                                                  },
 
-                                          ]
-                                        }
-                                      ]
+                                                ],
+                                                
+                                            },
+                                            {
+                                                "fallback": "Review and Scheduling",
+                                                "title": "Review and Scheduling",
+                                                "callback_id": "review_and_scheduling",
+                                                "attachment_type": "default",
+                                                "actions": [
+                                                    {
+                                                        "name": "review",
+                                                        "text": "Review",
+                                                        "type": "button",
+                                                        "value": json_file[i].user_id
+                                                    },
+                                                    {
+                                                        "name": "schedule",
+                                                        "text": "Schedule",
+                                                        "type": "button",
+                                                        "value": "schedule"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     });
                                   }
                                 }
@@ -349,6 +371,54 @@ app.post('/message', (req, res) => {
         action.open_dialog(dialog,res);
       }
     } // End of else if of add more availability prompt
+    else if (callback_id == 'review_and_scheduling') {
+      console.log("+++++++++++++++++++++++++++++++++++++++");
+      var checkValue = payload.actions[0].value;
+      console.log(checkValue);
+      if (checkValue == 'schedule')
+      {
+
+      }
+      else
+      {
+        
+          getTutorReview(checkValue, function(json_file)
+          {
+            console.log(json_file.review);
+            console.log("++++++++++");
+            for(var i in json_file.review)
+            {
+              console.log("-----------------------");
+               console.log(json_file.review[i].text);
+               console.log(json_file.review[i].rating);
+              action.send_message(payload.channel.id,'Review',
+              {
+                "text": "Tutor Details",
+                "attachments": [
+                    {
+                        
+                        "fields": 
+                        [
+                         {
+                            "title": 'Review',
+                            "value": json_file.review[i].text,
+                            "short":true,
+                          },
+                          {
+                            "title": 'Rating',
+                            "value": json_file.review[i].rating,
+                            "short":true,
+                          },
+                        ]
+                    }
+                              ]
+              });
+            }
+
+          }); 
+      }
+      
+    }
     else {
       console.log('Reached Else');
       console.log(payload);
@@ -403,6 +473,31 @@ function isValidSubject(mysubject,callback){
             callback(flag);
         });
 
+}
+
+function getTutorReview(user_id, callback)
+{
+  controller.storage.tutor.all(function(err,tutors)
+  {
+    var json_file = {}
+    for(var i in tutors)
+    {
+      // console.log("********************");
+      // console.log(tutors[i].user_id);
+      // console.log(user_id);
+      if(tutors[i].user_id == user_id)
+        {
+          // for (var j in tutor[i].reviews)
+          // {
+
+          // }
+          json_file.review = tutors[i].reviews;
+          
+        }
+    }
+    // console.log(json_file);
+    callback(json_file);
+  });
 }
 
 
