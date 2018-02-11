@@ -5,13 +5,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const qs = require('querystring');
 const tutor = require('./tutor');
+const dialogs = require('./dialog');
+const prompts = require('./prompt');
+const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
-
 const app = express();
 
 /*
  * Parse application/x-www-form-urlencoded && application/json
  */
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -43,15 +46,15 @@ var bot = controller.spawn({
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
 
-    bot.api.reactions.add({
-        timestamp: message.ts,
-        channel: message.channel,
-        name: 'robot_face',
-    }, function(err, res) {
-        if (err) {
-            bot.botkit.log('Failed to add emoji reaction :(', err);
-        }
-    });
+    // bot.api.reaction.add({
+    //     timestamp: message.ts,
+    //     channel: message.channel,
+    //     name: 'robot_face',
+    // }, function(err, res) {
+    //     if (err) {
+    //         bot.botkit.log('Failed to add emoji reaction :(', err);
+    //     }
+    // });
 
 
     controller.storage.users.get(message.user, function(err, user) {
@@ -246,71 +249,8 @@ function formatUptime(uptime) {
 }
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
-    bot.reply(message, {
-        attachments:[
-            {
-                title: 'Do you want become a tutor',
-                callback_id: 'become_tutor_prompt',
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"yes",
-                        "text": "Yes",
-                        "value": "yes",
-                        "type": "button",
-                    },
-                    {
-                        "name":"no",
-                        "text": "No",
-                        "value": "no",
-                        "type": "button",
-                    }
-                ]
-            }
-        ]
-    });
+    bot.reply(message, prompts.become_tutor_prompt);
 });
-
-// receive an interactive message, and reply with a message that will replace the original
-// controller.on('interactive_message_callback', function(bot, message) {
-
-//     // check message.actions and message.callback_id to see what action to take...
-//     console.log(message);
-//     bot.replyInteractive(message, {
-//         text: 'yes',
-//         attachments: [
-//             {
-//                 title: 'My buttons',
-//                 callback_id: '123',
-//                 attachment_type: 'default',
-//                 actions: [
-//                     {
-//                         "name":"yes",
-//                         "text": "Yes!",
-//                         "value": "yes",
-//                         "type": "button",
-//                     },
-//                     {
-//                        "text": "No!",
-//                         "name": "no",
-//                         "value": "delete",
-//                         "style": "danger",
-//                         "type": "button",
-//                         "confirm": {
-//                           "title": "Are you sure?",
-//                           "text": "This will do something!",
-//                           "ok_text": "Yes",
-//                           "dismiss_text": "No"
-//                         }
-//                     }
-//                 ]
-//             }
-//         ]
-//     });
-
-// });
-
-
 
 app.get('/', (req, res) => {
   res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
@@ -319,132 +259,104 @@ app.get('/', (req, res) => {
 
 app.post('/message', (req, res) => {
   var payload = JSON.parse(req.body.payload);
-  //console.log(req.body.payload);
-  var callbackId = payload.callback_id;
+  var callback_id = payload.callback_id;
   const token = payload.token;
   const trigger_id = payload.trigger_id;
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
-    if(callbackId=='become_tutor_prompt'){
+
+    if(callback_id=='become_tutor_prompt'){
+      console.log(payload);
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no') {
+        var text = 'Ok, you can enroll to become a tutor anytime.';
+        action.send_message(payload.channel.id,text,[]);
+      }
+      else {
+          // Yes on become a tutor prompt
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
+        };
+        // open the dialog by calling dialogs.open method and sending the payload
+        action.open_dialog(dialog,res);
+        } // End of Else
+      } // End of If
+
+    else if(callback_id=='submit_tutor_info_dialog'){
+      // immediately respond with a empty 200 response to let
+      // Slack know the command was received
+      //res.send('');
+      console.log(payload);
+      action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
+      // create tutor
+      //tutor.create(payload.user.id, payload.submission);
+      res.send('');
+    } // End of else if for submit tutor info
+    else if (callback_id =='add_more_subjects_prompt') {
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no') {
+        // Get the availibility Prompt
+        action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
+      } else {
+        // Dialog for Adding a subject
+        const dialog = {
+        token: process.env.SLACK_ACCESS_TOKEN,
+        trigger_id,
+        dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
+        };
+        // open the dialog by calling dialogs.open method and sending the payload
+        action.open_dialog(dialog,res);
+        //res.send('');
+        // TODO Store in database subjects
+      } // End of else for add more subjects
+    } // End of else if for tutor add subjects
+    else if (callback_id=='add_more_subjects_dialog') {
+      action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
+      // TODO Store add more subjects
+      res.send('');
+    }
+    else if (callback_id=='add_availability_prompt') {
       const dialog = {
       token: process.env.SLACK_ACCESS_TOKEN,
       trigger_id,
-      dialog: JSON.stringify({
-        title: 'Become a Tutor',
-        callback_id: 'submit_tutor_info',
-        submit_label: 'Submit',
-        elements: [
-          {
-            label: 'Major',
-            type: 'select',
-            name: 'major',
-            options: [
-              { label: 'Computer Science', value: 'Computer Science' },
-              { label: 'Computer Engineering', value: 'Computer Engineering' },
-              { label: 'Electrical Engineering', value: 'Electrical Engineering' },
-              { label: 'Mechanical Engineering', value: 'Mechanical Engineering' },
-              { label: 'Chemical Engineering', value: 'Chemical Engineering' },
-            ],
-          },
-          {
-            label: 'Degree',
-            type: 'select',
-            name: 'degree',
-            options: [
-              { label: 'Bachelors', value: 'Bachelors' },
-              { label: 'Masters', value: 'Masters' },
-              { label: 'Associate', value: 'Associate' },
-              { label: 'High School GED', value: 'High School GED' },
-            ],
-          },
-          {
-            label: 'Subjects',
-            type: 'select',
-            name: 'subject',
-            options: [
-              { label: 'Operating Systems', value: 'Operating Systems' },
-              { label: 'Algorithms', value: 'Algorithms' },
-              { label: 'Software Engineering', value: 'Software Engineering' },
-              { label: 'Processor Design', value: 'Processor Design' },
-            ],
-          },
-          {
-            label: 'Rate',
-            type: 'text',
-            subtype: 'number',
-            name: 'rate',
-            hint: 'If you want to tutor for free then type 0 above',
-          },
-          // {
-          //   label: 'Availability',
-          //   type: 'select',
-          //   name: 'availability',
-          //   options: [
-          //     { label: 'Monday', value: 'Monday' },
-          //     { label: 'Tuesday', value: 'Tuesday' },
-          //     { label: 'Wednesday', value: 'Wednesday' },
-          //     { label: 'Thursday', value: 'Thursday' },
-          //     {label: 'Friday', value: 'Friday'},
-          //     {label: 'Saturday', value: 'Saturday'},
-          //     {label: 'Sunday', value: 'Saturday'},
-          //   ],
-          // },
+      dialog: JSON.stringify(dialogs.add_availability_dialog),
+      }
+      // open the dialog by calling dialogs.open method and sending the payload
+      action.open_dialog(dialog,res);
+      //res.send('');
+    } // End of else if for add more availability
+    else if (callback_id=='add_availability_dialog') {
+      // TODO: On Subission of Dialog
+      // Add availability to Database
 
-          {
-            label: 'Summary',
-            type: 'textarea',
-            name: 'summary',
-            optional: true,
-          },
-        ],
-      }),
-    };
 
-    // open the dialog by calling dialogs.open method and sending the payload
-    axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-      .then((result) => {
-        debug('dialog.open: %o', result.data);
-        console.log("Dialog Opened sucessful");
-        res.send('');
-      }).catch((err) => {
-        debug('dialog.open call failed: %o', err);
-        res.sendStatus(500);
-      });
-    } // End of If
-    else if(callbackId='submit_tutor_info'){
-      // immediately respond with a empty 200 response to let
-      // Slack know the command was received
+      // Get the availibility Prompt
+      action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
       res.send('');
-
-      // create tutor
-      tutor.create(payload.user.id, payload.submission);
-    } // End of else if
+    } // End of else if of add availability dialog
+    else if (callback_id=='add_more_availability_prompt') {
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no') {
+        action.send_message(payload.channel.id,'Ok. Thank you for enrolling as a tutor.')
+      } else {
+        const dialog = {
+        token: process.env.SLACK_ACCESS_TOKEN,
+        trigger_id,
+        dialog: JSON.stringify(dialogs.add_availability_dialog),
+        }
+        // open the dialog by calling dialogs.open method and sending the payload
+        action.open_dialog(dialog,res);
+      }
+    } // End of else if of add more availability prompt
+    else {
+      console.log('Reached Else');
+      console.log(payload);
+    }
   } else {
     debug('Verification token mismatch');
     console.log('Failed Here');
     res.sendStatus(403);
-  }
-});
-
-/*
- * Endpoint to receive the dialog submission. Checks the verification token
- * and creates a Helpdesk tutor
- */
-app.post('/interactive-component', (req, res) => {
-  const body = JSON.parse(req.body.payload);
-
-  // check that the verification token matches expected value
-  if (body.token === process.env.SLACK_VERIFICATION_TOKEN) {
-    debug(`Form submission received: ${body.submission.trigger_id}`);
-
-    // immediately respond with a empty 200 response to let
-    // Slack know the command was received
-    res.send('');
-
-    // create tutor
-    tutor.create(body.user.id, body.submission);
-  } else {
-    debug('Token mismatch');
-    res.sendStatus(500);
   }
 });
 
