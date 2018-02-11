@@ -118,50 +118,8 @@ function formatUptime(uptime) {
 }
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
-    console.log(message);
     bot.reply(message, prompts.become_tutor_prompt);
 });
-
-// receive an interactive message, and reply with a message that will replace the original
-// controller.on('interactive_message_callback', function(bot, message) {
-
-//     // check message.actions and message.callback_id to see what action to take...
-//     console.log(message);
-//     bot.replyInteractive(message, {
-//         text: 'yes',
-//         attachments: [
-//             {
-//                 title: 'My buttons',
-//                 callback_id: '123',
-//                 attachment_type: 'default',
-//                 actions: [
-//                     {
-//                         "name":"yes",
-//                         "text": "Yes!",
-//                         "value": "yes",
-//                         "type": "button",
-//                     },
-//                     {
-//                        "text": "No!",
-//                         "name": "no",
-//                         "value": "delete",
-//                         "style": "danger",
-//                         "type": "button",
-//                         "confirm": {
-//                           "title": "Are you sure?",
-//                           "text": "This will do something!",
-//                           "ok_text": "Yes",
-//                           "dismiss_text": "No"
-//                         }
-//                     }
-//                 ]
-//             }
-//         ]
-//     });
-
-// });
-
-
 
 app.get('/', (req, res) => {
   res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
@@ -191,6 +149,7 @@ app.post('/message', (req, res) => {
         });
       }
       else {
+          // Yes on become a tutor prompt
           const dialog = {
           token: process.env.SLACK_ACCESS_TOKEN,
           trigger_id,
@@ -210,14 +169,62 @@ app.post('/message', (req, res) => {
         } // End of Else
       } // End of If
 
-    else if(callbackId='submit_tutor_info'){
+    else if(callbackId=='submit_tutor_info'){
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
       res.send('');
-
+      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+        token: process.env.SLACK_ACCESS_TOKEN,
+        channel: payload.channel.id,
+        // Edit the text that you want to send to the bot
+        //text: 'OK',
+        attachments:JSON.stringify(prompts.add_more_subjects_prompt),
+      })).then((result) => {
+        debug('sendConfirmation: %o', result.data);
+      }).catch((err) => {
+        debug('sendConfirmation error: %o', err);
+        console.error(err);
+      });
       // create tutor
       tutor.create(payload.user.id, payload.submission);
-    } // End of else if
+    } // End of else if for submit tutor info
+    else if (callback_id ='tutor_add_subjects') {
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no') {
+        // Get the availibility Prompt
+        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+          token: process.env.SLACK_ACCESS_TOKEN,
+          channel: payload.channel.id,
+          // Edit the text that you want to send to the bot
+          //text: 'OK',
+          attachments:JSON.stringify(prompts.add_availability_prompt),
+        })).then((result) => {
+          debug('sendConfirmation: %o', result.data);
+        }).catch((err) => {
+          debug('sendConfirmation error: %o', err);
+          console.error(err);
+        });
+      } else {
+        // Dialog for Adding a subject
+        const dialog = {
+        token: process.env.SLACK_ACCESS_TOKEN,
+        trigger_id,
+        dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
+      };
+
+      // open the dialog by calling dialogs.open method and sending the payload
+      axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
+        .then((result) => {
+          debug('dialog.open: %o', result.data);
+          console.log("Dialog Opened sucessful");
+          res.send('');
+        }).catch((err) => {
+          debug('dialog.open call failed: %o', err);
+          res.sendStatus(500);
+        });
+      } // End of else for add more subjects
+    } // End of else if for tutor add subjects
+
   } else {
     debug('Verification token mismatch');
     console.log('Failed Here');
