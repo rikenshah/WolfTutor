@@ -128,12 +128,12 @@ app.get('/', (req, res) => {
 
 app.post('/message', (req, res) => {
   var payload = JSON.parse(req.body.payload);
-  var callbackId = payload.callback_id;
+  var callback_id = payload.callback_id;
   const token = payload.token;
   const trigger_id = payload.trigger_id;
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
 
-    if(callbackId=='become_tutor_prompt'){
+    if(callback_id=='become_tutor_prompt'){
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
@@ -169,10 +169,10 @@ app.post('/message', (req, res) => {
         } // End of Else
       } // End of If
 
-    else if(callbackId=='submit_tutor_info'){
+    else if(callback_id=='submit_tutor_info_dialog'){
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
-      res.send('');
+      //res.send('');
       axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
         token: process.env.SLACK_ACCESS_TOKEN,
         channel: payload.channel.id,
@@ -187,8 +187,9 @@ app.post('/message', (req, res) => {
       });
       // create tutor
       tutor.create(payload.user.id, payload.submission);
+      res.send('');
     } // End of else if for submit tutor info
-    else if (callback_id ='tutor_add_subjects') {
+    else if (callback_id =='add_more_subjects_prompt') {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         // Get the availibility Prompt
@@ -222,9 +223,49 @@ app.post('/message', (req, res) => {
           debug('dialog.open call failed: %o', err);
           res.sendStatus(500);
         });
+        res.send('');
+        // TODO Store in database subjects
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
+    else if (callback_id=='add_availability_prompt') {
+      const dialog = {
+      token: process.env.SLACK_ACCESS_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify(dialogs.add_availability_dialog),
+      }
+    } // End of else if for add more availability
+    else if (callback_id=='add_availability_dialog') {
+      // TODO: On Subission of Dialog
+      // Add availability to Database
 
+
+      // Get the availibility Prompt
+      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+        token: process.env.SLACK_ACCESS_TOKEN,
+        channel: payload.channel.id,
+        // Edit the text that you want to send to the bot
+        //text: 'OK',
+        attachments:JSON.stringify(prompts.add_more_availability_prompt),
+      })).then((result) => {
+        debug('sendConfirmation: %o', result.data);
+      }).catch((err) => {
+        debug('sendConfirmation error: %o', err);
+        console.error(err);
+      });
+      res.send('');
+    }
+    else if (callback_id=='add_more_availability_prompt') {
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no') {
+        // END Done
+      } else {
+        const dialog = {
+        token: process.env.SLACK_ACCESS_TOKEN,
+        trigger_id,
+        dialog: JSON.stringify(dialogs.add_availability_dialog),
+        }
+      }
+    }
   } else {
     debug('Verification token mismatch');
     console.log('Failed Here');
