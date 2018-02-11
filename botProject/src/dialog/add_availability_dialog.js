@@ -45,6 +45,7 @@ var dialog = {
       type: 'select',
       name: 'from_time_min',
       options: [
+        { label: '00', value: '00' },
         { label: '15', value: '15' },
         { label: '30', value: '30' },
         { label: '45', value: '45' },
@@ -78,6 +79,7 @@ var dialog = {
       type: 'select',
       name: 'to_time_min',
       options: [
+        { label: '00', value: '00' },
         { label: '15', value: '15' },
         { label: '30', value: '30' },
         { label: '45', value: '45' },

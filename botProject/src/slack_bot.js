@@ -252,6 +252,11 @@ controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
 });
 
+var session_over = ['session a over','rate the tutor','give review','review']
+controller.hears('review', 'direct_message', function(bot, message) {
+    bot.reply(message, prompts.give_review_prompt);
+});
+
 app.get('/', (req, res) => {
   res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
   ' instructions in the README to configure the Slack App and your environment variables.</p>');
@@ -349,6 +354,19 @@ app.post('/message', (req, res) => {
         action.open_dialog(dialog,res);
       }
     } // End of else if of add more availability prompt
+    else if(callback_id=='give_review_prompt'){
+      console.log(payload);
+      const dialog = {
+      token: process.env.SLACK_ACCESS_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify(dialogs.give_review_dialog),
+      }
+      // open the dialog by calling dialogs.open method and sending the payload
+      action.open_dialog(dialog,res);
+    }// End of else if of give_review_prompt  
+    else if(callback_id=='give_review_dialog'){
+      console.log("Reached here");
+    }
     else {
       console.log('Reached Else');
       console.log(payload);
