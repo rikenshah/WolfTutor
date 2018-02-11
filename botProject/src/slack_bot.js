@@ -30,7 +30,7 @@ var controller = Botkit.slackbot({
 */
 
 var Botkit = require('botkit');
-var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://seprojuser:seprojuser123@ds123728.mlab.com:23728/wolftutor', tables: ['user','tutor','subject']});
+var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
 var os = require('os');
 
 var controller = Botkit.slackbot({
@@ -125,7 +125,71 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
                     //convo.say was not working
                     isValidSubject(response.text,function(flag){
                         if(flag == true)
+                        {
                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                            getTutorsForSubject(response.text, function(json_file)
+                              {
+                                var count = 0;
+                                for (var i in json_file)
+                                {
+                                    count = count+1;
+                                }
+                                console.log("Json file length");
+                                console.log(count);
+                                if (count == 0)
+                                {
+                                  bot.reply(message, "Sorry! There are no tutor avaible for this course");
+                                }
+                                else
+                                {
+                                  for (var i in json_file)
+                                  {
+                                    bot.reply(message, 
+                                    {
+                                      attachments:
+                                      [
+                                        {
+                                        fields: 
+                                          [
+                                                {
+                                                    title: 'Name',
+                                                    value: json_file[i].name,
+                                                    short:true,
+                                            },
+                                            {
+                                                    title: 'Email',
+                                                    value: json_file[i].email,
+                                                    short:true,
+                                            },
+                                            {
+                                                    title: 'Major',
+                                                    value: json_file[i].major,
+                                                    short:true,
+                                            },
+                                            {
+                                                    title: 'Degree',
+                                                    value: json_file[i].degree,
+                                                    short:true,
+                                            },
+                                            {
+                                                    title: 'Summary',
+                                                    value: json_file[i].summary,
+                                                    short:true,
+                                            },
+                                            {
+                                                    title: 'Rate',
+                                                    value: json_file[i].rate,
+                                                    short:true,
+                                            },
+
+                                          ]
+                                        }
+                                      ]
+                                    });
+                                  }
+                                }
+                         });
+                        }
                         else {
                             bot.reply(convo.source_message, 'Please select a valid subject.');
                             convo.repeat();
@@ -410,29 +474,7 @@ app.listen(process.env.PORT, () => {
 });
 
 
-function getTutorsForSubject(subject){
-    //TODO //if subject is not one of the subjects in the table, throw exception
 
-    var tutorList=new Array();
-
-    controller.storage.tutor.all(function(err,tutors){
-        //console.log('The chosen subject is '+subject);
-        for(var i in tutors) {
-            //console.log(tutors[i]);
-            var tsubjects=tutors[i].subjects;
-            //console.log(tsubjects);
-            for(var j in tsubjects){
-                //console.log(tsubjects[j].name);
-                if(tsubjects[j].name.toLowerCase()==subject.toLowerCase()) {
-
-                    console.log(tutors[i]);
-                    // tutorList.push(tutors[i]);
-                }
-            }
-        }
-    });
-//    return tutorList;
-}
 function isValidSubject(mysubject,callback){
     var flag = false;
     controller.storage.subject.find({name: { $regex : new RegExp(mysubject.toString(), "i") }/*subject.toString()*/},
@@ -449,3 +491,209 @@ function isValidSubject(mysubject,callback){
         });
 
 }
+
+
+function getUserForSubject(json_file, callback){
+  
+  // console.log(json_file);
+  // console.log("++++++++++++++++++++++");
+  controller.storage.user.all(function(err,users)
+  {
+    for(var i in users)
+    {
+      // console.log(users[i]._id);
+      for (var j in json_file)
+      {
+        if(json_file[j].user_id == users[i]._id)
+        {
+          json_file[j].name = users[i].name;
+          json_file[j].email = users[i].email;
+        }
+      }
+    }
+    // console.log(json_file);
+    callback(json_file);
+  });
+  
+}
+
+function getTutorsForSubject(subject, callback){
+    
+
+    controller.storage.tutor.all(function(err,tutors)
+  {
+    //var tutorList = [];
+    var json_file = {};
+    //tutorList.push('Hello');
+    // console.log(tutors);
+    // console.log("------------------------------------");
+    for(var i in tutors)
+    {
+      // console.log(i);
+
+      //Iterate through all the subjects to check if that subject is in tutor list or not
+      for(var j in tutors[i].subjects)
+      {
+        // console.log("++++++++++++++++++++++++++++");
+        // console.log(j);
+        //Check if that subject is taught by the tutor or not
+        if (tutors[i].subjects[j].name == subject)
+        {
+        //  tutorList.push(tutors[i].user_id);
+          // tutorList.push(tutors[i].user_id);
+          
+          json_temp = 
+          {
+            user_id : tutors[i].user_id, 
+            major : tutors[i].major,
+            degree : tutors[i].degree,
+            summary : tutors[i].summary,
+            rate : tutors[i].overall_rating
+          }
+          json_file[tutors[i].user_id] = json_temp;
+        }
+      }
+    }
+    // for(var i in json_file)
+    // {
+    //  console.log(json_file[i].major);
+    //  json_file[i].aaroh = "Aaroh";
+
+    // }
+    // console.log(json_file);
+    // console.log("++++++++++++++++++++++++++");
+    getUserForSubject(json_file, function(json_file)
+        {
+          // console.log(json_file);
+          callback(json_file);
+        });
+
+      
+  });
+}
+
+const sendConfirmation = (tutor) => {
+  console.log("In confirmation");
+    axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+    token: process.env.SLACK_ACCESS_TOKEN,
+    channel: tutor.userId,
+    text: 'Tutor created!',
+    attachments: JSON.stringify([
+      {
+        title: `Tutor profile created for ${tutor.userName}`,
+        // Get this from the 3rd party helpdesk system
+        //title_link: 'http://example.com',
+        text: tutor.text,
+        fields: [
+          {
+            title: 'Major',
+            value: tutor.major,
+            short:true,
+          },
+          {
+            title: 'Degree',
+            value: tutor.degree,
+            short:true,
+          },
+          {
+            title: 'Subjects',
+            value: tutor.subject,
+            short:true,
+          },
+          {
+            title: 'Rate',
+            value: tutor.rate,
+          },
+          {
+            title: 'Summary',
+            value: tutor.summary || 'None provided',
+          },
+        ],
+      },
+    ]),
+  })).then((result) => {
+    debug('sendConfirmation: %o', result.data);
+  }).catch((err) => {
+    debug('sendConfirmation error: %o', err);
+    console.error(err);
+  });
+};
+
+
+//bot.reply(message, {
+//  attachments:
+//  [
+//    {
+//    fields: [
+//            {
+//                title: 'Major',
+//                value: tutors[i].subjects,
+//                short:true,
+//        },
+//        {
+//                title: 'Degree',
+//                value: tutors[i].degree,
+//                short:true,
+//        }
+
+//      ]
+//    }
+//  ]
+// });
+
+
+
+// controller.storage.tutor.all(function(err,tutors){
+// for(var i in tutors) {
+//  console.log(i);
+//  //console.log("+++++++++++++++++++++++++++++++++++++++++++++++");
+//  // console.log(tutors[i].subjects);
+//  //sendConfirmation(tutors);
+//  for(var j in tutors[i].subjects)
+//  {
+//    // console.log(tutors[i].subjects[j].name);
+//    if (tutors[i].subjects[j].name == response.text)
+//    {
+//      var user_details;
+//      controller.storage.user.all(function(err,users){
+//        // console.log("+++++++++++++++++++++++++++++++++++++++++++++++");
+//        // console.log(tutors[i]);
+//        for (var ids in users)
+//        {
+//          // console.log(tutors[i].user_id);
+//          // console.log(users[ids]._id);
+//          if (tutors[i].user_id == users[ids]._id)
+//          {
+//            user_details = users[ids];
+//            console.log("---------------------------------------");
+//            console.log(user_details);
+//            break;
+//          }
+//        }
+//      });
+//      console.log(user_details);
+//      //console.log(users[ids]);
+//      bot.reply(message, {
+//        attachments:
+//        [
+//          {
+//          fields: [
+//                  {
+//                      title: 'Major',
+//                      value: tutors[i].subjects,
+//                      short:true,
+//              },
+//              {
+//                      title: 'Degree',
+//                      value: tutors[i].degree,
+//                      short:true,
+//              }
+
+//            ]
+//          }
+//        ]
+//      });
+//    }
+//  }
+// }
+// });
