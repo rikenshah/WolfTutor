@@ -7,13 +7,14 @@ const qs = require('querystring');
 const tutor = require('./tutor');
 const dialogs = require('./dialog');
 const prompts = require('./prompt');
-const open_dialog = require('./open_dialog');
+const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
 
 /*
  * Parse application/x-www-form-urlencoded && application/json
  */
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -45,15 +46,15 @@ var bot = controller.spawn({
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
 
-    bot.api.reactions.add({
-        timestamp: message.ts,
-        channel: message.channel,
-        name: 'robot_face',
-    }, function(err, res) {
-        if (err) {
-            bot.botkit.log('Failed to add emoji reaction :(', err);
-        }
-    });
+    // bot.api.reaction.add({
+    //     timestamp: message.ts,
+    //     channel: message.channel,
+    //     name: 'robot_face',
+    // }, function(err, res) {
+    //     if (err) {
+    //         bot.botkit.log('Failed to add emoji reaction :(', err);
+    //     }
+    // });
 
 
     controller.storage.users.get(message.user, function(err, user) {
@@ -264,19 +265,11 @@ app.post('/message', (req, res) => {
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
 
     if(callback_id=='become_tutor_prompt'){
+      console.log(payload);
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
-        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-          token: process.env.SLACK_ACCESS_TOKEN,
-          channel: payload.channel.id,
-          // Edit the text that you want to send to the bot
-          text: 'OK',
-        })).then((result) => {
-          debug('sendConfirmation: %o', result.data);
-        }).catch((err) => {
-          debug('sendConfirmation error: %o', err);
-          console.error(err);
-        });
+        var text = 'Ok, you can enroll to become a tutor anytime.';
+        action.send_message(payload.channel.id,text,[]);
       }
       else {
           // Yes on become a tutor prompt
@@ -286,7 +279,7 @@ app.post('/message', (req, res) => {
           dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
         };
         // open the dialog by calling dialogs.open method and sending the payload
-        open_dialog.open_dialog(dialog,res);
+        action.open_dialog(dialog,res);
         } // End of Else
       } // End of If
 
@@ -294,38 +287,17 @@ app.post('/message', (req, res) => {
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
       //res.send('');
-      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-        token: process.env.SLACK_ACCESS_TOKEN,
-        channel: payload.channel.id,
-        // Edit the text that you want to send to the bot
-        //text: 'OK',
-        attachments:JSON.stringify(prompts.add_more_subjects_prompt),
-      })).then((result) => {
-        debug('sendConfirmation: %o', result.data);
-      }).catch((err) => {
-        debug('sendConfirmation error: %o', err);
-        console.error(err);
-      });
+      console.log(payload);
+      action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
       // create tutor
-      tutor.create(payload.user.id, payload.submission);
+      //tutor.create(payload.user.id, payload.submission);
       res.send('');
     } // End of else if for submit tutor info
     else if (callback_id =='add_more_subjects_prompt') {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         // Get the availibility Prompt
-        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-          token: process.env.SLACK_ACCESS_TOKEN,
-          channel: payload.channel.id,
-          // Edit the text that you want to send to the bot
-          //text: 'OK',
-          attachments:JSON.stringify(prompts.add_availability_prompt),
-        })).then((result) => {
-          debug('sendConfirmation: %o', result.data);
-        }).catch((err) => {
-          debug('sendConfirmation error: %o', err);
-          console.error(err);
-        });
+        action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
         const dialog = {
@@ -334,24 +306,13 @@ app.post('/message', (req, res) => {
         dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
         };
         // open the dialog by calling dialogs.open method and sending the payload
-        open_dialog.open_dialog(dialog,res);
+        action.open_dialog(dialog,res);
         //res.send('');
         // TODO Store in database subjects
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
     else if (callback_id=='add_more_subjects_dialog') {
-      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-        token: process.env.SLACK_ACCESS_TOKEN,
-        channel: payload.channel.id,
-        // Edit the text that you want to send to the bot
-        //text: 'OK',
-        attachments:JSON.stringify(prompts.add_more_subjects_prompt),
-      })).then((result) => {
-        debug('sendConfirmation: %o', result.data);
-      }).catch((err) => {
-        debug('sendConfirmation error: %o', err);
-        console.error(err);
-      });
+      action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
       res.send('');
     }
@@ -362,7 +323,7 @@ app.post('/message', (req, res) => {
       dialog: JSON.stringify(dialogs.add_availability_dialog),
       }
       // open the dialog by calling dialogs.open method and sending the payload
-      open_dialog.open_dialog(dialog,res);
+      action.open_dialog(dialog,res);
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
@@ -371,24 +332,13 @@ app.post('/message', (req, res) => {
 
 
       // Get the availibility Prompt
-      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-        token: process.env.SLACK_ACCESS_TOKEN,
-        channel: payload.channel.id,
-        // Edit the text that you want to send to the bot
-        //text: 'OK',
-        attachments:JSON.stringify(prompts.add_more_availability_prompt),
-      })).then((result) => {
-        debug('sendConfirmation: %o', result.data);
-      }).catch((err) => {
-        debug('sendConfirmation error: %o', err);
-        console.error(err);
-      });
+      action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
       res.send('');
     } // End of else if of add availability dialog
     else if (callback_id=='add_more_availability_prompt') {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
-        // END Done
+        action.send_message(payload.channel.id,'Ok. Thank you for enrolling as a tutor.')
       } else {
         const dialog = {
         token: process.env.SLACK_ACCESS_TOKEN,
@@ -396,7 +346,7 @@ app.post('/message', (req, res) => {
         dialog: JSON.stringify(dialogs.add_availability_dialog),
         }
         // open the dialog by calling dialogs.open method and sending the payload
-        open_dialog.open_dialog(dialog,res);
+        action.open_dialog(dialog,res);
       }
     } // End of else if of add more availability prompt
     else {
