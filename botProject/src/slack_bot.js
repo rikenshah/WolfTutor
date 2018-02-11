@@ -482,7 +482,8 @@ function isValidSubject(mysubject,callback){
             if(error){
                 //return false;
             }
-            if(mysubject.toString().toLowerCase()==subject[0].name.toLowerCase()) {
+            console.log(subject);
+            if(subject.length >0 && mysubject.toString().toLowerCase()==subject[0].name.toLowerCase()) {
                 console.log('valid subject');
                 flag = true;
             }
