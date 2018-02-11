@@ -1,5 +1,5 @@
 const submit_tutor_info_dialog = require('./dialog/submit_tutor_info_dialog');
-const add_more_subjects_dialog_dialog = require('./dialog/add_more_subjects_dialog');
+const add_more_subjects_dialog = require('./dialog/add_more_subjects_dialog');
 const add_availability_dialog = require('./dialog/add_availability_dialog');
 
 module.exports = {
