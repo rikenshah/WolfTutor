@@ -5,8 +5,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const qs = require('querystring');
 const tutor = require('./tutor');
+const dialogs = require('./dialog');
 const debug = require('debug')('slash-command-template:index');
-
 const app = express();
 
 /*
@@ -212,78 +212,11 @@ app.post('/message', (req, res) => {
         });
       }
       else {
+          console.log(dialogs);
           const dialog = {
           token: process.env.SLACK_ACCESS_TOKEN,
           trigger_id,
-          dialog: JSON.stringify({
-            title: 'Become a Tutor',
-            callback_id: 'submit_tutor_info',
-            submit_label: 'Submit',
-            elements: [
-              {
-                label: 'Major',
-                type: 'select',
-                name: 'major',
-                options: [
-                  { label: 'Computer Science', value: 'Computer Science' },
-                  { label: 'Computer Engineering', value: 'Computer Engineering' },
-                  { label: 'Electrical Engineering', value: 'Electrical Engineering' },
-                  { label: 'Mechanical Engineering', value: 'Mechanical Engineering' },
-                  { label: 'Chemical Engineering', value: 'Chemical Engineering' },
-                ],
-              },
-              {
-                label: 'Degree',
-                type: 'select',
-                name: 'degree',
-                options: [
-                  { label: 'Bachelors', value: 'Bachelors' },
-                  { label: 'Masters', value: 'Masters' },
-                  { label: 'Associate', value: 'Associate' },
-                  { label: 'High School GED', value: 'High School GED' },
-                ],
-              },
-              {
-                label: 'Subjects',
-                type: 'select',
-                name: 'subject',
-                options: [
-                  { label: 'Operating Systems', value: 'Operating Systems' },
-                  { label: 'Algorithms', value: 'Algorithms' },
-                  { label: 'Software Engineering', value: 'Software Engineering' },
-                  { label: 'Processor Design', value: 'Processor Design' },
-                ],
-              },
-              {
-                label: 'Rate',
-                type: 'text',
-                subtype: 'number',
-                name: 'rate',
-                hint: 'If you want to tutor for free then type 0 above',
-              },
-              // {
-              //   label: 'Availability',
-              //   type: 'select',
-              //   name: 'availability',
-              //   options: [
-              //     { label: 'Monday', value: 'Monday' },
-              //     { label: 'Tuesday', value: 'Tuesday' },
-              //     { label: 'Wednesday', value: 'Wednesday' },
-              //     { label: 'Thursday', value: 'Thursday' },
-              //     {label: 'Friday', value: 'Friday'},
-              //     {label: 'Saturday', value: 'Saturday'},
-              //     {label: 'Sunday', value: 'Saturday'},
-              //   ],
-              // },
-
-              {
-                label: 'Summary',
-                type: 'textarea',
-                name: 'summary',
-                optional: true,
-              },
-            ],
-          }),
+          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
         };
 
         // open the dialog by calling dialogs.open method and sending the payload
@@ -311,29 +244,6 @@ app.post('/message', (req, res) => {
     debug('Verification token mismatch');
     console.log('Failed Here');
     res.sendStatus(403);
-  }
-});
-
-/*
- * Endpoint to receive the dialog submission. Checks the verification token
- * and creates a Helpdesk tutor
- */
-app.post('/interactive-component', (req, res) => {
-  const body = JSON.parse(req.body.payload);
-
-  // check that the verification token matches expected value
-  if (body.token === process.env.SLACK_VERIFICATION_TOKEN) {
-    debug(`Form submission received: ${body.submission.trigger_id}`);
-
-    // immediately respond with a empty 200 response to let
-    // Slack know the command was received
-    res.send('');
-
-    // create tutor
-    tutor.create(body.user.id, body.submission);
-  } else {
-    debug('Token mismatch');
-    res.sendStatus(500);
   }
 });
 
