@@ -1,7 +1,7 @@
 var prompt = [
     {
         title: 'Please add your availibility',
-        callback_id: 'tutor_add_availibility',
+        callback_id: 'add_availability_prompt',
         attachment_type: 'default',
         actions: [
             {
