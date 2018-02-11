@@ -1,6 +1,6 @@
 var dialog = {
   title: 'Become a Tutor',
-  callback_id: 'submit_tutor_info',
+  callback_id: 'submit_tutor_info_dialog',
   submit_label: 'Submit',
   elements: [
     {

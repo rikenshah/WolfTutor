@@ -1,4 +1,4 @@
-var become_tutor_prompt = {
+var prompt = {
     attachments:[
         {
             title: 'Do you want become a tutor',
@@ -23,4 +23,4 @@ var become_tutor_prompt = {
 }
 
 
-module.exports= {become_tutor_prompt: become_tutor_prompt};
+module.exports= {become_tutor_prompt: prompt};
