@@ -7,6 +7,7 @@ const qs = require('querystring');
 const tutor = require('./tutor');
 const dialogs = require('./dialog');
 const prompts = require('./prompt');
+const open_dialog = require('./open_dialog');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
 
@@ -284,17 +285,8 @@ app.post('/message', (req, res) => {
           trigger_id,
           dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
         };
-
         // open the dialog by calling dialogs.open method and sending the payload
-        axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-          .then((result) => {
-            debug('dialog.open: %o', result.data);
-            console.log("Dialog Opened sucessful");
-            res.send('');
-          }).catch((err) => {
-            debug('dialog.open call failed: %o', err);
-            res.sendStatus(500);
-          });
+        open_dialog.open_dialog(dialog,res);
         } // End of Else
       } // End of If
 
@@ -340,28 +332,38 @@ app.post('/message', (req, res) => {
         token: process.env.SLACK_ACCESS_TOKEN,
         trigger_id,
         dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
-      };
-
-      // open the dialog by calling dialogs.open method and sending the payload
-      axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-        .then((result) => {
-          debug('dialog.open: %o', result.data);
-          console.log("Dialog Opened sucessful");
-          res.send('');
-        }).catch((err) => {
-          debug('dialog.open call failed: %o', err);
-          res.sendStatus(500);
-        });
-        res.send('');
+        };
+        // open the dialog by calling dialogs.open method and sending the payload
+        open_dialog.open_dialog(dialog,res);
+        //res.send('');
         // TODO Store in database subjects
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
+    else if (callback_id=='add_more_subjects_dialog') {
+      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+        token: process.env.SLACK_ACCESS_TOKEN,
+        channel: payload.channel.id,
+        // Edit the text that you want to send to the bot
+        //text: 'OK',
+        attachments:JSON.stringify(prompts.add_more_subjects_prompt),
+      })).then((result) => {
+        debug('sendConfirmation: %o', result.data);
+      }).catch((err) => {
+        debug('sendConfirmation error: %o', err);
+        console.error(err);
+      });
+      // TODO Store add more subjects
+      res.send('');
+    }
     else if (callback_id=='add_availability_prompt') {
       const dialog = {
       token: process.env.SLACK_ACCESS_TOKEN,
       trigger_id,
       dialog: JSON.stringify(dialogs.add_availability_dialog),
       }
+      // open the dialog by calling dialogs.open method and sending the payload
+      open_dialog.open_dialog(dialog,res);
+      //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
       // TODO: On Subission of Dialog
@@ -382,7 +384,7 @@ app.post('/message', (req, res) => {
         console.error(err);
       });
       res.send('');
-    }
+    } // End of else if of add availability dialog
     else if (callback_id=='add_more_availability_prompt') {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
@@ -393,7 +395,13 @@ app.post('/message', (req, res) => {
         trigger_id,
         dialog: JSON.stringify(dialogs.add_availability_dialog),
         }
+        // open the dialog by calling dialogs.open method and sending the payload
+        open_dialog.open_dialog(dialog,res);
       }
+    } // End of else if of add more availability prompt
+    else {
+      console.log('Reached Else');
+      console.log(payload);
     }
   } else {
     debug('Verification token mismatch');
