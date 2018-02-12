@@ -10,6 +10,10 @@ const prompts = require('./prompt');
 const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
+// const UserModel = require('./model/user');
+// const TutorModel = require('./model/tutor');
+// const ReservationModel = require('./model/reservation');
+// const SubjectModel = require('./model/subject');
 
 /*
  * Parse application/x-www-form-urlencoded && application/json
@@ -241,6 +245,11 @@ controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
 });
 
+var session_over = ['session a over','rate the tutor','add review','review']
+controller.hears('review', 'direct_message', function(bot, message) {
+    bot.reply(message, prompts.add_review_prompt);
+});
+
 app.get('/', (req, res) => {
   res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
   ' instructions in the README to configure the Slack App and your environment variables.</p>');
@@ -278,7 +287,8 @@ app.post('/message', (req, res) => {
       //res.send('');
       console.log(payload);
       action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
-      // create tutor
+      // create tutort
+      // TutorModel.create_new_tutor(payload);
       //tutor.create(payload.user.id, payload.submission);
       res.send('');
     } // End of else if for submit tutor info
@@ -303,6 +313,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_more_subjects_dialog') {
       action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
+      // TutorModel.add_more_subjects(payload);
       res.send('');
     }
     else if (callback_id=='add_availability_prompt') {
@@ -318,7 +329,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_availability_dialog') {
       // TODO: On Subission of Dialog
       // Add availability to Database
-
+      // TutorModel.add_availability(payload);
 
       // Get the availibility Prompt
       action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
@@ -329,6 +340,7 @@ app.post('/message', (req, res) => {
       if (checkValue == 'no') {
         action.send_message(payload.channel.id,'Ok. Thank you for enrolling as a tutor.')
       } else {
+        // TutorModel.add_availability(payload);
         const dialog = {
         token: process.env.SLACK_ACCESS_TOKEN,
         trigger_id,
@@ -338,6 +350,21 @@ app.post('/message', (req, res) => {
         action.open_dialog(dialog,res);
       }
     } // End of else if of add more availability prompt
+    else if(callback_id=='add_review_prompt'){
+      const dialog = {
+      token: process.env.SLACK_ACCESS_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify(dialogs.add_review_dialog),
+      }
+      // open the dialog by calling dialogs.open method and sending the payload
+      action.open_dialog(dialog,res);
+    }// End of else if of add_review_prompt  
+    else if(callback_id=='add_review_dialog'){
+      // TODO Store review and rating into database
+      // TutorModel.add_review(payload);
+      action.send_message(payload.channel.id,'Thank you so much. #GoPack',[]);
+      res.send('');
+    }
     else {
       console.log('Reached Else');
       console.log(payload);
