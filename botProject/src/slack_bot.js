@@ -10,10 +10,10 @@ const prompts = require('./prompt');
 const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
-// const UserModel = require('./model/user');
-// const TutorModel = require('./model/tutor');
-// const ReservationModel = require('./model/reservation');
-// const SubjectModel = require('./model/subject');
+//const UserModel = require('./model/user');
+const TutorModel = require('./model/tutor');
+const ReservationModel = require('./model/reservation');
+const SubjectModel = require('./model/subject');
 
 /*
  * Parse application/x-www-form-urlencoded && application/json
@@ -288,7 +288,7 @@ app.post('/message', (req, res) => {
       console.log(payload);
       action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
       // create tutort
-      // TutorModel.create_new_tutor(payload);
+      TutorModel.create_new_tutor(payload);
       //tutor.create(payload.user.id, payload.submission);
       res.send('');
     } // End of else if for submit tutor info
@@ -358,7 +358,7 @@ app.post('/message', (req, res) => {
       }
       // open the dialog by calling dialogs.open method and sending the payload
       action.open_dialog(dialog,res);
-    }// End of else if of add_review_prompt  
+    }// End of else if of add_review_prompt
     else if(callback_id=='add_review_dialog'){
       // TODO Store review and rating into database
       // TutorModel.add_review(payload);
