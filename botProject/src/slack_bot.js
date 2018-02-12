@@ -46,17 +46,6 @@ var bot = controller.spawn({
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
 
-    // bot.api.reaction.add({
-    //     timestamp: message.ts,
-    //     channel: message.channel,
-    //     name: 'robot_face',
-    // }, function(err, res) {
-    //     if (err) {
-    //         bot.botkit.log('Failed to add emoji reaction :(', err);
-    //     }
-    // });
-
-
     controller.storage.users.get(message.user, function(err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -147,12 +136,12 @@ controller.hears(['find','need a tutor', 'find a tutor', 'want a tutor', 'select
                                 {
                                   for (var i in json_file)
                                   {
-                                    bot.reply(message, 
+                                    bot.reply(message,
                                     {
                                       attachments:
                                       [
                                         {
-                                        fields: 
+                                        fields:
                                           [
                                                 {
                                                     title: 'Name',
@@ -407,7 +396,7 @@ function isValidSubject(mysubject,callback){
 
 
 function getUserForSubject(json_file, callback){
-  
+
   // console.log(json_file);
   // console.log("++++++++++++++++++++++");
   controller.storage.user.all(function(err,users)
@@ -427,11 +416,11 @@ function getUserForSubject(json_file, callback){
     // console.log(json_file);
     callback(json_file);
   });
-  
+
 }
 
 function getTutorsForSubject(subject, callback){
-    
+
 
     controller.storage.tutor.all(function(err,tutors)
   {
@@ -454,10 +443,10 @@ function getTutorsForSubject(subject, callback){
         {
         //  tutorList.push(tutors[i].user_id);
           // tutorList.push(tutors[i].user_id);
-          
-          json_temp = 
+
+          json_temp =
           {
-            user_id : tutors[i].user_id, 
+            user_id : tutors[i].user_id,
             major : tutors[i].major,
             degree : tutors[i].degree,
             summary : tutors[i].summary,
@@ -481,7 +470,7 @@ function getTutorsForSubject(subject, callback){
           callback(json_file);
         });
 
-      
+
   });
 }
 
