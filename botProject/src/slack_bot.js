@@ -9,6 +9,7 @@ const dialogs = require('./dialog');
 const prompts = require('./prompt');
 const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
+const users = require('./users');
 const app = express();
 
 /*
@@ -45,26 +46,20 @@ var bot = controller.spawn({
 }).startRTM();
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
+     
+     bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );
+     bot.reply(message, prompts.create_user_prompt);
 
-    // bot.api.reaction.add({
-    //     timestamp: message.ts,
-    //     channel: message.channel,
-    //     name: 'robot_face',
-    // }, function(err, res) {
-    //     if (err) {
-    //         bot.botkit.log('Failed to add emoji reaction :(', err);
-    //     }
-    // });
-
-
-    controller.storage.users.get(message.user, function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
-        } else {
-            bot.reply(message, 'Hello.');
-        }
-    });
+  
 });
+
+controller.hears(['what can I do'], 'direct_message,direct_mention,mention', function(bot, message) {
+     
+    bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );  
+});
+
+
+
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
     var name = message.match[1];
@@ -418,6 +413,19 @@ app.post('/message', (req, res) => {
           }); 
       }
       
+    }
+    else if(callback_id == 'create_user_prompt')
+    {
+      var checkValue = payload.actions[0].value;
+      if (checkValue == 'no')
+      {
+        action.send_message(payload.channel.id, "OK, you can enroll anytime");
+      }
+      else
+      {
+          UserModel.create_new_user(payload);
+          action.send_message(payload.channel.id, "Thank you for enrolling.");
+      }
     }
     else {
       console.log('Reached Else');
