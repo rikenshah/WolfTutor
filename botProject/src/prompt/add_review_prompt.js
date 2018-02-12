@@ -2,7 +2,7 @@ var prompt = {
     attachments:[
         {
             title: 'Please rate your session',
-            callback_id: 'give_review_prompt',
+            callback_id: 'add_review_prompt',
             attachment_type: 'default',
             actions: [
                 {
@@ -15,4 +15,4 @@ var prompt = {
         }
     ]
 }
-module.exports= {give_review_prompt: prompt};
+module.exports= {add_review_prompt: prompt};
