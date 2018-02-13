@@ -263,7 +263,7 @@ app.post('/message', (req, res) => {
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
 
     if(callback_id=='become_tutor_prompt'){
-      console.log(payload);
+      //console.log(payload);
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         var text = 'Ok, you can enroll to become a tutor anytime.';
@@ -284,10 +284,8 @@ app.post('/message', (req, res) => {
     else if(callback_id=='submit_tutor_info_dialog'){
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
-      //res.send('');
-      console.log(payload);
       action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
-      // create tutort
+      // create a tutor
       TutorModel.create_new_tutor(payload);
       //tutor.create(payload.user.id, payload.submission);
       res.send('');
@@ -313,7 +311,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_more_subjects_dialog') {
       action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
-      // TutorModel.add_more_subjects(payload);
+      TutorModel.add_more_subjects(payload);
       res.send('');
     }
     else if (callback_id=='add_availability_prompt') {
