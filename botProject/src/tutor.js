@@ -7,10 +7,10 @@ const MongoClient = require('mongodb').MongoClient;
 var url = process.env.MONGO_CONNECTION_STRING;
 
 // Uncomment the lines below to test the connection with the database
-MongoClient.connect(url, function (err) {
-    if (err) throw err;
-    console.log('Connection to the Database Successful');
-});
+// MongoClient.connect(url, function (err) {
+//     if (err) throw err;
+//     console.log('Connection to the Database Successful');
+// });
 
 /*
  *  Send tutor creation confirmation via

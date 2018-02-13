@@ -10,7 +10,7 @@ const prompts = require('./prompt');
 const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
-//const UserModel = require('./model/user');
+const UserModel = require('./model/user');
 const TutorModel = require('./model/tutor');
 const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
@@ -50,13 +50,15 @@ var bot = controller.spawn({
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
 
-    controller.storage.users.get(message.user, function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
-        } else {
-            bot.reply(message, 'Hello.');
-        }
-    });
+    // controller.storage.users.get(message.user, function(err, user) {
+    //     if (user && user.name) {
+    //         bot.reply(message, 'Hello ' + user.name + '!!');
+    //     } else {
+    //         bot.reply(message, 'Hello.');
+    //
+    //     }
+    // });
+    UserModel.create_new_user(message);
 });
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
