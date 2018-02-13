@@ -416,8 +416,45 @@ app.post('/message', (req, res) => {
     }
     else if(callback_id == 'create_user_prompt')
     {
+      console.log(checkValue);
+      if (checkValue == 'no')
+      {
+        action.send_message(payload.channel.id, "OK, you can enroll anytime");
+      }
+      else
+      {
+          // UserModel.create_new_user(payload);
+          action.send_message(payload.channel.id, "Thank you for enrolling.");
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify(dialogs.create_new_user_dialog),
+          }
+          // open the dialog by calling dialogs.open method and sending the payload
+          action.open_dialog(dialog,res);   
+      }
+    }
+    else if(callback_id == 'create_new_user_dialog')
+    {
       console.log("____________");
       var checkValue = payload.actions[0].value;
+      console.log(checkValue);
+      if (checkValue == 'no')
+      {
+        action.send_message(payload.channel.id, "OK, you can enroll anytime");
+      }
+      else
+      {
+          UserModel.create_new_user(payload);
+          action.send_message(payload.channel.id, "Thank you for enrolling.");
+      }
+    }
+    else if(callback_id == 'create_user_prompt')
+    {
+      console.log("____________");
+      console.log(payload);
+      var checkValue = payload.actions[0].value;
+
       console.log(checkValue);
       if (checkValue == 'no')
       {
