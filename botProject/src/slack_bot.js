@@ -416,7 +416,9 @@ app.post('/message', (req, res) => {
     }
     else if(callback_id == 'create_user_prompt')
     {
+      console.log("____________");
       var checkValue = payload.actions[0].value;
+      console.log(checkValue);
       if (checkValue == 'no')
       {
         action.send_message(payload.channel.id, "OK, you can enroll anytime");
