@@ -423,15 +423,16 @@ app.post('/message', (req, res) => {
       }
       else
       {
+          tutor.new_user(payload.user.id, payload.submission);
           // UserModel.create_new_user(payload);
-          action.send_message(payload.channel.id, "Thank you for enrolling.");
-          const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.create_new_user_dialog),
-          }
-          // open the dialog by calling dialogs.open method and sending the payload
-          action.open_dialog(dialog,res);   
+          // action.send_message(payload.channel.id, "Thank you for enrolling.");
+          // const dialog = {
+          // token: process.env.SLACK_ACCESS_TOKEN,
+          // trigger_id,
+          // dialog: JSON.stringify(dialogs.create_new_user_dialog),
+          // }
+          // // open the dialog by calling dialogs.open method and sending the payload
+          // action.open_dialog(dialog,res);   
       }
     }
     else if(callback_id == 'create_new_user_dialog')

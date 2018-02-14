@@ -98,4 +98,22 @@ const create = (userId, submission) => {
 };
 
 
-module.exports = { create, sendConfirmation };
+const new_user = (userId, submission) => {
+  const tutor = {};
+  const fetchUserEmail = new Promise((resolve, reject) => {
+    users.find(userId).then((result) => {
+      debug(`Find user: ${userId}`);
+      resolve(result.data.user.profile);
+      //console.log(result.data.user.profile.real_name);
+    }).catch((err) => { reject(err); });
+  });
+  fetchUserEmail.then((result) => {
+    tutor.userId = userId;
+    tutor.userName = result.real_name;
+    tutor.userEmail = result.email;
+    console.log("AAROHAAROHAAROHAAROH");
+    console.log(tutor);
+  }).catch((err) => { console.error(err); });
+};
+
+module.exports = { create, sendConfirmation, new_user };

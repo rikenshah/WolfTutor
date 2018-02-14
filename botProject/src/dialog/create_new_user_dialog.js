@@ -2,7 +2,7 @@ var dialog = {
   title: 'Create your profile',
   callback_id: 'create_new_user_dialog',
   submit_label: 'Submit',
-  elements: [{
+  elements: [
     {
       label: 'Name',
       type: 'text',
@@ -19,7 +19,7 @@ var dialog = {
       name: 'phone',
       optional: true,
     },
-  }],
+  ],
 }
 
 module.exports= {create_new_user_dialog : dialog};
