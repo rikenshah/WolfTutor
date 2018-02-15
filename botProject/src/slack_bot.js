@@ -381,92 +381,113 @@ app.post('/message', (req, res) => {
           {
             console.log(json_file.review);
             console.log("++++++++++");
-            for(var i in json_file.review)
-            {
-              console.log("-----------------------");
-               console.log(json_file.review[i].text);
-               console.log(json_file.review[i].rating);
+            // const display_review = new Promise((resolve, reject) => {
+            //   console.log("Review 1111111111");
+            //   resolve("Review 22222222222222");
+            // });
+            // display_review.then(function(value){
+            //   console.log(value);
+            // });
+
+            const display_review = new Promise((resolve, reject) => {
+                console.log(json_file);
+                if(json_file.review == undefined)
+                {
+                  action.send_message(payload.channel.id, 'Sorry we don not have any review for this tutor at this time');
+                  resolve("OK");
+                }
+                for(var i in json_file.review)
+                {
+
+                  console.log("-----------------------");
+                   console.log(json_file.review[i].text);
+                   console.log(json_file.review[i].rating);
+                  action.send_message(payload.channel.id,'',
+                  [
+                    {
+                    callback_id: 'schedule_now',
+                    attachment_type: 'default',
+                    fields:
+                    [
+                      {
+                        "title": 'Review',
+                        "value": json_file.review[i].text,
+                        "short":true,
+                      },
+                    {
+                      "title": 'Rating',
+                      "value": json_file.review[i].rating,
+                      "short":true,
+                    },
+                    ],
+                    // actions: [
+                    //     {
+                    //         "name":"schedule",
+                    //         "text": "Schedule",
+                    //         "value": "schedule",
+                    //         "type": "button",
+                    //     },
+                        // {
+                        //     "name":"no",
+                        //     "text": "No",
+                        //     "value": "no",
+                        //     "type": "button",
+                        // }
+                    // ]
+                    }
+                  ]
+                  // {
+                  //   "text": "Tutor Details",
+                  //   "attachments": [
+                  //       {
+                            
+                  //           "fields": 
+                  //           [
+                  //            {
+                  //               "title": 'Review',
+                  //               "value": json_file.review[i].text,
+                  //               "short":true,
+                  //             },
+                  //             {
+                  //               "title": 'Rating',
+                  //               "value": json_file.review[i].rating,
+                  //               "short":true,
+                  //             },
+                  //           ]
+                  //       }
+                  //                 ]
+                  // }
+                  );
+                }
+                resolve("OK");
+            });
+            display_review.then((result) => {
               action.send_message(payload.channel.id,'',
               [
                 {
-                // title: 'Tutor Details',
-                callback_id: 'schedule_now',
-                attachment_type: 'default',
-                fields:
-                [
-                  {
-                    "title": 'Review',
-                    "value": json_file.review[i].text,
-                    "short":true,
-                  },
-                {
-                  "title": 'Rating',
-                  "value": json_file.review[i].rating,
-                  "short":true,
-                },
-                ],
-                // actions: [
-                //     {
-                //         "name":"schedule",
-                //         "text": "Schedule",
-                //         "value": "schedule",
-                //         "type": "button",
-                //     },
-                    // {
-                    //     "name":"no",
-                    //     "text": "No",
-                    //     "value": "no",
-                    //     "type": "button",
-                    // }
-                // ]
-                }
-              ]
-              // {
-              //   "text": "Tutor Details",
-              //   "attachments": [
-              //       {
-                        
-              //           "fields": 
-              //           [
-              //            {
-              //               "title": 'Review',
-              //               "value": json_file.review[i].text,
-              //               "short":true,
-              //             },
-              //             {
-              //               "title": 'Rating',
-              //               "value": json_file.review[i].rating,
-              //               "short":true,
-              //             },
-              //           ]
-              //       }
-              //                 ]
-              // }
-              );
-            }
-            action.send_message(payload.channel.id,'Hello',
-              [
-                {
-                  title: 'Do you want to add more Subjects?',
-                  callback_id: 'add_more_subjects_prompt',
+                  title: 'Do you want to schedule a tutoring session?',
+                  callback_id: 'schedule_now',
                   attachment_type: 'default',
                   actions: [
                       {
-                          "name":"yes",
-                          "text": "Yes",
-                          "value": "yes",
+                          "name":"Schedule",
+                          "text": "Schedule",
+                          "value": "schedule",
                           "type": "button",
                       },
-                      {
-                          "name":"no",
-                          "text": "No",
-                          "value": "no",
-                          "type": "button",
-                      }
+                      // {
+                      //     "name":"no",
+                      //     "text": "No",
+                      //     "value": "no",
+                      //     "type": "button",
+                      // }
                   ]
                 }
               ]
             );
+            });
+            
+            
 
           }); 
       }
