@@ -1,0 +1,5 @@
+SLACK_ACCESS_TOKEN='Enter your slack access token here'
+PORT=3000
+SLACK_VERIFICATION_TOKEN='Enter your slack app verification token'
+BOT_TOKEN='Enter your bot token here'
+MONGO_CONNECTION_STRING='Enter your mongo db url'
