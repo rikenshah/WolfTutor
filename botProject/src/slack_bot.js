@@ -55,19 +55,17 @@ var bot = controller.spawn({
 }).startRTM();
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-     
+
      bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );
      bot.reply(message, prompts.create_user_prompt);
 
-  
+
 });
 
 controller.hears(['what can I do'], 'direct_message,direct_mention,mention', function(bot, message) {
-     
-    bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );  
+
+    bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );
 });
-
-
 
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -147,13 +145,13 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 {
                                   for (var i in json_file)
                                   {
-                                    bot.reply(message, 
+                                    bot.reply(message,
                                     {
                                         "text": "Tutor Details",
                                         "attachments": [
                                             {
-                                                
-                                                "fields": 
+
+                                                "fields":
                                                 [
                                                  {
                                                     "title": 'Name',
@@ -187,7 +185,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                                   },
 
                                                 ],
-                                                
+
                                             },
                                             {
                                                 "fallback": "Review and Scheduling",
@@ -281,9 +279,6 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
 });
 
-app.get('/', (req, res) => {
-  res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
-  ' instructions in the README to configure the Slack App and your environment variables.</p>');
 
 var session_over = ['session a over','rate the tutor','add review','review']
 controller.hears('review', 'direct_message', function(bot, message) {
@@ -294,8 +289,7 @@ controller.hears('review', 'direct_message', function(bot, message) {
 app.get('/', (req, res) => {
     res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
     ' instructions in the README to configure the Slack App and your environment variables.</p>');
-})
-;
+});
 
 app.post('/message', (req, res) => {
 
@@ -412,7 +406,7 @@ app.post('/message', (req, res) => {
       }
       else
       {
-        
+
           getTutorReview(checkValue, function(json_file)
           {
             console.log(json_file);
@@ -450,15 +444,15 @@ app.post('/message', (req, res) => {
 
                 }
                 resolve("OK");
-                
+
             });
             display_review.then((result) => {
               action.send_message(payload.channel.id,'', prompts.add_scheduling_prompt);
             });
-            
-          }); 
+
+          });
       }
-      
+
     }
     else if(callback_id == 'schedule_now')
     {
@@ -494,9 +488,9 @@ app.post('/message', (req, res) => {
           // dialog: JSON.stringify(dialogs.create_new_user_dialog),
           // }
           // // open the dialog by calling dialogs.open method and sending the payload
-          // action.open_dialog(dialog,res);   
+          // action.open_dialog(dialog,res);
       }
-
+    }
     else if(callback_id=='add_review_prompt'){
       const dialog = {
       token: process.env.SLACK_ACCESS_TOKEN,
@@ -517,19 +511,19 @@ app.post('/message', (req, res) => {
       console.log('Reached Else');
       console.log(payload);
     }
-  } else {
+} else {
     debug('Verification token mismatch');
     console.log('Failed Here');
     res.sendStatus(403);
-}});
+  }
+
+});
 
 
 app.post('/botactivity', (req, res) => {
     console.log(req['body']['event']['text']);
 // Will need to verify the challenge parameter first
 res.send("I am here");
-//console.log(req['body']['event']['text']);
-//res.send("I am here");
 const query = req.body.event.text;
 console.log(query);
 if (query.match(/become a tutor/i)) {
@@ -540,15 +534,11 @@ else {
 }
 console.log(req['body']);
 res.send(req.body.challenge);
-// console.log(req);
-// res.send('');
 });
 
 app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}!`);
-})
-;
-
+});
 
 function isValidSubject(mysubject, callback) {
     var flag = false;
@@ -579,7 +569,7 @@ function getTutorReview(user_id, callback)
         {
           json_file.user_id = tutors[i].user_id;
           json_file.review = tutors[i].reviews;
-          
+
         }
     }
     callback(json_file);
@@ -587,11 +577,8 @@ function getTutorReview(user_id, callback)
 }
 
 function getUserForSubject(json_file, callback) {
-    // console.log(json_file);
-    // console.log("++++++++++++++++++++++");
     controller.storage.user.all(function (err, users) {
         for (var i in users) {
-            // console.log(users[i]._id);
             for (var j in json_file) {
                 if (json_file[j].user_id == users[i]._id) {
                     json_file[j].name = users[i].name;
@@ -599,7 +586,6 @@ function getUserForSubject(json_file, callback) {
                 }
             }
         }
-        // console.log(json_file);
         callback(json_file);
     });
 
@@ -607,23 +593,13 @@ function getUserForSubject(json_file, callback) {
 
 function getTutorsForSubject(subject, callback) {
     controller.storage.tutor.all(function (err, tutors) {
-        //var tutorList = [];
         var json_file = {};
-        //tutorList.push('Hello');
-        // console.log(tutors);
-        // console.log("------------------------------------");
         for (var i in tutors) {
             // console.log(i);
-
             //Iterate through all the subjects to check if that subject is in tutor list or not
             for (var j in tutors[i].subjects) {
-                // console.log("++++++++++++++++++++++++++++");
-                // console.log(j);
                 //Check if that subject is taught by the tutor or not
                 if (tutors[i].subjects[j].name == subject) {
-                    //  tutorList.push(tutors[i].user_id);
-                    // tutorList.push(tutors[i].user_id);
-
                     json_temp =
                         {
                             user_id: tutors[i].user_id,
@@ -636,98 +612,12 @@ function getTutorsForSubject(subject, callback) {
                 }
             }
         }
-        // for(var i in json_file)
-        // {
-        //  console.log(json_file[i].major);
-        //  json_file[i].aaroh = "Aaroh";
-
-        // }
-        // console.log(json_file);
-        // console.log("++++++++++++++++++++++++++");
         getUserForSubject(json_file, function (json_file) {
-            // console.log(json_file);
             callback(json_file);
         });
     });
 }
 
-const sendConfirmation = (tutor) => {
-    console.log("In confirmation");
-    axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-        token: process.env.SLACK_ACCESS_TOKEN,
-        channel: tutor.userId,
-        text: 'Tutor created!',
-        attachments: JSON.stringify([
-            {
-                title: `Tutor profile created for ${tutor.userName}`,
-                // Get this from the 3rd party helpdesk system
-                //title_link: 'http://example.com',
-                text: tutor.text,
-                fields: [
-                    {
-                        title: 'Major',
-                        value: tutor.major,
-                        short: true,
-                    },
-                    {
-                        title: 'Degree',
-                        value: tutor.degree,
-                        short: true,
-                    },
-                    {
-                        title: 'Subjects',
-                        value: tutor.subject,
-                        short: true,
-                    },
-                    {
-                        title: 'Rate',
-                        value: tutor.rate,
-                    },
-                    {
-                        title: 'Summary',
-                        value: tutor.summary || 'None provided',
-                    },
-                ],
-            },
-        ]),
-    })).then((result) => {
-        debug('sendConfirmation: %o', result.data
-)
-    ;
-}).
-    catch((err) => {
-        debug('sendConfirmation error: %o', err
-)
-    ;
-    console.error(err);
-})
-    ;
-}
-;
-
-//Added test method- to be removed.
-controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
-
-    // start a conversation to handle this response.
-    bot.startConversation(message, function (err, convo) {
-        console.log('mongo');
-        getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
-            if (avl == '') {
-                convo.addQuestion('No tutor information available', function (response, convo) {
-
-                    // bot.reply('Cool, you said: ' + response.text);
-                    convo.next();
-
-                }, {}, 'default');
-            }
-            console.log(avl);
-
-        });
-        console.log('mongo');
-
-    })
-
-});
 //TODO my reservations option 14
 function getAvailableSlotsTutor(tutorId, userId, callback) {
     //TODO reward points
@@ -835,130 +725,6 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         callback(reservationSlots);
     });
 }
-
-//save reservation if user clicks on book button
-function saveReservation(userId, tutorId, date, day, from, to) {
-    //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
-    var reservation = {
-        id: '5a80931df36d28314de95a74', tutorid: tutorId, userid: userId, date: currentDate, from: '0900', to: '1030',
-        active: 'yes'
-    };
-    controller.storage.reservation.save(reservation, function (error) {
-        if (error)
-            console.log('There is an error');
-    });
-
-}
-
-//TODO my reservations option 14
-function getAvailableSlotsTutor(tutorId, userId, callback) {
-
-    //TODO reward points
-    //**Check reward points of the user/tutee trying to reserve, give an error if he is left with insufficent points
-    //**Get the availabilty of tutor
-    controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
-        //no chances of invalid tutor id
-        console.log(tutor);
-        if (tutor.length == 0) {
-            //avl = 'No tutor found';
-            return;//is return ok? or should I throw an exception?
-        }
-        else
-            var avl = tutor[0].availability;
-        //TODO remove it
-        userId = '5a760a1f734d1d3bd58c8d16';//using dummy user id
-
-        //**get availabilities of the tutor for the tutee
-
-        var currentDate = new Date();
-        var currentDay = currentDate.getDay();
-        var currentDateOnly = currentDate.getDate()
-        //console.log(currentDate+' '+currentDay+' '+currentDateOnly);
-
-        var dayMap = {};
-        dayMap[0] = {day: 'Sunday'};
-        dayMap[1] = {day: 'Monday'};
-        dayMap[2] = {day: 'Tuesday'};
-        dayMap[3] = {day: 'Wednesday'};
-        dayMap[4] = {day: 'Thursday'};
-        dayMap[5] = {day: 'Friday'};
-        dayMap[6] = {day: 'Saturday'};
-
-        //console.log('dayMap[5]'+dayMap[5].day);
-
-        var dayNumMap = {};
-        dayNumMap['Sunday'] = {day: '0'};
-        dayNumMap['Monday'] = {day: '1'};
-        dayNumMap['Tuesday'] = {day: '2'};
-        dayNumMap['Wednesday'] = {day: '3'};
-        dayNumMap['Thursday'] = {day: '4'};
-        dayNumMap['Friday'] = {day: '5'};
-        dayNumMap['Saturday'] = {day: '6'};
-
-        //console.log('dayNumMap[Friday]'+dayNumMap['Friday'].day);
-
-        var reservationSlots = {};
-        //dummy entry of date TODO REMOVE
-        //TODO test with starting day as wednesday
-        //reservationSlots[currentDate.toString()+''+currentDate.getDay()]={Date:futureDate,Day:futureDay, from:'1900',to:'2000',available:'yes'};
-        console.log(currentDate.toString() + '' + currentDate.getDay());
-        for (var i in avl) {
-            var availableDay = avl[i].day;
-            var numberOfDays = (7 - currentDay + dayNumMap[availableDay].day) % 7;
-            var futureDay = dayMap[numberOfDays].day;
-            var futureDate = new Date();
-            futureDate.setDate(futureDate.getDate() + numberOfDays);
-            //console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
-            console.log('future time stamp ' + futureDate.toString() + '' + futureDay);
-            reservationSlots[futureDate.toString() + '' + futureDay] = {
-                Date: futureDate,
-                Day: futureDay,
-                from: avl[i].from,
-                to: avl[i].to,
-                available: 'yes'
-            };
-        }
-
-        //**Get existing reservation for the tutor, (what if tutee is busy at that time as per his old
-        //reservation-tutee is busy at that time)
-
-        controller.storage.reservation.find({tutorid: tutorId, active: 'yes'}, function (error, reservations) {
-            //TODO null check for reservations
-            //if(reservations.length==0)
-            if (reservations.length > 0) {
-                //console.log(reservations);
-                for (var i in reservations) {
-                    //TODO mark reservations as active:'No' when a user reviews an old reservation
-                    //when you pull out reservations, make sure to mark the inactive ones as no, check current date and
-                    //if the reservation date has passed mark them inactive.
-                    /* if (reservations[i].date.getTime() < currentDate.getTime()) {
-                         console.log('inactive yes');
-                         //update old reservation, i.e. make it inactive
-                         controller.storage.reservation.save
-                     }*/
-
-                    //find that reservation in my list of reservations and mark as available to no,
-                    //we can make reservation slots as hashmap and easily search for a reservation based on
-                    //date+day concatanated string
-
-                    var reservationDay = new Date(reservations[i].date.toString());
-
-                    var existingReservationTimeStamp = reservationDay.toString() + '' + reservationDay.getDay();
-                    //console.log('existingReservationTimeStamp :' + existingReservationTimeStamp);
-                    if (reservationSlots[existingReservationTimeStamp] != null) {
-                        reservationSlots[existingReservationTimeStamp].available = 'No';
-                        //console.log('Match as implanted!');
-                    } //else
-                    //console.log('Yikes!');
-                    //return reservation logs
-                }
-            }
-        });
-        console.log('I am beyond save of reservation');
-        callback(reservationSlots);
-    });
-}
-
 
 //save reservation if user clicks on book button
 function saveReservation(userId, tutorId, date, day, from, to) {

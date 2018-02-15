@@ -8,7 +8,7 @@ module.exports = {
     .then((result) => {
       debug('dialog.open: %o', result.data);
       console.log("Dialog Opened sucessful");
-      res.send('');   
+      res.send('');
     }).catch((err) => {
       debug('dialog.open call failed: %o', err);
       res.sendStatus(500);
@@ -28,9 +28,8 @@ module.exports = {
       debug('sendConfirmation error: %o', err);
       console.error(err);
     });
-  }
-
+  },
   send_direct_message: function(user_id,text,attachments){
-    axios.post('')
+    //axios.post('')
   }
 }

@@ -4,7 +4,7 @@ const debug = require('debug')('slash-command-template:tutor');
 const qs = require('querystring');
 const users = require('./users');
 const MongoClient = require('mongodb').MongoClient;
-// const UserModel = require('./model/user');
+const UserModel = require('./model/user');
 var url = process.env.MONGO_CONNECTION_STRING;
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
 var Botkit = require('botkit');
@@ -132,7 +132,7 @@ const new_user = (userId, submission) => {
       {
         console.log("Added User");
         // Uncomment this and at top constant
-        // UserModel.create_new_user(tutor);
+        UserModel.create_new_user(tutor);
 
       }
     });
