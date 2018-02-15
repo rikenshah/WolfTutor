@@ -1,12 +1,4 @@
-/* TODO
-
-create_new_tutor - done
-add_more_subjects
-add_availability - done
-add_review - done
-*/
 const configure = require('./config');
-
 
 var tutor_schema = new configure.schema({
   user_id:'string',
@@ -41,14 +33,21 @@ module.exports = {
   add_more_subjects : function(payload){
     // Check whether the subject already exists
     var current_subjects = payload.submission;
+    console.log(current_subjects);
+    var subject_list = [];
     //console.log(current_subjects);
     var subject1 = (payload.submission.subject1 == null)?"": payload.submission.subject1;
+    if (subject1 != "") subject_list.push({name:subject1});
     var subject2 = (payload.submission.subject2 == null)?"": payload.submission.subject2;
+    if (subject2 != "") subject_list.push({name:subject2});
     var subject3 = (payload.submission.subject3 == null)?"": payload.submission.subject3;
+    if (subject3 != "") subject_list.push({name:subject3});
     var subject4 = (payload.submission.subject4 == null)?"": payload.submission.subject4;
+    if (subject4 != "") subject_list.push({name:subject4});
     var subject5 = (payload.submission.subject5 == null)?"": payload.submission.subject5;
-
-    tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {subjects: {name: subject1}}},function (err,res) {
+    if (subject5 != "") subject_list.push({name:subject5});
+    //TODO Validation: If the subject is there do not add it again
+    tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {subjects: {$each:subject_list}}},function (err,res) {
       if (err) return err;
       console.log(res);
     });
@@ -67,6 +66,7 @@ module.exports = {
   },
   add_review : function(payload){
     // TODO Calculate the overall rating (Sum of all the ratings by number of rating)
+    console.log(payload);
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {review: {text:payload.submission.review,rating:payload.submission.rating}}},function (err,res) {
       if (err) return err;
       console.log(res);

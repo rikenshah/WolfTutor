@@ -312,7 +312,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_more_subjects_dialog') {
       action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
-      //TutorModel.add_more_subjects(payload);
+      TutorModel.add_more_subjects(payload);
       res.send('');
     }
     else if (callback_id=='add_availability_prompt') {
