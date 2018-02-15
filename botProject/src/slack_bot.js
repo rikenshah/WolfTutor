@@ -362,10 +362,17 @@ app.post('/message', (req, res) => {
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
-      // Add availability to Database
-      TutorModel.add_availability(payload);
-      // Get the availibility Prompt
-      action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+      var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
+      if (from_time > to_time) {
+        action.send_message(payload.channel.id,'From time cannot be after To time. Please add the availability again.',prompts.add_more_availability_prompt);
+      }
+      else {
+        // Add availability to Database
+        TutorModel.add_availability(payload);
+        // Get the availibility Prompt
+        action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      }
       res.send('');
     } // End of else if of add availability dialog
     else if (callback_id=='add_more_availability_prompt') {

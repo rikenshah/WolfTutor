@@ -53,12 +53,8 @@ module.exports = {
     });
   },
   add_availability : function(payload){
-    var from_hr  = payload.submission.from_time_hour;
-    var from_min = payload.submission.from_time_min;
-    var to_hr  = payload.submission.to_time_hour;
-    var to_min = payload.submission.to_time_min;
-    var from_time = from_hr+from_min;
-    var to_time = to_hr+to_min;
+    var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+    var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {availability: {day:payload.submission.day1,from:from_time,to:to_time}}},function (err,res) {
       if (err) return err;
       console.log(res);
