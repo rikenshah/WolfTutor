@@ -326,10 +326,8 @@ app.post('/message', (req, res) => {
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
-      // TODO: On Subission of Dialog
       // Add availability to Database
       TutorModel.add_availability(payload);
-
       // Get the availibility Prompt
       action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
       res.send('');
