@@ -53,12 +53,11 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
     // controller.storage.users.get(message.user, function(err, user) {
     //     if (user && user.name) {
     //         bot.reply(message, 'Hello ' + user.name + '!!');
+    //         //UserModel.create_new_user(message);
     //     } else {
     //         bot.reply(message, 'Hello.');
-    //
     //     }
     // });
-    UserModel.create_new_user(message);
 });
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -313,7 +312,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_more_subjects_dialog') {
       action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
-      TutorModel.add_more_subjects(payload);
+      //TutorModel.add_more_subjects(payload);
       res.send('');
     }
     else if (callback_id=='add_availability_prompt') {
@@ -329,7 +328,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_availability_dialog') {
       // TODO: On Subission of Dialog
       // Add availability to Database
-      // TutorModel.add_availability(payload);
+      TutorModel.add_availability(payload);
 
       // Get the availibility Prompt
       action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
@@ -361,7 +360,7 @@ app.post('/message', (req, res) => {
     }// End of else if of add_review_prompt
     else if(callback_id=='add_review_dialog'){
       // TODO Store review and rating into database
-      // TutorModel.add_review(payload);
+      TutorModel.add_review(payload);
       action.send_message(payload.channel.id,'Thank you so much. #GoPack',[]);
       res.send('');
     }
