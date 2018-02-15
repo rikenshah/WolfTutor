@@ -109,9 +109,11 @@ const new_user = (userId, submission) => {
   });
   fetchUserEmail.then((result) => {
     tutor.userId = userId;
-    tutor.userName = result.real_name;
-    tutor.userEmail = result.email;
-    console.log("AAROHAAROHAAROHAAROH");
+    tutor.name = result.real_name;
+    tutor.email = result.email;
+    tutor.phone = result.phone;
+    
+    // console.log("AAROHAAROHAAROHAAROH");
     console.log(tutor);
   }).catch((err) => { console.error(err); });
 };

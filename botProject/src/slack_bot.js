@@ -386,29 +386,87 @@ app.post('/message', (req, res) => {
               console.log("-----------------------");
                console.log(json_file.review[i].text);
                console.log(json_file.review[i].rating);
-              action.send_message(payload.channel.id,'Review',
-              {
-                "text": "Tutor Details",
-                "attachments": [
-                    {
+              action.send_message(payload.channel.id,'',
+              [
+                {
+                // title: 'Tutor Details',
+                callback_id: 'schedule_now',
+                attachment_type: 'default',
+                fields:
+                [
+                  {
+                    "title": 'Review',
+                    "value": json_file.review[i].text,
+                    "short":true,
+                  },
+                {
+                  "title": 'Rating',
+                  "value": json_file.review[i].rating,
+                  "short":true,
+                },
+                ],
+                // actions: [
+                //     {
+                //         "name":"schedule",
+                //         "text": "Schedule",
+                //         "value": "schedule",
+                //         "type": "button",
+                //     },
+                    // {
+                    //     "name":"no",
+                    //     "text": "No",
+                    //     "value": "no",
+                    //     "type": "button",
+                    // }
+                // ]
+                }
+              ]
+              // {
+              //   "text": "Tutor Details",
+              //   "attachments": [
+              //       {
                         
-                        "fields": 
-                        [
-                         {
-                            "title": 'Review',
-                            "value": json_file.review[i].text,
-                            "short":true,
-                          },
-                          {
-                            "title": 'Rating',
-                            "value": json_file.review[i].rating,
-                            "short":true,
-                          },
-                        ]
-                    }
-                              ]
-              });
+              //           "fields": 
+              //           [
+              //            {
+              //               "title": 'Review',
+              //               "value": json_file.review[i].text,
+              //               "short":true,
+              //             },
+              //             {
+              //               "title": 'Rating',
+              //               "value": json_file.review[i].rating,
+              //               "short":true,
+              //             },
+              //           ]
+              //       }
+              //                 ]
+              // }
+              );
             }
+            action.send_message(payload.channel.id,'Hello',
+              [
+                {
+                  title: 'Do you want to add more Subjects?',
+                  callback_id: 'add_more_subjects_prompt',
+                  attachment_type: 'default',
+                  actions: [
+                      {
+                          "name":"yes",
+                          "text": "Yes",
+                          "value": "yes",
+                          "type": "button",
+                      },
+                      {
+                          "name":"no",
+                          "text": "No",
+                          "value": "no",
+                          "type": "button",
+                      }
+                  ]
+                }
+              ]
+            );
 
           }); 
       }
@@ -479,20 +537,20 @@ app.post('/message', (req, res) => {
 });
 
 app.post('/botactivity', (req, res) => {
-  console.log(req['body']['event']['text']);
-  // Will need to verify the challenge parameter first
-  res.send("I am here");
-  //console.log(req['body']['event']['text']);
-  //res.send("I am here");
-  const query = req.body.event.text;
-  console.log(query);
-  if(query.match(/become a tutor/i)) {
-    console.log('Yes He wants to bocome a Tutor');
-  }
-  else {
-    console.log('No ');
-  }
-  console.log(req['body']);
+  // console.log(req['body']['event']['text']);
+  // // Will need to verify the challenge parameter first
+  // res.send("I am here");
+  // //console.log(req['body']['event']['text']);
+  // //res.send("I am here");
+  // const query = req.body.event.text;
+  // console.log(query);
+  // if(query.match(/become a tutor/i)) {
+  //   console.log('Yes He wants to bocome a Tutor');
+  // }
+  // else {
+  //   console.log('No ');
+  // }
+  // console.log(req['body']);
   res.send(req.body.challenge);
   // console.log(req);
   // res.send('');
