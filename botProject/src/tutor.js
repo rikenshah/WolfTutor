@@ -5,6 +5,11 @@ const qs = require('querystring');
 const users = require('./users');
 const MongoClient = require('mongodb').MongoClient;
 var url = process.env.MONGO_CONNECTION_STRING;
+var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
+var Botkit = require('botkit');
+var controller = Botkit.slackbot({
+    storage: mongoStorage,
+});
 
 // Uncomment the lines below to test the connection with the database
 MongoClient.connect(url, function (err) {
@@ -109,13 +114,44 @@ const new_user = (userId, submission) => {
   });
   fetchUserEmail.then((result) => {
     tutor.userId = userId;
-    tutor.name = result.real_name;
+    // tutor.name = result.real_name;
+    tutor.name = 'user1';
     tutor.email = result.email;
     tutor.phone = result.phone;
     
-    // console.log("AAROHAAROHAAROHAAROH");
+    valid_user(tutor, function(flag)
+    {
+      if(flag == 0)
+      {
+        console.log("User Name already exist");
+      }
+      else
+      {
+        console.log("Add user Query");
+      }
+    });
+
     console.log(tutor);
   }).catch((err) => { console.error(err); });
 };
+
+function valid_user(tutor, callback)
+{
+  var flag = -1;
+  controller.storage.user.all(function(err,users)
+  {
+    for(var i in users)
+    {
+      console.log(users[i].name);
+      console.log(tutor.name);
+      if(tutor.name == users[i].name)
+        {
+          console.log("In if");
+          flag = 0;
+        }
+      }
+      callback(flag);
+  });
+}
 
 module.exports = { create, sendConfirmation, new_user };

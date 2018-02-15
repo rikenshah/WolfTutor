@@ -372,7 +372,21 @@ app.post('/message', (req, res) => {
       console.log(checkValue);
       if (checkValue == 'schedule')
       {
+        console.log("Calling from here");
+          getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
+          console.log("Im in here, 5a760a1f734d1d3bd58c8d16");
+          console.log(reservationSlots);
+          if (avl == '') {
+              convo.addQuestion('No tutor information available', function (response, convo) {
 
+                  // bot.reply('Cool, you said: ' + response.text);
+                  convo.next();
+
+              }, {}, 'default');
+          }
+          console.log(avl);
+
+          });
       }
       else
       {
@@ -458,8 +472,10 @@ app.post('/message', (req, res) => {
                   //                 ]
                   // }
                   );
+
                 }
                 resolve("OK");
+                
             });
             display_review.then((result) => {
               action.send_message(payload.channel.id,'',
@@ -493,6 +509,22 @@ app.post('/message', (req, res) => {
       }
       
     }
+    else if(callback_id == 'schedule_now')
+    {
+      getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
+          // console.log(reservationSlots);
+          if (avl == '') {
+              convo.addQuestion('No tutor information available', function (response, convo) {
+
+                  // bot.reply('Cool, you said: ' + response.text);
+                  convo.next();
+
+              }, {}, 'default');
+          }
+          console.log(avl);
+
+      });
+    }
     else if(callback_id == 'create_user_prompt')
     {
       console.log(checkValue);
@@ -512,38 +544,6 @@ app.post('/message', (req, res) => {
           // }
           // // open the dialog by calling dialogs.open method and sending the payload
           // action.open_dialog(dialog,res);   
-      }
-    }
-    else if(callback_id == 'create_new_user_dialog')
-    {
-      console.log("____________");
-      var checkValue = payload.actions[0].value;
-      console.log(checkValue);
-      if (checkValue == 'no')
-      {
-        action.send_message(payload.channel.id, "OK, you can enroll anytime");
-      }
-      else
-      {
-          UserModel.create_new_user(payload);
-          action.send_message(payload.channel.id, "Thank you for enrolling.");
-      }
-    }
-    else if(callback_id == 'create_user_prompt')
-    {
-      console.log("____________");
-      console.log(payload);
-      var checkValue = payload.actions[0].value;
-
-      console.log(checkValue);
-      if (checkValue == 'no')
-      {
-        action.send_message(payload.channel.id, "OK, you can enroll anytime");
-      }
-      else
-      {
-          UserModel.create_new_user(payload);
-          action.send_message(payload.channel.id, "Thank you for enrolling.");
       }
     }
     else {
@@ -753,6 +753,116 @@ const sendConfirmation = (tutor) => {
     console.error(err);
   });
 };
+
+
+//TODO my reservations option 14
+function getAvailableSlotsTutor(tutorId, userId, callback) {
+
+    //TODO reward points
+    //**Check reward points of the user/tutee trying to reserve, give an error if he is left with insufficent points
+    //**Get the availabilty of tutor
+    controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
+        //no chances of invalid tutor id
+        console.log(tutor);
+        if (tutor.length == 0) {
+            //avl = 'No tutor found';
+            return;//is return ok? or should I throw an exception?
+        }
+        else
+            var avl = tutor[0].availability;
+        //TODO remove it
+        userId = '5a760a1f734d1d3bd58c8d16';//using dummy user id
+
+        //**get availabilities of the tutor for the tutee
+
+        var currentDate = new Date();
+        var currentDay = currentDate.getDay();
+        var currentDateOnly = currentDate.getDate()
+        //console.log(currentDate+' '+currentDay+' '+currentDateOnly);
+
+        var dayMap = {};
+        dayMap[0] = {day: 'Sunday'};
+        dayMap[1] = {day: 'Monday'};
+        dayMap[2] = {day: 'Tuesday'};
+        dayMap[3] = {day: 'Wednesday'};
+        dayMap[4] = {day: 'Thursday'};
+        dayMap[5] = {day: 'Friday'};
+        dayMap[6] = {day: 'Saturday'};
+
+        //console.log('dayMap[5]'+dayMap[5].day);
+
+        var dayNumMap = {};
+        dayNumMap['Sunday'] = {day: '0'};
+        dayNumMap['Monday'] = {day: '1'};
+        dayNumMap['Tuesday'] = {day: '2'};
+        dayNumMap['Wednesday'] = {day: '3'};
+        dayNumMap['Thursday'] = {day: '4'};
+        dayNumMap['Friday'] = {day: '5'};
+        dayNumMap['Saturday'] = {day: '6'};
+
+        //console.log('dayNumMap[Friday]'+dayNumMap['Friday'].day);
+
+        var reservationSlots = {};
+        //dummy entry of date TODO REMOVE
+        //TODO test with starting day as wednesday
+        //reservationSlots[currentDate.toString()+''+currentDate.getDay()]={Date:futureDate,Day:futureDay, from:'1900',to:'2000',available:'yes'};
+        console.log(currentDate.toString() + '' + currentDate.getDay());
+        for (var i in avl) {
+            var availableDay = avl[i].day;
+            var numberOfDays = (7 - currentDay + dayNumMap[availableDay].day) % 7;
+            var futureDay = dayMap[numberOfDays].day;
+            var futureDate = new Date();
+            futureDate.setDate(futureDate.getDate() + numberOfDays);
+            //console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
+            console.log('future time stamp ' + futureDate.toString() + '' + futureDay);
+            reservationSlots[futureDate.toString() + '' + futureDay] = {
+                Date: futureDate,
+                Day: futureDay,
+                from: avl[i].from,
+                to: avl[i].to,
+                available: 'yes'
+            };
+        }
+
+        //**Get existing reservation for the tutor, (what if tutee is busy at that time as per his old
+        //reservation-tutee is busy at that time)
+
+        controller.storage.reservation.find({tutorid: tutorId, active: 'yes'}, function (error, reservations) {
+            //TODO null check for reservations
+            //if(reservations.length==0)
+            if (reservations.length > 0) {
+                //console.log(reservations);
+                for (var i in reservations) {
+                    //TODO mark reservations as active:'No' when a user reviews an old reservation
+                    //when you pull out reservations, make sure to mark the inactive ones as no, check current date and
+                    //if the reservation date has passed mark them inactive.
+                    /* if (reservations[i].date.getTime() < currentDate.getTime()) {
+                         console.log('inactive yes');
+                         //update old reservation, i.e. make it inactive
+                         controller.storage.reservation.save
+                     }*/
+
+                    //find that reservation in my list of reservations and mark as available to no,
+                    //we can make reservation slots as hashmap and easily search for a reservation based on
+                    //date+day concatanated string
+
+                    var reservationDay = new Date(reservations[i].date.toString());
+
+                    var existingReservationTimeStamp = reservationDay.toString() + '' + reservationDay.getDay();
+                    //console.log('existingReservationTimeStamp :' + existingReservationTimeStamp);
+                    if (reservationSlots[existingReservationTimeStamp] != null) {
+                        reservationSlots[existingReservationTimeStamp].available = 'No';
+                        //console.log('Match as implanted!');
+                    } //else
+                    //console.log('Yikes!');
+                    //return reservation logs
+                }
+            }
+        });
+        console.log('I am beyond save of reservation');
+        callback(reservationSlots);
+    });
+}
 
 
 //bot.reply(message, {
