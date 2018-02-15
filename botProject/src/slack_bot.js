@@ -34,7 +34,12 @@ var controller = Botkit.slackbot({
 */
 
 var Botkit = require('botkit');
-var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
+
+var mongoStorage = require('botkit-storage-mongo')({
+    mongoUri: process.env.MONGO_CONNECTION_STRING,
+    tables: ['user', 'tutor', 'subject', 'reservation']
+});
+
 var os = require('os');
 
 var controller = Botkit.slackbot({
@@ -267,6 +272,30 @@ function formatUptime(uptime) {
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
+});
+
+//Added test method- to be removed.
+controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
+
+    // start a conversation to handle this response.
+    bot.startConversation(message, function (err, convo) {
+        console.log('mongo');
+        getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
+            if (avl == '') {
+                convo.addQuestion('No tutor information available', function (response, convo) {
+
+                    // bot.reply('Cool, you said: ' + response.text);
+                    convo.next();
+
+                }, {}, 'default');
+            }
+            console.log(avl);
+
+        });
+        console.log('mongo');
+
+    })
+
 });
 
 app.get('/', (req, res) => {
@@ -864,6 +893,20 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
     });
 }
 
+
+//save reservation if user clicks on book button
+function saveReservation(userId, tutorId, date, day, from, to) {
+    //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
+    var reservation = {
+        id: '5a80931df36d28314de95a74', tutorid: tutorId, userid: userId, date: currentDate, from: '0900', to: '1030',
+        active: 'yes'
+    };
+    controller.storage.reservation.save(reservation, function (error) {
+        if (error)
+            console.log('There is an error');
+    });
+
+}
 
 //bot.reply(message, {
 //  attachments:
