@@ -515,29 +515,55 @@ const sendConfirmation = (tutor) => {
 }
 ;
 
-//Added test method- to be removed.
 controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
 
     // start a conversation to handle this response.
     bot.startConversation(message, function (err, convo) {
         console.log('mongo');
-        getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
-            if (avl == '') {
+        getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
+            if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
-
                     // bot.reply('Cool, you said: ' + response.text);
                     convo.next();
 
                 }, {}, 'default');
             }
-            console.log(avl);
+            console.log('reservations slots are :-'+reservationSlots);
+            for(var r in reservationSlots){
+                console.log(r+' ')
+                var reservation=reservationSlots[r];
+                    for(var rs in reservation){
+                        console.log(rs+ ''+reservation[rs]);
+                    }
+            }
 
         });
         console.log('mongo');
-
     })
-
 });
+
+controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
+
+    // start a conversation to handle this response.
+    bot.startConversation(message, function (err, convo) {
+        console.log('Reservation start');
+              //  convo.addQuestion('Here is the list of reservations', function (response, convo) {
+                    //get logged user name
+                    bot.api.users.info({user: message.user}, (error, response) => {
+                        let {name, real_name} = response.user;
+                    console.log(name, real_name);
+                //});
+                    /*bot.reply('Cool, you said: ' + response.text);
+                    controller.storage.reservation.
+                    convo.next();*/
+
+                }, {}, 'default');
+
+        });
+        console.log('Reservation end');
+    });
+
+
 //TODO my reservations option 14
 function getAvailableSlotsTutor(tutorId, userId, callback) {
     //TODO reward points
@@ -545,9 +571,9 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
     //**Get the availabilty of tutor
     controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
         //no chances of invalid tutor id
-        //console.log(tutor);
-        if (tutor.length == 0) {
-            //avl = 'No tutor found';
+        console.log(tutor);
+        if (tutor.length==null) {
+            console.log('No Tutors found');
             return;//is return ok? or should I throw an exception?
         }
         else
@@ -629,7 +655,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                     //date+day concatanated string
 
                     var reservationDay = new Date(reservations[i].date.toString());
-
+                    console.log(reservationDay);
                     var existingReservationTimeStamp = reservationDay.toString() + '' + reservationDay.getDay();
                     //console.log('existingReservationTimeStamp :' + existingReservationTimeStamp);
                     if (reservationSlots[existingReservationTimeStamp] != null) {
@@ -637,7 +663,9 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                         //console.log('Match as implanted!');
                     } //else
                     //console.log('Yikes!');
-                    //return reservation logs
+                    //return reservation log
+                    // s
+                    console.log('After reservation hashmap check');
                 }
             }
         });
