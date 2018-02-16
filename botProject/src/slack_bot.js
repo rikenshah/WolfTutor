@@ -10,6 +10,10 @@ const prompts = require('./prompt');
 const action = require('./action');
 const debug = require('debug')('slash-command-template:index');
 const app = express();
+const UserModel = require('./model/user');
+const TutorModel = require('./model/tutor');
+const ReservationModel = require('./model/reservation');
+const SubjectModel = require('./model/subject');
 
 /*
  * Parse application/x-www-form-urlencoded && application/json
@@ -50,25 +54,14 @@ var bot = controller.spawn({
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function (bot, message) {
 
-    // bot.api.reaction.add({
-    //     timestamp: message.ts,
-    //     channel: message.channel,
-    //     name: 'robot_face',
-    // }, function(err, res) {
-    //     if (err) {
-    //         bot.botkit.log('Failed to add emoji reaction :(', err);
+    // controller.storage.users.get(message.user, function(err, user) {
+    //     if (user && user.name) {
+    //         bot.reply(message, 'Hello ' + user.name + '!!');
+    //         //UserModel.create_new_user(message);
+    //     } else {
+    //         bot.reply(message, 'Hello.');
     //     }
     // });
-
-
-
-    controller.storage.users.get(message.user, function (err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
-        } else {
-            bot.reply(message, 'Hello.');
-        }
-    });
 });
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function (bot, message) {
@@ -233,6 +226,11 @@ controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
 });
 
+var session_over = ['session a over','rate the tutor','add review','review']
+controller.hears('review', 'direct_message', function(bot, message) {
+    bot.reply(message, prompts.add_review_prompt);
+});
+
 
 app.get('/', (req, res) => {
     res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
@@ -249,7 +247,7 @@ app.post('/message', (req, res) => {
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
 
     if(callback_id=='become_tutor_prompt'){
-      console.log(payload);
+      //console.log(payload);
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         var text = 'Ok, you can enroll to become a tutor anytime.';
@@ -270,10 +268,9 @@ app.post('/message', (req, res) => {
     else if(callback_id=='submit_tutor_info_dialog'){
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
-      //res.send('');
-      console.log(payload);
       action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
-      // create tutor
+      // create a tutor
+      TutorModel.create_new_tutor(payload);
       //tutor.create(payload.user.id, payload.submission);
       res.send('');
     } // End of else if for submit tutor info
@@ -298,6 +295,7 @@ app.post('/message', (req, res) => {
     else if (callback_id=='add_more_subjects_dialog') {
       action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
+      TutorModel.add_more_subjects(payload);
       res.send('');
     }
     else if (callback_id=='add_availability_prompt') {
@@ -311,10 +309,8 @@ app.post('/message', (req, res) => {
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
-      // TODO: On Subission of Dialog
       // Add availability to Database
-
-
+      TutorModel.add_availability(payload);
       // Get the availibility Prompt
       action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
       res.send('');
@@ -324,6 +320,7 @@ app.post('/message', (req, res) => {
       if (checkValue == 'no') {
         action.send_message(payload.channel.id,'Ok. Thank you for enrolling as a tutor.')
       } else {
+        // TutorModel.add_availability(payload);
         const dialog = {
         token: process.env.SLACK_ACCESS_TOKEN,
         trigger_id,
@@ -333,6 +330,21 @@ app.post('/message', (req, res) => {
         action.open_dialog(dialog,res);
       }
     } // End of else if of add more availability prompt
+    else if(callback_id=='add_review_prompt'){
+      const dialog = {
+      token: process.env.SLACK_ACCESS_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify(dialogs.add_review_dialog),
+      }
+      // open the dialog by calling dialogs.open method and sending the payload
+      action.open_dialog(dialog,res);
+    }// End of else if of add_review_prompt
+    else if(callback_id=='add_review_dialog'){
+      // TODO Store review and rating into database
+      TutorModel.add_review(payload);
+      action.send_message(payload.channel.id,'Thank you so much. #GoPack',[]);
+      res.send('');
+    }
     else {
       console.log('Reached Else');
       console.log(payload);
@@ -390,7 +402,6 @@ function isValidSubject(mysubject, callback) {
 
 }
 
-
 function getUserForSubject(json_file, callback) {
 
     // console.log(json_file);
@@ -412,8 +423,6 @@ function getUserForSubject(json_file, callback) {
 }
 
 function getTutorsForSubject(subject, callback) {
-
-
     controller.storage.tutor.all(function (err, tutors) {
         //var tutorList = [];
         var json_file = {};
@@ -456,8 +465,6 @@ function getTutorsForSubject(subject, callback) {
             // console.log(json_file);
             callback(json_file);
         });
-
-
     });
 }
 
@@ -736,4 +743,3 @@ function saveReservation(userId, tutorId, date, day, from, to) {
 //  }
 // }
 // });
-
