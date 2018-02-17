@@ -29,4 +29,8 @@ module.exports = {
       console.error(err);
     });
   }
+
+  send_direct_message: function(user_id,text,attachments){
+    axios.post('')
+  }
 }
