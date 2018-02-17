@@ -519,7 +519,6 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
     // start a conversation to handle this response.
     bot.startConversation(message, function (err, convo) {
-        console.log('mongo');
         getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
@@ -528,7 +527,7 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
                 }, {}, 'default');
             }
-            console.log('reservations slots are :-'+reservationSlots);
+           // console.log('reservations slots are :-'+reservationSlots);
             for(var r in reservationSlots){
                 console.log(r+' ')
                 var reservation=reservationSlots[r];
@@ -538,17 +537,13 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
             }
 
         });
-        console.log('mongo');
     })
 });
 
 controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
-
-    // start a conversation to handle this response.
+//TODO check if reply works fine.
     bot.startConversation(message, function (err, convo) {
         console.log('Reservation start');
-              //  convo.addQuestion('Here is the list of reservations', function (response, convo) {
-        //get logged user name
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
         console.log(id, name, real_name);
@@ -557,8 +552,6 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
         //Here are your reservations as a tutor
         var reservationSlots=[];
         controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
-            //bot.reply(convo,)
-            //reply the reservations with Date day from and to
             if(reservations!=null) {
                 for (var r in reservations) {
                     reservationSlots.push({
@@ -573,7 +566,6 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
         });
         //Here are your reservation as a tutee.
         controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
-            //reply the reservations with Date day from and to
             if(reservations!=null) {
                 for (var r in reservations) {
                     reservationSlots.push({
@@ -625,18 +617,13 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
         },{},'default');
 
         });
-        console.log('Reservation end');
     });
-
-
-//TODO my reservations option 14
+//TODO userid is not needed-can be removed?
 function getAvailableSlotsTutor(tutorId, userId, callback) {
     //TODO reward points
     //**Check reward points of the user/tutee trying to reserve, give an error if he is left with insufficent points
-    //**Get the availabilty of tutor
     controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
-        //no chances of invalid tutor id
-        console.log(tutor);
+
         if (tutor.length==null) {
             console.log('No Tutors found');
             return;
@@ -651,7 +638,6 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         var currentDate = new Date();
         var currentDay = currentDate.getDay();
         var currentDateOnly = currentDate.getDate()
-        console.log('currentDate :'+currentDate+' '+'currentDate :'+currentDay+' '+currentDateOnly);
 
         var dayMap = {};
         dayMap[0] = {day: 'Sunday'};
@@ -682,38 +668,60 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                 if(v=='day')
                     availabeDayVal=availableDaykey[v];
             }
-            //console.log('currentDay :'+currentDay+'available day value :'+availabeDayVal);
+
             var numberOfDays = Number(7 - currentDay) + Number(availabeDayVal);
-            //console.log('number of days :'+numberOfDays);
             var futureDay = dayMap[availabeDayVal].day;
 
             var futureDate = new Date();
-            futureDate.setDate(futureDate.getDate() + numberOfDays);
 
-            //Test for availability
+            futureDate.setDate(futureDate.getDate() + numberOfDays);
+            //We just need date, no need to store timestamp of when the reservation is made
+            futureDate.setHours(0,0,0,0);
+            //TODO same day availability
             if(availabeDayVal==currentDay){
                 /*if(futureDate.
 
                     ()>)*/
             }
-
-            //console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
-            //console.log('future time stamp ' + futureDate.toString() + '' + futureDay);
-            reservationSlots[futureDate.toString() + '' + futureDay] = {
-                Date: futureDate,
-                Day: futureDay,
-                from: avl[i].from,
-                to: avl[i].to,
-                available: 'yes'
-            };
+            //
+            var slots=[];
+            for(j=Number(avl[i].from);j<Number(avl[i].to);){
+                //console.log('j:'+j+'startTime :'+startTime+' '+endTime);
+                var startTime=j.toString();
+                var endTime='';
+                //console.log('start time is '+startTime);
+                if(startTime.includes('00',2)||startTime.includes('00',1)) {
+                    endTime = Number(j + 30).toString();
+                    j=j+30;
+                    //console.log('I include 00');
+                }
+                else {
+                    endTime = Number(j + 70).toString();
+                    j=j+70;
+                    //console.log('I include 30');
+                }
+                //console.log('j:'+j+'startTime :'+startTime+' '+endTime);
+                slots={from:startTime,to:endTime};
+              //  console.log('from:'+startTime+',to:'+endTime);
+                //saving 30 minutes reservation slots
+                var futureReservationTimeStamp=futureDate.getFullYear()+''+futureDate.getMonth()+''+
+                    futureDate.getDate() + '' + futureDay+''+startTime+''+endTime;
+                //console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
+                reservationSlots[futureReservationTimeStamp] = {
+                    Date: futureDate,
+                    Day: futureDay,
+                    from: startTime,
+                    to: endTime,
+                    available: 'yes'
+                };
+            }
         }
 
         //**Get existing reservation for the tutor, (what if tutee is busy at that time as per his old
         //reservation-tutee is busy at that time)
 
         controller.storage.reservation.find({tutorid: tutorId, active: 'yes'}, function (error, reservations) {
-            //TODO null check for reservations
-            //if(reservations.length==0)
+
             if (reservations.length > 0) {
                 //console.log(reservations);
                 for (var i in reservations) {
@@ -726,26 +734,23 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                          controller.storage.reservation.save
                      }*/
 
-                    //find that reservation in my list of reservations and mark as available to no,
-                    //we can make reservation slots as hashmap and easily search for a reservation based on
-                    //date+day concatanated string
-
                     var reservationDay = new Date(reservations[i].date.toString());
-                    console.log(reservationDay);
-                    var existingReservationTimeStamp = reservationDay.toString() + '' + reservationDay.getDay();
-                    //console.log('existingReservationTimeStamp :' + existingReservationTimeStamp);
+                   // console.log('reservationDay'+reservationDay);
+                    var existingReservationTimeStamp = reservationDay.getFullYear()+''+reservationDay.getMonth()+''+
+                        reservationDay.getDate() + '' + reservations[i].day+'' +reservations[i].from+''+
+                        reservations[i].to;
+                    //console.log('existing reservations timestamp :'+existingReservationTimeStamp);
+                    // if(existingReservationTimeStamp.equals())
+                     //   console.log('equal');
+                    //else
+                      //  consolelog('Not equal');
                     if (reservationSlots[existingReservationTimeStamp] != null) {
+                       // console.log('Oh no! '+existingReservationTimeStamp+'is already reserved');
                         reservationSlots[existingReservationTimeStamp].available = 'No';
-                        //console.log('Match as implanted!');
-                    } //else
-                    //console.log('Yikes!');
-                    //return reservation log
-                    // s
-                    console.log('After reservation hashmap check');
+                    }
                 }
             }
         });
-        console.log('I am beyond save of reservation');
         callback(reservationSlots);
     });
 }
