@@ -308,13 +308,16 @@ app.post('/message', (req, res) => {
       }
       else {
           // Yes on become a tutor prompt
-          const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
+          console.log("Dialog is");
+          dialogs.submit_tutor_info_dialog(function(dialog_attachment){
+            const dialog = {
+              token: process.env.SLACK_ACCESS_TOKEN,
+              trigger_id,
+              dialog: JSON.stringify(dialog_attachment),
+            };
+            // open the dialog by calling dialogs.open method and sending the payload
+            action.open_dialog(dialog,res);
+          });
         } // End of Else
       } // End of If
 
@@ -334,15 +337,15 @@ app.post('/message', (req, res) => {
         action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
-        const dialog = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        trigger_id,
-        dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
-        //res.send('');
-        // TODO Store in database subjects
+        dialogs.add_more_subjects_dialog(function(dialog_attachment){        
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify(dialog_attachment),
+          };
+          // open the dialog by calling dialogs.open method and sending the payload
+          action.open_dialog(dialog,res);
+        });
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
     else if (callback_id=='add_more_subjects_dialog') {
@@ -416,11 +419,11 @@ app.post('/message', (req, res) => {
 
           getTutorReview(checkValue, function(json_file)
           {
-            console.log(json_file);
+            //console.log(json_file);
             console.log("++++++++++");
 
             const display_review = new Promise((resolve, reject) => {
-                console.log(json_file);
+                //console.log(json_file);
                 if(json_file.review == undefined)
                 {
                   action.send_message(payload.channel.id, 'Sorry we don not have any review for this tutor at this time');

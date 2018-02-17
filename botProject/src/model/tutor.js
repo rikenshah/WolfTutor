@@ -50,6 +50,7 @@ module.exports = {
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {subjects: {$each:subject_list}}},function (err,res) {
       if (err) return err;
       console.log(res);
+      remove_duplicate_subjects(payload.user.id);
     });
   },
   add_availability : function(payload){
@@ -68,4 +69,30 @@ module.exports = {
       console.log(res);
     });
   },
+}
+
+function remove_duplicate_subjects(user_id){
+    //console.log("Printing here");
+    tutor.findOne({user_id:user_id},function (err,res) {
+        if (err){
+          console.log(err);
+          return err;
+        }
+        var unique_subjects = [];
+        res.subjects.forEach(function(subject){
+          var flag = 0;
+          unique_subjects.forEach(function(s){
+            if(s.name == subject.name) flag = 1;
+          });
+          if(flag == 0) unique_subjects.push({name:subject.name});
+        });
+        //console.log("This are unique subjects");
+        tutor.findOneAndUpdate({user_id:user_id},{$set: {subjects: unique_subjects}},function (err,res) {
+          if (err){
+            console.log(err);
+            return err;
+          }
+          console.log(res);
+        });
+    });
 }
