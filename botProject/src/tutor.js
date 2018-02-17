@@ -13,10 +13,10 @@ var controller = Botkit.slackbot({
 });
 
 // Uncomment the lines below to test the connection with the database
-MongoClient.connect(url, function (err) {
-    if (err) throw err;
-    console.log('Connection to the Database Successful');
-});
+// MongoClient.connect(url, function (err) {
+//     if (err) throw err;
+//     console.log('Connection to the Database Successful');
+// });
 
 /*
  *  Send tutor creation confirmation via
@@ -88,16 +88,18 @@ const create = (userId, submission) => {
     tutor.summary = submission.summary;
     sendConfirmation(tutor);
     console.log(tutor);
-    //console.log(result);
-    MongoClient.connect(url, function (err, db) {
-        if(err) throw err;
-        var dbo = db.db("wolftutor");
-        dbo.collection("testtutors").insertOne(tutor, function(err, res) {
-        if (err) throw err;
-        console.log("1 Tutor inserted");
-        db.close();
-      });
-    });
+    // //console.log(result);
+    // MongoClient.connect(url, function (err, db) {
+    //     if(err) throw err;
+    //     var dbo = db.db("wolftutor");
+    //     dbo.collection("testtutors").insertOne(tutor, function(err, res) {
+    //     if (err) throw err;
+    //     console.log("1 Tutor inserted");
+    //     db.close();
+    //   });
+    // });
+    //controller.s
+
 
     //return tutor;
   }).catch((err) => { console.error(err); });
