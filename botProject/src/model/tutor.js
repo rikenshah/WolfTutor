@@ -1,11 +1,7 @@
 const configure = require('./config');
-const async = require('async');
 
 var tutor_schema = new configure.schema({
-  user_id:{
-    type: 'string',
-    unique: true
-  },
+  user_id:'string',
   major:'string',
   degree:'string',
   subjects:[],
@@ -30,11 +26,8 @@ module.exports = {
     var nullsummary = (payload.submission.summary == null)?"": payload.submission.summary;
     tutor.create({user_id:payload.user.id,major:payload.submission.major,degree:payload.submission.degree,subjects:[{name:payload.submission.subject}],
     rate:payload.submission.rate,summary:nullsummary}, function (err,res) {
-      if(err){
-        console.log("user already exists");
-        console.log(err);
-        return err;
-      }console.log('1 entry added');
+      if(err) return err;
+      console.log('1 entry added');
     });
   },
   add_more_subjects : function(payload){
@@ -53,20 +46,16 @@ module.exports = {
     if (subject4 != "") subject_list.push({name:subject4});
     var subject5 = (payload.submission.subject5 == null)?"": payload.submission.subject5;
     if (subject5 != "") subject_list.push({name:subject5});
-    console.log(subject_list);
+    //TODO Validation: If the subject is there do not add it again
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {subjects: {$each:subject_list}}},function (err,res) {
       if (err) return err;
-      // console.log(res);
+      console.log(res);
       remove_duplicate_subjects(payload.user.id);
     });
   },
   add_availability : function(payload){
-    var from_hr  = payload.submission.from_time_hour;
-    var from_min = payload.submission.from_time_min;
-    var to_hr  = payload.submission.to_time_hour;
-    var to_min = payload.submission.to_time_min;
-    var from_time = from_hr+from_min;
-    var to_time = to_hr+to_min;
+    var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+    var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {availability: {day:payload.submission.day1,from:from_time,to:to_time}}},function (err,res) {
       if (err) return err;
       console.log(res);
@@ -79,17 +68,17 @@ module.exports = {
       if (err) return err;
       console.log(res);
     });
-  }
+  },
 }
 
 function remove_duplicate_subjects(user_id){
+    //console.log("Printing here");
     tutor.findOne({user_id:user_id},function (err,res) {
         if (err){
           console.log(err);
           return err;
         }
         var unique_subjects = [];
-        console.log("Printing here");
         res.subjects.forEach(function(subject){
           var flag = 0;
           unique_subjects.forEach(function(s){
@@ -97,6 +86,13 @@ function remove_duplicate_subjects(user_id){
           });
           if(flag == 0) unique_subjects.push({name:subject.name});
         });
-        console.log(unique_subjects);
+        //console.log("This are unique subjects");
+        tutor.findOneAndUpdate({user_id:user_id},{$set: {subjects: unique_subjects}},function (err,res) {
+          if (err){
+            console.log(err);
+            return err;
+          }
+          console.log(res);
+        });
     });
 }
