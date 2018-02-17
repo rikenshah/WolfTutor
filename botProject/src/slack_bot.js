@@ -548,16 +548,81 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
     bot.startConversation(message, function (err, convo) {
         console.log('Reservation start');
               //  convo.addQuestion('Here is the list of reservations', function (response, convo) {
-                    //get logged user name
-                    bot.api.users.info({user: message.user}, (error, response) => {
-                        let {name, real_name} = response.user;
-                    console.log(name, real_name);
-                //});
-                    /*bot.reply('Cool, you said: ' + response.text);
-                    controller.storage.reservation.
-                    convo.next();*/
+        //get logged user name
+        bot.api.users.info({user: message.user}, (error, response) => {
+            let {id, name, real_name} = response.user;
+        console.log(id, name, real_name);
 
-                }, {}, 'default');
+        var loggedInUserId = id;
+        //Here are your reservations as a tutor
+        var reservationSlots=[];
+        controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
+            //bot.reply(convo,)
+            //reply the reservations with Date day from and to
+            if(reservations!=null) {
+                for (var r in reservations) {
+                    reservationSlots.push({
+                        Date: reservations[r].date,
+                        Day: reservations[r].day,
+                        from: reservations[r].from,
+                        to: reservations[r].to,
+                        available: reservations[r].available
+                    })
+                }
+            }
+        });
+        //Here are your reservation as a tutee.
+        controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
+            //reply the reservations with Date day from and to
+            if(reservations!=null) {
+                for (var r in reservations) {
+                    reservationSlots.push({
+                        Date: reservations[r].date,
+                        Day: reservations[r].day,
+                        from: reservations[r].from,
+                        to: reservations[r].to
+                    })
+                }
+            }
+        });
+        if(reservationSlots!=null){
+        for (var r in reservations) {
+            bot.reply(message,
+                {
+                    attachments:
+                        [
+                            {
+                                fields:
+                                    [
+                                        {
+                                            title: 'Date',
+                                            value: reservations[r].date,
+                                            short: true,
+                                        },
+                                        {
+                                            title: 'Day',
+                                            value: reservations[r].day,
+                                            short: true,
+                                        },
+                                        {
+                                            title: 'Start time',
+                                            value: reservations[r].from,
+                                            short: true,
+                                        },
+                                        {
+                                            title: 'End time',
+                                            value: reservations[r].to,
+                                            short: true,
+                                        }
+                                    ]
+                            }
+                        ]
+                });
+        }}
+        else{
+            bot.reply(message,'No upcoming reservations');
+        }
+        },{},'default');
 
         });
         console.log('Reservation end');
@@ -611,22 +676,29 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         for (var i in avl) {
             var availableDay = avl[i].day;
             var availableDaykey=dayNumMap[availableDay];
-            var availabeDayVal;
+            var availabeDayVal;//Corresponding numeric value
 
             for(var v in availableDaykey){
                 if(v=='day')
                     availabeDayVal=availableDaykey[v];
             }
-            console.log('currentDay :'+currentDay+'available day value :'+availabeDayVal);
+            //console.log('currentDay :'+currentDay+'available day value :'+availabeDayVal);
             var numberOfDays = Number(7 - currentDay) + Number(availabeDayVal);
-            console.log('number of days :'+numberOfDays);
+            //console.log('number of days :'+numberOfDays);
             var futureDay = dayMap[availabeDayVal].day;
 
             var futureDate = new Date();
             futureDate.setDate(futureDate.getDate() + numberOfDays);
 
-            console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
-            console.log('future time stamp ' + futureDate.toString() + '' + futureDay);
+            //Test for availability
+            if(availabeDayVal==currentDay){
+                /*if(futureDate.
+
+                    ()>)*/
+            }
+
+            //console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
+            //console.log('future time stamp ' + futureDate.toString() + '' + futureDay);
             reservationSlots[futureDate.toString() + '' + futureDay] = {
                 Date: futureDate,
                 Day: futureDay,
