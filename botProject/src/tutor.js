@@ -4,6 +4,7 @@ const debug = require('debug')('slash-command-template:tutor');
 const qs = require('querystring');
 const users = require('./users');
 const MongoClient = require('mongodb').MongoClient;
+// const UserModel = require('./model/user');
 var url = process.env.MONGO_CONNECTION_STRING;
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
 var Botkit = require('botkit');
@@ -113,12 +114,12 @@ const new_user = (userId, submission) => {
     }).catch((err) => { reject(err); });
   });
   fetchUserEmail.then((result) => {
-    tutor.userId = userId;
+    tutor.user_id = userId;
     // tutor.name = result.real_name;
-    tutor.name = 'user1';
+    tutor.name = result.real_name;
     tutor.email = result.email;
     tutor.phone = result.phone;
-    
+    // console.log(tutor);
     valid_user(tutor, function(flag)
     {
       if(flag == 0)
@@ -127,7 +128,10 @@ const new_user = (userId, submission) => {
       }
       else
       {
-        console.log("Add user Query");
+        console.log("Added User");
+        // Uncomment this and at top constant
+        // UserModel.create_new_user(tutor);
+
       }
     });
 
@@ -142,8 +146,8 @@ function valid_user(tutor, callback)
   {
     for(var i in users)
     {
-      console.log(users[i].name);
-      console.log(tutor.name);
+      // console.log(users[i].name);
+      // console.log(tutor.name);
       if(tutor.name == users[i].name)
         {
           console.log("In if");

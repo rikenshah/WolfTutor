@@ -396,41 +396,33 @@ app.post('/message', (req, res) => {
       }
     } // End of else if of add more availability prompt
     else if (callback_id == 'review_and_scheduling') {
-      console.log("+++++++++++++++++++++++++++++++++++++++");
       var checkValue = payload.actions[0].value;
       console.log(checkValue);
       if (checkValue == 'schedule')
       {
         console.log("Calling from here");
-          getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
-          console.log("Im in here, 5a760a1f734d1d3bd58c8d16");
-          console.log(reservationSlots);
-          if (avl == '') {
-              convo.addQuestion('No tutor information available', function (response, convo) {
+        getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
+        console.log("Im in here, 5a760a1f734d1d3bd58c8d16");
+        console.log(reservationSlots);
+        if (avl == '') {
+            convo.addQuestion('No tutor information available', function (response, convo) {
 
-                  // bot.reply('Cool, you said: ' + response.text);
-                  convo.next();
+                // bot.reply('Cool, you said: ' + response.text);
+                convo.next();
 
-              }, {}, 'default');
-          }
-          console.log(avl);
+            }, {}, 'default');
+        }
+        console.log(avl);
 
-          });
+        });
       }
       else
       {
         
           getTutorReview(checkValue, function(json_file)
           {
-            console.log(json_file.review);
+            console.log(json_file);
             console.log("++++++++++");
-            // const display_review = new Promise((resolve, reject) => {
-            //   console.log("Review 1111111111");
-            //   resolve("Review 22222222222222");
-            // });
-            // display_review.then(function(value){
-            //   console.log(value);
-            // });
 
             const display_review = new Promise((resolve, reject) => {
                 console.log(json_file);
@@ -441,10 +433,6 @@ app.post('/message', (req, res) => {
                 }
                 for(var i in json_file.review)
                 {
-
-                  console.log("-----------------------");
-                   console.log(json_file.review[i].text);
-                   console.log(json_file.review[i].rating);
                   action.send_message(payload.channel.id,'',
                   [
                     {
@@ -457,79 +445,21 @@ app.post('/message', (req, res) => {
                         "value": json_file.review[i].text,
                         "short":true,
                       },
-                    {
-                      "title": 'Rating',
-                      "value": json_file.review[i].rating,
-                      "short":true,
-                    },
+                      {
+                        "title": 'Rating',
+                        "value": json_file.review[i].rating,
+                        "short":true,
+                      },
                     ],
-                    // actions: [
-                    //     {
-                    //         "name":"schedule",
-                    //         "text": "Schedule",
-                    //         "value": "schedule",
-                    //         "type": "button",
-                    //     },
-                        // {
-                        //     "name":"no",
-                        //     "text": "No",
-                        //     "value": "no",
-                        //     "type": "button",
-                        // }
-                    // ]
                     }
-                  ]
-                  // {
-                  //   "text": "Tutor Details",
-                  //   "attachments": [
-                  //       {
-                            
-                  //           "fields": 
-                  //           [
-                  //            {
-                  //               "title": 'Review',
-                  //               "value": json_file.review[i].text,
-                  //               "short":true,
-                  //             },
-                  //             {
-                  //               "title": 'Rating',
-                  //               "value": json_file.review[i].rating,
-                  //               "short":true,
-                  //             },
-                  //           ]
-                  //       }
-                  //                 ]
-                  // }
-                  );
+                  ]);
 
                 }
                 resolve("OK");
                 
             });
             display_review.then((result) => {
-              action.send_message(payload.channel.id,'',
-              [
-                {
-                  title: 'Do you want to schedule a tutoring session?',
-                  callback_id: 'schedule_now',
-                  attachment_type: 'default',
-                  actions: [
-                      {
-                          "name":"Schedule",
-                          "text": "Schedule",
-                          "value": "schedule",
-                          "type": "button",
-                      },
-                      // {
-                      //     "name":"no",
-                      //     "text": "No",
-                      //     "value": "no",
-                      //     "type": "button",
-                      // }
-                  ]
-                }
-              ]
-            );
+              action.send_message(payload.channel.id,'', prompts.add_scheduling_prompt);
             });
             
             
@@ -638,20 +568,13 @@ function getTutorReview(user_id, callback)
     var json_file = {}
     for(var i in tutors)
     {
-      // console.log("********************");
-      // console.log(tutors[i].user_id);
-      // console.log(user_id);
       if(tutors[i].user_id == user_id)
         {
-          // for (var j in tutor[i].reviews)
-          // {
-
-          // }
+          json_file.user_id = tutors[i].user_id;
           json_file.review = tutors[i].reviews;
           
         }
     }
-    // console.log(json_file);
     callback(json_file);
   });
 }
