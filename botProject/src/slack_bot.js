@@ -574,19 +574,19 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         console.log(tutor);
         if (tutor.length==null) {
             console.log('No Tutors found');
-            return;//is return ok? or should I throw an exception?
+            return;
         }
         else
             var avl = tutor[0].availability;
         //TODO remove it
-        userId = '5a760a1f734d1d3bd58c8d16';//using dummy user id
+        userId = '5a760a1f734d1d3bd58c8d16';
 
         //**get availabilities of the tutor for the tutee
 
         var currentDate = new Date();
         var currentDay = currentDate.getDay();
         var currentDateOnly = currentDate.getDate()
-        //console.log(currentDate+' '+currentDay+' '+currentDateOnly);
+        console.log('currentDate :'+currentDate+' '+'currentDate :'+currentDay+' '+currentDateOnly);
 
         var dayMap = {};
         dayMap[0] = {day: 'Sunday'};
@@ -597,8 +597,6 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         dayMap[5] = {day: 'Friday'};
         dayMap[6] = {day: 'Saturday'};
 
-        //console.log('dayMap[5]'+dayMap[5].day);
-
         var dayNumMap = {};
         dayNumMap['Sunday'] = {day: '0'};
         dayNumMap['Monday'] = {day: '1'};
@@ -608,20 +606,26 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         dayNumMap['Friday'] = {day: '5'};
         dayNumMap['Saturday'] = {day: '6'};
 
-        //console.log('dayNumMap[Friday]'+dayNumMap['Friday'].day);
-
         var reservationSlots = {};
-        //dummy entry of date TODO REMOVE
-        //TODO test with starting day as wednesday
-        //reservationSlots[currentDate.toString()+''+currentDate.getDay()]={Date:futureDate,Day:futureDay, from:'1900',to:'2000',available:'yes'};
-        console.log(currentDate.toString() + '' + currentDate.getDay());
+
         for (var i in avl) {
             var availableDay = avl[i].day;
-            var numberOfDays = (7 - currentDay + dayNumMap[availableDay].day) % 7;
-            var futureDay = dayMap[numberOfDays].day;
+            var availableDaykey=dayNumMap[availableDay];
+            var availabeDayVal;
+
+            for(var v in availableDaykey){
+                if(v=='day')
+                    availabeDayVal=availableDaykey[v];
+            }
+            console.log('currentDay :'+currentDay+'available day value :'+availabeDayVal);
+            var numberOfDays = Number(7 - currentDay) + Number(availabeDayVal);
+            console.log('number of days :'+numberOfDays);
+            var futureDay = dayMap[availabeDayVal].day;
+
             var futureDate = new Date();
             futureDate.setDate(futureDate.getDate() + numberOfDays);
-            //console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
+
+            console.log(currentDate+' '+currentDay+' '+numberOfDays+' '+futureDate+' '+futureDay);
             console.log('future time stamp ' + futureDate.toString() + '' + futureDay);
             reservationSlots[futureDate.toString() + '' + futureDay] = {
                 Date: futureDate,
