@@ -57,7 +57,7 @@ module.exports= {
           },
         ],
       }
-      callback(dialog)
+      callback(dialog);
     });
   }//End of function
 };

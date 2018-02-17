@@ -337,15 +337,15 @@ app.post('/message', (req, res) => {
         action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
-        const dialog = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        trigger_id,
-        dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
-        //res.send('');
-        // TODO Store in database subjects
+        dialogs.add_more_subjects_dialog(function(dialog_attachment){        
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify(dialog_attachment),
+          };
+          // open the dialog by calling dialogs.open method and sending the payload
+          action.open_dialog(dialog,res);
+        });
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
     else if (callback_id=='add_more_subjects_dialog') {
