@@ -1,7 +1,11 @@
 const configure = require('./config');
+const async = require('async');
 
 var tutor_schema = new configure.schema({
-  user_id:'string',
+  user_id:{
+    type: 'string',
+    unique: true
+  },
   major:'string',
   degree:'string',
   subjects:[],
@@ -26,8 +30,11 @@ module.exports = {
     var nullsummary = (payload.submission.summary == null)?"": payload.submission.summary;
     tutor.create({user_id:payload.user.id,major:payload.submission.major,degree:payload.submission.degree,subjects:[{name:payload.submission.subject}],
     rate:payload.submission.rate,summary:nullsummary}, function (err,res) {
-      if(err) return err;
-      console.log('1 entry added');
+      if(err){
+        console.log("user already exists");
+        console.log(err);
+        return err;
+      }console.log('1 entry added');
     });
   },
   add_more_subjects : function(payload){
@@ -46,10 +53,11 @@ module.exports = {
     if (subject4 != "") subject_list.push({name:subject4});
     var subject5 = (payload.submission.subject5 == null)?"": payload.submission.subject5;
     if (subject5 != "") subject_list.push({name:subject5});
-    //TODO Validation: If the subject is there do not add it again
+    remove_duplicates(subject_list);
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {subjects: {$each:subject_list}}},function (err,res) {
       if (err) return err;
       console.log(res);
+      remove_duplicates(payload.user.id);
     });
   },
   add_availability : function(payload){
@@ -71,5 +79,22 @@ module.exports = {
       if (err) return err;
       console.log(res);
     });
-  },
+  }
+}
+
+function remove_duplicates(user_id){
+    tutor.findOne({user_id:user_id},function (err,res) {
+        if (err) return err;
+        var unique_subjects = [];
+        console.log("Printing here");
+        res.subjects.forEach(function(subject){
+          var flag = 0;
+          unique_subjects.forEach(function(s){
+            if(s.name == subject.name) flag = 1;
+          });
+          if(flag == 0) unique_subjects.push({name:subject.name});
+        });
+        console.log(unique_subjects);
+        tutor.findOneAndUpdate
+    });
 }

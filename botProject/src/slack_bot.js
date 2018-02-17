@@ -409,11 +409,11 @@ app.post('/message', (req, res) => {
 
           getTutorReview(checkValue, function(json_file)
           {
-            console.log(json_file);
+            //console.log(json_file);
             console.log("++++++++++");
 
             const display_review = new Promise((resolve, reject) => {
-                console.log(json_file);
+                //console.log(json_file);
                 if(json_file.review == undefined)
                 {
                   action.send_message(payload.channel.id, 'Sorry we don not have any review for this tutor at this time');

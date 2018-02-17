@@ -1,3 +1,6 @@
+const subjectsModel = require('../model/subject');
+var subjects = subjectsModel.get_all_subjects();
+
 var dialog = {
   title: 'Become a Tutor',
   callback_id: 'submit_tutor_info_dialog',
