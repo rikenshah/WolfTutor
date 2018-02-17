@@ -308,13 +308,16 @@ app.post('/message', (req, res) => {
       }
       else {
           // Yes on become a tutor prompt
-          const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
+          console.log("Dialog is");
+          dialogs.submit_tutor_info_dialog(function(dialog_attachment){
+            const dialog = {
+              token: process.env.SLACK_ACCESS_TOKEN,
+              trigger_id,
+              dialog: JSON.stringify(dialog_attachment),
+            };
+            // open the dialog by calling dialogs.open method and sending the payload
+            action.open_dialog(dialog,res);
+          });
         } // End of Else
       } // End of If
 
