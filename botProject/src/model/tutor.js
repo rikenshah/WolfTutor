@@ -78,6 +78,7 @@ module.exports = {
     }, function(err, res) {
       if (err) return err;
       console.log(res);
+      remove_duplicate_subjects(payload.user.id);
     });
   },
   add_availability: function(payload) {
@@ -103,6 +104,7 @@ module.exports = {
     });
   },
   tutor,
+<<<<<<< HEAD
   overall_rating: function (tutorid, currrent_rating) {
     tutor.findOne({user_id:tutorid},function (err,res) {
       if (err) throw err;
@@ -119,4 +121,40 @@ module.exports = {
       });
     });
   }
+=======
+  fetch_tutor_rate: function(tutor_id,callback){
+    tutor.findOne({user_id:tutor_id},function(err,res){
+      if(err) return err;
+      callback(res.rate);
+    });  
+  }, // End of function
+  overall_rating: function () {
+    // TODO Calculate Overall Rating
+  }
+} // End of module 
+function remove_duplicate_subjects(user_id){
+    //console.log("Printing here");
+    tutor.findOne({user_id:user_id},function (err,res) {
+        if (err){
+          console.log(err);
+          return err;
+        }
+        var unique_subjects = [];
+        res.subjects.forEach(function(subject){
+          var flag = 0;
+          unique_subjects.forEach(function(s){
+            if(s.name == subject.name) flag = 1;
+          });
+          if(flag == 0) unique_subjects.push({name:subject.name});
+        });
+        //console.log("This are unique subjects");
+        tutor.findOneAndUpdate({user_id:user_id},{$set: {subjects: unique_subjects}},function (err,res) {
+          if (err){
+            console.log(err);
+            return err;
+          }
+          console.log(res);
+        });
+    });
+>>>>>>> 647cf49da2f3bb858e15a8bf5dfced5babfba16d
 }

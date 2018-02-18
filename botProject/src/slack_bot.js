@@ -55,11 +55,17 @@ var bot = controller.spawn({
 }).startRTM();
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
+  bot.reply(message, 'Hello <@'+message.user+'>');
+  bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help.\n Some things you can say \"I want to become a tutor\", \"I want to find a tutor\", \"Add review for my session\".");
+  bot.reply(message, prompts.create_user_prompt);
 
-     bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );
-     bot.reply(message, prompts.create_user_prompt);
+});
 
-
+controller.hears(['my points'], 'direct_message,direct_mention,mention', function(bot, message) {
+  UserModel.fetch_user_points(message.user,function(points){
+    bot.reply(message, 'Your points are : '+points);
+    bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
+  });
 });
 
 controller.hears(['what can I do'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -83,7 +89,6 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_men
         });
     });
 });
-
 
 controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'select a tutor'],
     'direct_message,direct_mention,mention', function (bot, message) {
@@ -136,10 +141,10 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 for (var i in json_file) {
                                     count = count + 1;
                                 }
-                                console.log("Json file length");
-                                console.log(count);
+                                // console.log("Json file length");
+                                // console.log(count);
                                 if (count == 0) {
-                                    bot.reply(message, "Sorry! There are no tutor avaible for this course");
+                                    bot.reply(message, "Sorry! There are no tutor currently available for this course");
                                 }
                                 else
                                 {
@@ -197,13 +202,13 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                                         "name": "review",
                                                         "text": "Review",
                                                         "type": "button",
-                                                        "value": json_file[i].user_id
+                                                        "value": json_file[i].user_id,
                                                     },
                                                     {
                                                         "name": "schedule",
                                                         "text": "Schedule",
                                                         "type": "button",
-                                                        "value": "schedule"
+                                                        "value": "schedule " + json_file[i].user_id,
                                                     }
                                                 ]
                                             }
@@ -260,23 +265,166 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
     // start a conversation to handle this response.
     bot.startConversation(message, function (err, convo) {
-        console.log('mongo');
-        getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
-            if (avl == '') {
+        // console.log('mongo');
+        getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
+            if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
-
                     // bot.reply('Cool, you said: ' + response.text);
                     convo.next();
 
                 }, {}, 'default');
             }
-            console.log(avl);
+
+            console.log("IM ONLY LOOOOKKKKINININNGNN AT THIS");
+            // console.log('reservations slots are :-'+reservationSlots);
+            slots_temp = {};
+            var slots_date = [];
+            for(var r in reservationSlots){
+                // console.log(r+' ')
+                var reservation=reservationSlots[r];
+                    // for(var rs in reservation){
+                    //     console.log(rs+ ''+reservation[rs]);
+                    // }
+                    if(reservation['Date'].toString().slice(0,15) in slots_temp)
+                    {
+                      console.log("Yes");
+                      //TODO appending
+                    }
+                    else
+                    {
+                      var temp_slot = reservation['from'].toString() + " "  + reservation['to'].toString();
+                      slots_temp[reservation['Date'].toString().slice(0,15)] = {
+
+                        "time" : temp_slot,
+                        "available" : reservation['available'].toString(),
+                      };
+                      slots_date.push({
+                        "text" : reservation['Date'].toString().slice(0,15),
+                        "value" : reservation['Date'].toString().slice(0,15),
+                      });
+                      console.log("No");
+                    }
+                    // console.log(reservation['Date'].toString().slice(0,15));
+                    // console.log(reservation['Day'].toString());
+                    // console.log(reservation['from'].toString());
+                    // console.log(reservation['to'].toString());
+                    // console.log(reservation['available'].toString());
+            }
+            console.log(slots_date);
+            // for(var i in slots_temp)
+            // {
+            //   console.log(i);
+            //   console.log(slots_temp[i]);
+            // }
+
+            // action.send_message(payload.channel.id, '', {
+            //     "text": "Would you like to play a game?",
+            //     "response_type": "in_channel",
+            //     "attachments": [
+            //         {
+            //             "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
+            //             "attachment_type": "default",
+            //             "callback_id": "date_selection",
+            //             "actions": [
+            //                 {
+            //                     "name": "date_list",
+            //                     "text": "Pick a date...",
+            //                     "type": "select",
+            //                     "options": slots_date,
+            //                 }
+            //             ]
+            //         }
+            //     ]
+            // })
 
         });
-        console.log('mongo');
-
+        // console.log('mongo');
     })
+});
 
+controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
+    // start a conversation to handle this response.
+    bot.startConversation(message, function (err, convo) {
+        console.log('Reservation start');
+              //  convo.addQuestion('Here is the list of reservations', function (response, convo) {
+        //get logged user name
+        bot.api.users.info({user: message.user}, (error, response) => {
+            let {id, name, real_name} = response.user;
+        console.log(id, name, real_name);
+
+        var loggedInUserId = id;
+        //Here are your reservations as a tutor
+        var reservationSlots=[];
+        controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
+            //bot.reply(convo,)
+            //reply the reservations with Date day from and to
+            if(reservations!=null) {
+                for (var r in reservations) {
+                    reservationSlots.push({
+                        Date: reservations[r].date,
+                        Day: reservations[r].day,
+                        from: reservations[r].from,
+                        to: reservations[r].to,
+                        available: reservations[r].available
+                    })
+                }
+            }
+        });
+        //Here are your reservation as a tutee.
+        controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
+            //reply the reservations with Date day from and to
+            if(reservations!=null) {
+                for (var r in reservations) {
+                    reservationSlots.push({
+                        Date: reservations[r].date,
+                        Day: reservations[r].day,
+                        from: reservations[r].from,
+                        to: reservations[r].to
+                    })
+                }
+            }
+        });
+        if(reservationSlots!=null){
+        for (var r in reservations) {
+            bot.reply(message,
+                {
+                    attachments:
+                        [
+                            {
+                                fields:
+                                    [
+                                        {
+                                            title: 'Date',
+                                            value: reservations[r].date,
+                                            short: true,
+                                        },
+                                        {
+                                            title: 'Day',
+                                            value: reservations[r].day,
+                                            short: true,
+                                        },
+                                        {
+                                            title: 'Start time',
+                                            value: reservations[r].from,
+                                            short: true,
+                                        },
+                                        {
+                                            title: 'End time',
+                                            value: reservations[r].to,
+                                            short: true,
+                                        }
+                                    ]
+                            }
+                        ]
+                });
+        }}
+        else{
+            bot.reply(message,'No upcoming reservations');
+        }
+        },{},'default');
+
+        });
+        console.log('Reservation end');
 });
 
 
@@ -308,13 +456,16 @@ app.post('/message', (req, res) => {
       }
       else {
           // Yes on become a tutor prompt
-          const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
+          console.log("Dialog is");
+          dialogs.submit_tutor_info_dialog(function(dialog_attachment){
+            const dialog = {
+              token: process.env.SLACK_ACCESS_TOKEN,
+              trigger_id,
+              dialog: JSON.stringify(dialog_attachment),
+            };
+            // open the dialog by calling dialogs.open method and sending the payload
+            action.open_dialog(dialog,res);
+          });
         } // End of Else
       } // End of If
 
@@ -334,15 +485,15 @@ app.post('/message', (req, res) => {
         action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
-        const dialog = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        trigger_id,
-        dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
-        //res.send('');
-        // TODO Store in database subjects
+        dialogs.add_more_subjects_dialog(function(dialog_attachment){
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify(dialog_attachment),
+          };
+          // open the dialog by calling dialogs.open method and sending the payload
+          action.open_dialog(dialog,res);
+        });
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
     else if (callback_id=='add_more_subjects_dialog') {
@@ -362,10 +513,17 @@ app.post('/message', (req, res) => {
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
-      // Add availability to Database
-      TutorModel.add_availability(payload);
-      // Get the availibility Prompt
-      action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+      var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
+      if (from_time > to_time) {
+        action.send_message(payload.channel.id,'From time cannot be after To time. Please add the availability again.',prompts.add_more_availability_prompt);
+      }
+      else {
+        // Add availability to Database
+        TutorModel.add_availability(payload);
+        // Get the availibility Prompt
+        action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      }
       res.send('');
     } // End of else if of add availability dialog
     else if (callback_id=='add_more_availability_prompt') {
@@ -385,70 +543,146 @@ app.post('/message', (req, res) => {
     } // End of else if of add more availability prompt
     else if (callback_id == 'review_and_scheduling') {
       var checkValue = payload.actions[0].value;
+      console.log("###############################################################");
       console.log(checkValue);
-      if (checkValue == 'schedule')
+      console.log(payload)
+      if (checkValue.slice(0,8) == 'schedule')
       {
-        console.log("Calling from here");
-        getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
-        console.log("Im in here, 5a760a1f734d1d3bd58c8d16");
-        console.log(reservationSlots);
-        if (avl == '') {
-            convo.addQuestion('No tutor information available', function (response, convo) {
+        getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
+            if (reservationSlots==null) {
+                convo.addQuestion('No tutor information available', function (response, convo) {
+                    // bot.reply('Cool, you said: ' + response.text);
+                    convo.next();
 
-                // bot.reply('Cool, you said: ' + response.text);
-                convo.next();
+                }, {}, 'default');
+            }
 
-            }, {}, 'default');
-        }
-        console.log(avl);
+            // console.log('reservations slots are :-'+reservationSlots);
+            slots_temp = {};
+            var slots_date = [];
+            for(var r in reservationSlots){
+                // console.log(r+' ')
+                var reservation=reservationSlots[r];
+                    // for(var rs in reservation){
+                    //     console.log(rs+ ''+reservation[rs]);
+                    // }
+                    if(reservation['Date'].toString().slice(0,15) in slots_temp)
+                    {
+                      console.log("Yes, it already exist inside the list");
+                      //TODO appending
+                    }
+                    else
+                    {
+                      var temp_slot = reservation['from'].toString() + " "  + reservation['to'].toString();
+                      slots_temp[reservation['Date'].toString().slice(0,15)] = {
 
+                        "time" : temp_slot,
+                        "available" : reservation['available'].toString(),
+                      };
+                      if (reservation['available'].toString() == "yes")
+                      {
+                        slots_date.push({
+                          "text" : reservation['Date'].toString().slice(0,15),
+                          "value" : reservation['Date'].toString().slice(0,15) + " "+"5a760986734d1d3bd58c8cd1",
+                        });
+                      }
+                    }
+            }
+
+            action.send_message(payload.channel.id, 'Slot Dates',
+            [
+            {
+              "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
+              "attachment_type": "default",
+              "callback_id": "date_selection",
+              "actions": [
+                  {
+                      "name": "date_list",
+                      "text": "Pick a date...",
+                      "type": "select",
+                      "options": slots_date,
+                  }
+              ]
+          }]);
         });
       }
       else
       {
 
-          getTutorReview(checkValue, function(json_file)
+          getTutorReview(checkValue, function(tutor_reviews)
           {
-            console.log(json_file);
-            console.log("++++++++++");
 
-            const display_review = new Promise((resolve, reject) => {
-                console.log(json_file);
-                if(json_file.review == undefined)
-                {
-                  action.send_message(payload.channel.id, 'Sorry we don not have any review for this tutor at this time');
-                  resolve("OK");
-                }
-                for(var i in json_file.review)
-                {
-                  action.send_message(payload.channel.id,'',
-                  [
-                    {
+            console.log(tutor_reviews.length);
+            console.log(tutor_reviews[2]);
+              if(tutor_reviews[2] == ""){
+                console.log("No reviews");
+                action.send_message(payload.channel.id,"",
+                [
+                  {
+                    title: 'No reviews for this tutor available',
                     callback_id: 'schedule_now',
                     attachment_type: 'default',
-                    fields:
-                    [
-                      {
-                        "title": 'Review',
-                        "value": json_file.review[i].text,
-                        "short":true,
-                      },
-                      {
-                        "title": 'Rating',
-                        "value": json_file.review[i].rating,
-                        "short":true,
-                      },
-                    ],
+                    actions: [
+                          {
+                            "name":"schedule",
+                            "text": "Schedule",
+                            "value": tutor_reviews[0],
+                            "type": "button",
+                            }
+                        ]
                     }
-                  ]);
+            ]);
 
-                }
-                resolve("OK");
+              }
+              else
+              {
+              const display_review = new Promise((resolve, reject) => {
+                var tutor_name = '';
+                controller.storage.user.all(function (err, users) {
+                    for (var i in users) {
+                      if (tutor_reviews[0] == users[i]._id) {
+                        tutor_name = users[i].name;
+                      }
+                    }
+                    resolve("Reviews for tutor : "+tutor_name);
+                });
 
-            });
-            display_review.then((result) => {
-              action.send_message(payload.channel.id,'', prompts.add_scheduling_prompt);
-            });
+
+              });
+              display_review.then((result) => {
+                action.send_message(payload.channel.id,result,
+                [
+                  {
+                  attachment_type: 'default',
+                  callback_id: 'schedule_now',
+                  fields:
+                  [
+                    {
+                      "title": 'Review',
+                      "value": tutor_reviews[1],
+                      "short":true,
+                    },
+                    {
+                      "title": 'Rating',
+                      "value": tutor_reviews[2],
+                      "short":true,
+                    },
+                  ],
+                  actions: [
+                      {
+                          "name":"Schedule",
+                          "text": "Schedule",
+                          "value": tutor_reviews[0],
+                          "type": "button",
+                        },
+                    ]
+
+                  }
+                ]);
+                // resolve("OK");
+
+              });
+            }
 
           });
       }
@@ -456,22 +690,191 @@ app.post('/message', (req, res) => {
     }
     else if(callback_id == 'schedule_now')
     {
-      getAvailableSlotsTutor("5a760a1f734d1d3bd58c8d16", 1, function (reservationSlots) {//user_id from tutor information
-          // console.log(reservationSlots);
-          if (avl == '') {
-              convo.addQuestion('No tutor information available', function (response, convo) {
+      var checkValue = payload.actions[0].value;
 
-                  // bot.reply('Cool, you said: ' + response.text);
-                  convo.next();
+      console.log(checkValue);
+      getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
+            if (reservationSlots==null) {
+                convo.addQuestion('No tutor information available', function (response, convo) {
+                    // bot.reply('Cool, you said: ' + response.text);
+                    convo.next();
 
-              }, {}, 'default');
-          }
-          console.log(avl);
+                }, {}, 'default');
+            }
 
-      });
+            console.log('Mateen :-'+reservationSlots);
+            slots_temp = {};
+            var slots_date = [];
+            for(var r in reservationSlots){
+                // console.log(r+' ')
+                var reservation=reservationSlots[r];
+                    // for(var rs in reservation){
+                    //     console.log(rs+ ''+reservation[rs]);
+                    // }
+                    if(reservation['Date'].toString().slice(0,15) in slots_temp)
+                    {
+                      console.log("Yes");
+                      //TODO appending
+                    }
+                    else
+                    {
+                      var temp_slot = reservation['from'].toString() + " "  + reservation['to'].toString();
+                      slots_temp[reservation['Date'].toString().slice(0,15)] = {
+
+                        "time" : temp_slot,
+                        "available" : reservation['available'].toString(),
+                      };
+                      if (reservation['available'].toString() == "yes")
+                      {
+                        slots_date.push({
+                          "text" : reservation['Date'].toString().slice(0,15),
+                          "value" : reservation['Date'].toString().slice(0,15) + " "+"5a760986734d1d3bd58c8cd1",
+                        });
+                      }
+
+                    }
+
+            }
+
+            action.send_message(payload.channel.id, 'Slot Dates',
+            [
+            {
+              "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
+              "attachment_type": "default",
+              "callback_id": "date_selection",
+              "actions": [
+                  {
+                      "name": "date_list",
+                      "text": "Pick a date...",
+                      "type": "select",
+                      "options": slots_date,
+                  }
+              ]
+          }]);
+        });
+    }
+    else if(callback_id == 'date_selection' )
+    {
+      var checkValue = payload.actions[0].selected_options[0].value;
+      var date_key = checkValue.toString().slice(0,15);
+      var tutor_id = checkValue.toString().substr(16);
+      console.log("RIKKKKKKKEEEEEENNNNN");
+      console.log(tutor_id);
+      getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
+            if (reservationSlots==null) {
+                convo.addQuestion('No tutor information available', function (response, convo) {
+                    // bot.reply('Cool, you said: ' + response.text);
+                    convo.next();
+
+                }, {}, 'default');
+            }
+
+            var slots_date = [];
+            for(var r in reservationSlots){
+                // console.log(r+' ')
+                var reservation=reservationSlots[r];
+                //     for(var rs in reservation){
+                //         console.log(rs+ ''+reservation[rs]);
+                //     }
+                //     console.log(reservation['available'].toString());
+
+                      if(reservation['Date'].toString().slice(0,15) == date_key)
+                      {
+                        // console.log("#######################################################");
+                        // console.log(reservation['Date'].toString());
+                        // console.log(reservation['from'].toString());
+                        // console.log(reservation['to'].toString());
+                        // console.log(reservation['available'].toString());
+                        if(reservation['available'].toString() == "yes")
+                        {
+                          console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
+                          action.send_message(payload.channel.id, 'Availabile Slots',
+                          [
+                            {
+                                title: reservation['Date'].toString().slice(4,15) +" "+reservation['from'].toString()+":"+reservation['to'].toString(),
+                                callback_id: 'booking_now',
+                                attachment_type: 'default',
+                                actions: [
+                                    {
+                                        "name":"booking",
+                                        "text": "Book",
+                                        "value": tutor_id +" "+reservation['Date'].toString() +" "+reservation['from'].toString()+" "+reservation['to'].toString()+" "+reservation['Day'].toString(),
+                                        "type": "button",
+                                    }
+                                ]
+                            }
+                        ]);
+                      }
+
+                      //TODO appending
+                    }
+
+              }
+
+            });
+
+    }
+    else if(callback_id == 'booking_now')
+    {
+      //TODO Point validation
+      // console.log(payload.actions[0].value);
+      var tutor_id = payload.actions[0].value.slice(0,24);
+      var day = payload.actions[0].value.substr(75);
+      var date = payload.actions[0].value.slice(29,40);
+      var from = payload.actions[0].value.slice(65,69);
+      var to = payload.actions[0].value.slice(70,74);
+      action.send_message(payload.channel.id, "", [
+      {
+
+          title: 'Are you sure about this booking\n' + date +" "+from+":" +to,
+          callback_id: 'save_booking',
+          attachment_type: 'default',
+          actions: [
+              {
+                  "name":"yes",
+                  "text": "Yes",
+                  "value": payload.actions[0].value+" yes",
+                  "type": "button",
+              },
+              {
+                  "name":"no",
+                  "text": "No",
+                  "value": payload.actions[0].value+" no",
+                  "type": "button",
+              }
+          ]
+        }
+      ]);
+
+    }
+    else if(callback_id == 'save_booking')
+    {
+      console.log(payload);
+      var tutor_id = payload.actions[0].value.slice(0,24);
+      var day = payload.actions[0].value.substr(75,28);
+      var date = payload.actions[0].value.slice(25,41)+"00:00:00 GMT-0500";
+      var from = payload.actions[0].value.slice(65,69);
+      var to = payload.actions[0].value.slice(70,74);
+      var response = day.split(" ")[1].slice(0,1);
+      day = day.split(" ")[0];
+      var user_id = payload.user.id;
+      console.log(tutor_id);
+      console.log(user_id);
+      if(response == 'y')
+      {
+        // Add points validation and reduce points
+        // actions.send_user_notification(user_id, tutor_id, date, day, from, to);
+        saveReservation(user_id, tutor_id, date, day, from, to);
+
+      }
+      else
+      {
+          console.log("Cancelled booking");
+      }
     }
     else if(callback_id == 'create_user_prompt')
     {
+
       console.log(checkValue);
       if (checkValue == 'no')
       {
@@ -560,6 +963,9 @@ function isValidSubject(mysubject, callback) {
 
 function getTutorReview(user_id, callback)
 {
+  var tutor_index = "";
+  var tutor_reviews = "";
+  var tutor_rating = "";
   controller.storage.tutor.all(function(err,tutors)
   {
     var json_file = {}
@@ -567,24 +973,34 @@ function getTutorReview(user_id, callback)
     {
       if(tutors[i].user_id == user_id)
         {
-          json_file.user_id = tutors[i].user_id;
-          json_file.review = tutors[i].reviews;
+          for(var j in tutors[i].reviews)
+          {
+            tutor_index+=(parseInt(j)+1).toString()+"\n";
+            tutor_reviews+=tutors[i].reviews[j].text+"\n";
+            tutor_rating+=tutors[i].reviews[j].rating+"\n";
+          }
 
         }
     }
-    callback(json_file);
+    // console.log(tutor_reviews);
+    callback([user_id,tutor_reviews,tutor_rating]);
   });
 }
 
-function getUserForSubject(json_file, callback) {
-    controller.storage.user.all(function (err, users) {
-        for (var i in users) {
-            for (var j in json_file) {
-                if (json_file[j].user_id == users[i]._id) {
+function getUserForSubject(json_file, callback)
+{
+    controller.storage.user.all(function (err, users)
+    {
+        for (var i in users)
+        {
+            for (var j in json_file)
+            {
+                if (json_file[j].user_id == users[i].user_id) {
                     json_file[j].name = users[i].name;
                     json_file[j].email = users[i].email;
                 }
             }
+
         }
         callback(json_file);
     });
@@ -737,5 +1153,4 @@ function saveReservation(userId, tutorId, date, day, from, to) {
         if (error)
             console.log('There is an error');
     });
-
 }
