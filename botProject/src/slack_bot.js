@@ -519,7 +519,7 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
     // start a conversation to handle this response.
     bot.startConversation(message, function (err, convo) {
-        getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
+        getAvailableSlotsTutor("U84DXQKPL", 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     // bot.reply('Cool, you said: ' + response.text);
@@ -670,9 +670,9 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                     availabeDayVal=availableDaykey[v];
             }
 
-            var numberOfDays = Number(7 - currentDay) + Number(availabeDayVal);
+            var numberOfDays = (Number(7 - currentDay) + Number(availabeDayVal))%7;
             var futureDay = dayMap[availabeDayVal].day;
-
+            console.log('no of days'+numberOfDays+'currentDay'+currentDay);
             var futureDate = new Date();
 
             futureDate.setDate(futureDate.getDate() + numberOfDays);
@@ -703,11 +703,16 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                 }
                 //console.log('j:'+j+'startTime :'+startTime+' '+endTime);
                 slots={from:startTime,to:endTime};
-              //  console.log('from:'+startTime+',to:'+endTime);
+                console.log('from:'+startTime+',to:'+endTime);
+                if(startTime.length==3)
+                    startTime='0'+startTime;
+                if(endTime.length==3)
+                    endTime='0'+endTime;
+                console.log('from:'+startTime+',to:'+endTime);
                 //saving 30 minutes reservation slots
                 var futureReservationTimeStamp=futureDate.getFullYear()+''+futureDate.getMonth()+''+
                     futureDate.getDate() + '' + futureDay+''+startTime+''+endTime;
-                //console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
+                console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
                 reservationSlots[futureReservationTimeStamp] = {
                     Date: futureDate,
                     Day: futureDay,
