@@ -50,15 +50,12 @@ module.exports = {
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {subjects: {$each:subject_list}}},function (err,res) {
       if (err) return err;
       console.log(res);
+      remove_duplicate_subjects(payload.user.id);
     });
   },
   add_availability : function(payload){
-    var from_hr  = payload.submission.from_time_hour;
-    var from_min = payload.submission.from_time_min;
-    var to_hr  = payload.submission.to_time_hour;
-    var to_min = payload.submission.to_time_min;
-    var from_time = from_hr+from_min;
-    var to_time = to_hr+to_min;
+    var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+    var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
     tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {availability: {day:payload.submission.day1,from:from_time,to:to_time}}},function (err,res) {
       if (err) return err;
       console.log(res);
@@ -72,4 +69,30 @@ module.exports = {
       console.log(res);
     });
   },
+}
+
+function remove_duplicate_subjects(user_id){
+    //console.log("Printing here");
+    tutor.findOne({user_id:user_id},function (err,res) {
+        if (err){
+          console.log(err);
+          return err;
+        }
+        var unique_subjects = [];
+        res.subjects.forEach(function(subject){
+          var flag = 0;
+          unique_subjects.forEach(function(s){
+            if(s.name == subject.name) flag = 1;
+          });
+          if(flag == 0) unique_subjects.push({name:subject.name});
+        });
+        //console.log("This are unique subjects");
+        tutor.findOneAndUpdate({user_id:user_id},{$set: {subjects: unique_subjects}},function (err,res) {
+          if (err){
+            console.log(err);
+            return err;
+          }
+          console.log(res);
+        });
+    });
 }

@@ -130,16 +130,16 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                     //convo.say was not working
                     isValidSubject(response.text, function (flag) {
                         if (flag == true) {
-                            bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                            getTutorsForSubject(response.text, function (json_file) {
+                          bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                          getTutorsForSubject(response.text, function (json_file) {
                                 var count = 0;
                                 for (var i in json_file) {
                                     count = count + 1;
                                 }
-                                console.log("Json file length");
-                                console.log(count);
+                                // console.log("Json file length");
+                                // console.log(count);
                                 if (count == 0) {
-                                    bot.reply(message, "Sorry! There are no tutor avaible for this course");
+                                    bot.reply(message, "Sorry! There are no tutor currently available for this course");
                                 }
                                 else
                                 {
@@ -147,8 +147,9 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                   {
                                     bot.reply(message,
                                     {
-                                        "text": "Tutor Details",
-                                        "attachments": [
+                                        // "text": "Tutor Details",
+                                        "attachments": 
+                                        [
                                             {
 
                                                 "fields":
@@ -452,13 +453,16 @@ app.post('/message', (req, res) => {
       }
       else {
           // Yes on become a tutor prompt
-          const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
+          console.log("Dialog is");
+          dialogs.submit_tutor_info_dialog(function(dialog_attachment){
+            const dialog = {
+              token: process.env.SLACK_ACCESS_TOKEN,
+              trigger_id,
+              dialog: JSON.stringify(dialog_attachment),
+            };
+            // open the dialog by calling dialogs.open method and sending the payload
+            action.open_dialog(dialog,res);
+          });
         } // End of Else
       } // End of If
 
@@ -478,15 +482,15 @@ app.post('/message', (req, res) => {
         action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
-        const dialog = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        trigger_id,
-        dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog,res);
-        //res.send('');
-        // TODO Store in database subjects
+        dialogs.add_more_subjects_dialog(function(dialog_attachment){        
+          const dialog = {
+          token: process.env.SLACK_ACCESS_TOKEN,
+          trigger_id,
+          dialog: JSON.stringify(dialog_attachment),
+          };
+          // open the dialog by calling dialogs.open method and sending the payload
+          action.open_dialog(dialog,res);
+        });
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
     else if (callback_id=='add_more_subjects_dialog') {
@@ -506,10 +510,17 @@ app.post('/message', (req, res) => {
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
-      // Add availability to Database
-      TutorModel.add_availability(payload);
-      // Get the availibility Prompt
-      action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+      var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
+      if (from_time > to_time) {
+        action.send_message(payload.channel.id,'From time cannot be after To time. Please add the availability again.',prompts.add_more_availability_prompt);
+      }
+      else {
+        // Add availability to Database
+        TutorModel.add_availability(payload);
+        // Get the availibility Prompt
+        action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      }
       res.send('');
     } // End of else if of add availability dialog
     else if (callback_id=='add_more_availability_prompt') {
@@ -529,7 +540,9 @@ app.post('/message', (req, res) => {
     } // End of else if of add more availability prompt
     else if (callback_id == 'review_and_scheduling') {
       var checkValue = payload.actions[0].value;
+      console.log("###############################################################");
       console.log(checkValue);
+      console.log(payload)
       if (checkValue == 'schedule')
       {
         getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
@@ -595,6 +608,7 @@ app.post('/message', (req, res) => {
 
           getTutorReview(checkValue, function(tutor_reviews)
           {
+
             console.log(tutor_reviews.length);
             console.log(tutor_reviews[2]);
               if(tutor_reviews[2] == ""){
@@ -740,7 +754,8 @@ app.post('/message', (req, res) => {
       var checkValue = payload.actions[0].selected_options[0].value;
       var date_key = checkValue.toString().slice(0,15);
       var tutor_id = checkValue.toString().substr(16);
-
+      console.log("RIKKKKKKKEEEEEENNNNN");
+      console.log(tutor_id);
       getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
@@ -830,6 +845,7 @@ app.post('/message', (req, res) => {
     }
     else if(callback_id == 'save_booking')
     {
+      console.log(payload);
       var tutor_id = payload.actions[0].value.slice(0,24);
       var day = payload.actions[0].value.substr(75,28);
       var date = payload.actions[0].value.slice(25,41)+"00:00:00 GMT-0500";
@@ -838,10 +854,14 @@ app.post('/message', (req, res) => {
       var response = day.split(" ")[1].slice(0,1);
       day = day.split(" ")[0];
       var user_id = payload.user.id;
+      console.log(tutor_id);
+      console.log(user_id);
       if(response == 'y')
       {
         // Add points validation and reduce points
+        // actions.send_user_notification(user_id, tutor_id, date, day, from, to);
         saveReservation(user_id, tutor_id, date, day, from, to);
+
       }
       else
       {
@@ -955,9 +975,6 @@ function getTutorReview(user_id, callback)
             tutor_rating+=tutors[i].reviews[j].rating+"\n";  
           }
           
-          // json_file.user_id = tutors[i].user_id;
-          // json_file.review = tutors[i].reviews;
-
         }
     }
     // console.log(tutor_reviews);
@@ -969,7 +986,7 @@ function getUserForSubject(json_file, callback) {
     controller.storage.user.all(function (err, users) {
         for (var i in users) {
             for (var j in json_file) {
-                if (json_file[j].user_id == users[i]._id) {
+                if (json_file[j].user_id == users[i].user_id) {
                     json_file[j].name = users[i].name;
                     json_file[j].email = users[i].email;
                 }
