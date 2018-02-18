@@ -57,11 +57,17 @@ var bot = controller.spawn({
 }).startRTM();
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-
-  bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor.");
+  bot.reply(message, 'Hello <@'+message.user+'>');
+  bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help.\n Some things you can say \"I want to become a tutor\", \"I want to find a tutor\", \"Add review for my session\".");
   bot.reply(message, prompts.create_user_prompt);
 
+});
 
+controller.hears(['my points'], 'direct_message,direct_mention,mention', function(bot, message) {
+  UserModel.fetch_user_points(message.user,function(points){
+    bot.reply(message, 'Your points are : '+points);
+    bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
+  });
 });
 
 controller.hears(['what can I do'], 'direct_message,direct_mention,mention', function(bot, message) {
