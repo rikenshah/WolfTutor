@@ -552,7 +552,7 @@ app.post('/message', (req, res) => {
                     // }
                     if(reservation['Date'].toString().slice(0,15) in slots_temp)
                     {
-                      console.log("Yes");
+                      console.log("Yes, it already exist inside the list");
                       //TODO appending
                     }
                     else
@@ -563,11 +563,13 @@ app.post('/message', (req, res) => {
                         "time" : temp_slot,
                         "available" : reservation['available'].toString(),
                       };
-                      slots_date.push({
-                        "text" : reservation['Date'].toString().slice(0,15),
-                        "value" : reservation['Date'].toString().slice(0,15) + " "+"5a760986734d1d3bd58c8cd1",
-                      });
-                      
+                      if (reservation['available'].toString() == "yes")
+                      {
+                        slots_date.push({
+                          "text" : reservation['Date'].toString().slice(0,15),
+                          "value" : reservation['Date'].toString().slice(0,15) + " "+"5a760986734d1d3bd58c8cd1",
+                        });
+                      }
                     }
             }
 
@@ -689,10 +691,13 @@ app.post('/message', (req, res) => {
                         "time" : temp_slot,
                         "available" : reservation['available'].toString(),
                       };
-                      slots_date.push({
-                        "text" : reservation['Date'].toString().slice(0,15),
-                        "value" : reservation['Date'].toString().slice(0,15) + " "+"5a760986734d1d3bd58c8cd1",
-                      });
+                      if (reservation['available'].toString() == "yes")
+                      {
+                        slots_date.push({
+                          "text" : reservation['Date'].toString().slice(0,15),
+                          "value" : reservation['Date'].toString().slice(0,15) + " "+"5a760986734d1d3bd58c8cd1",
+                        });
+                      }
                       
                     }
             }
@@ -736,37 +741,95 @@ app.post('/message', (req, res) => {
                     // for(var rs in reservation){
                     //     console.log(rs+ ''+reservation[rs]);
                     // }
-                    if(reservation['Date'].toString().slice(0,15) == date_key)
+                    if(reservation['available'].toString() == "yes")
                     {
-                      console.log("#######################################################");
-                      console.log(reservation['Date'].toString());
-                      console.log(reservation['from'].toString());
-                      console.log(reservation['to'].toString());
-                      console.log(reservation['available'].toString());
-
-                      action.send_message(payload.channel.id, 'Availabile Slots', 
-                      [
-                        {
-                            title: reservation['Date'].toString() +" "+reservation['from'].toString()+" "+reservation['to'].toString(),
-                            callback_id: 'booking_slow',
-                            attachment_type: 'default',
-                            actions: [
-                                {
-                                    "name":"booking",
-                                    "text": "Book",
-                                    "value": "add",
-                                    "type": "button",
-                                }
-                            ]
-                        }
-                    ]);
+                      if(reservation['Date'].toString().slice(0,15) == date_key)
+                      {
+                        // console.log("#######################################################");
+                        // console.log(reservation['Date'].toString());
+                        // console.log(reservation['from'].toString());
+                        // console.log(reservation['to'].toString());
+                        // console.log(reservation['available'].toString());
+                        console.log("THis time Im checking this");
+                        console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
+                        action.send_message(payload.channel.id, 'Availabile Slots', 
+                        [
+                          {
+                              title: reservation['Date'].toString().slice(4,15) +" "+reservation['from'].toString()+":"+reservation['to'].toString(),
+                              callback_id: 'booking_now',
+                              attachment_type: 'default',
+                              actions: [
+                                  {
+                                      "name":"booking",
+                                      "text": "Book",
+                                      "value": tutor_id +" "+reservation['Date'].toString() +" "+reservation['from'].toString()+" "+reservation['to'].toString()+" "+reservation['Day'].toString(),
+                                      "type": "button",
+                                  }
+                              ]
+                          }
+                      ]);
 
                       //TODO appending
                     }
+                  }
               }
 
             });
 
+    }
+    else if(callback_id == 'booking_now')
+    {
+      //TODO Point validation
+      // console.log(payload.actions[0].value);
+      var tutor_id = payload.actions[0].value.slice(0,24);
+      var day = payload.actions[0].value.substr(75);
+      var date = payload.actions[0].value.slice(29,40);
+      var from = payload.actions[0].value.slice(65,69);
+      var to = payload.actions[0].value.slice(70,74);
+      action.send_message(payload.channel.id, "", [
+      {
+
+          title: 'Are you sure about this booking\n' + date +" "+from+":" +to,
+          callback_id: 'save_booking',
+          attachment_type: 'default',
+          actions: [
+              {
+                  "name":"yes",
+                  "text": "Yes",
+                  "value": payload.actions[0].value+" yes",
+                  "type": "button",
+              },
+              {
+                  "name":"no",
+                  "text": "No",
+                  "value": payload.actions[0].value+" no",
+                  "type": "button",
+              }
+          ]
+        }
+      ]);
+     
+    }
+    else if(callback_id == 'save_booking')
+    {
+      var tutor_id = payload.actions[0].value.slice(0,24);
+      var day = payload.actions[0].value.substr(75,28);
+      var date = payload.actions[0].value.slice(25,41)+"00:00:00 GMT-0500";
+      var from = payload.actions[0].value.slice(65,69);
+      var to = payload.actions[0].value.slice(70,74);
+      var response = day.split(" ")[1].slice(0,1);
+      day = day.split(" ")[0];
+      var user_id = payload.user.id;
+      console.log("Himani looking here");
+      console.log(date);
+      if(response == 'y')
+      {
+        saveReservation(user_id, tutor_id, date, day, from, to);
+      }
+      else
+      {
+          console.log("Cancelled booking");
+      }
     }
     else if(callback_id == 'create_user_prompt')
     {
@@ -1051,7 +1114,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
 function saveReservation(userId, tutorId, date, day, from, to) {
     //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
     var reservation = {
-        id: '5a80931df36d28314de95a74', tutorid: tutorId, userid: userId, date: currentDate, from: '0900', to: '1030',
+        id: 'aaroh', tutorid: tutorId, userid: userId, date: date, from: from, to: to,
         active: 'yes'
     };
     controller.storage.reservation.save(reservation, function (error) {
