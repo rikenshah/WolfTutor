@@ -64,6 +64,7 @@ module.exports = {
       console.log(res);
     });
   },
+  tutor,
   add_review : function(payload){
     // TODO Calculate the overall rating (Sum of all the ratings by number of rating)
     console.log(payload);
