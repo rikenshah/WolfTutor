@@ -502,7 +502,7 @@ app.post('/message', (req, res) => {
     }// End of else if of add_review_prompt
     else if(callback_id=='add_review_dialog'){
       // TODO Store review and rating into database
-      UserModel.add_review(payload);
+      UserModel.give_review(payload);
       action.send_message(payload.channel.id,'Thank you so much. #GoPack',[]);
       res.send('');
 
