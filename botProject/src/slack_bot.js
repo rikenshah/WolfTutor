@@ -295,19 +295,24 @@ app.post('/message', (req, res) => {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         var text = 'Ok, you can enroll to become a tutor anytime.';
-        action.send_message(payload.channel.id, text, []);
-      } else {
-        // Yes on become a tutor prompt
-        const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.submit_tutor_info_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog, res);
-      } // End of Else
-    } // End of If
-    else if (callback_id == 'submit_tutor_info_dialog') {
+        action.send_message(payload.channel.id,text,[]);
+      }
+      else {
+          // Yes on become a tutor prompt
+          console.log("Dialog is");
+          dialogs.submit_tutor_info_dialog(function(dialog_attachment){
+            const dialog = {
+              token: process.env.SLACK_ACCESS_TOKEN,
+              trigger_id,
+              dialog: JSON.stringify(dialog_attachment),
+            };
+            // open the dialog by calling dialogs.open method and sending the payload
+            action.open_dialog(dialog,res);
+          });
+        } // End of Else
+      } // End of If
+
+    else if(callback_id=='submit_tutor_info_dialog'){
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
       action.send_message(payload.channel.id, 'Thanks for submitting form', prompts.add_more_subjects_prompt);
@@ -323,15 +328,15 @@ app.post('/message', (req, res) => {
         action.send_message(payload.channel.id, 'Ok.', prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
-        const dialog = {
+        dialogs.add_more_subjects_dialog(function(dialog_attachment){        
+          const dialog = {
           token: process.env.SLACK_ACCESS_TOKEN,
           trigger_id,
-          dialog: JSON.stringify(dialogs.add_more_subjects_dialog),
-        };
-        // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog, res);
-        //res.send('');
-        // TODO Store in database subjects
+          dialog: JSON.stringify(dialog_attachment),
+          };
+          // open the dialog by calling dialogs.open method and sending the payload
+          action.open_dialog(dialog,res);
+        });
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
     else if (callback_id == 'add_more_subjects_dialog') {
@@ -349,11 +354,18 @@ app.post('/message', (req, res) => {
       action.open_dialog(dialog, res);
       //res.send('');
     } // End of else if for add more availability
-    else if (callback_id == 'add_availability_dialog') {
-      // Add availability to Database
-      TutorModel.add_availability(payload);
-      // Get the availibility Prompt
-      action.send_message(payload.channel.id, 'Availability added.', prompts.add_more_availability_prompt);
+    else if (callback_id=='add_availability_dialog') {
+      var from_time = payload.submission.from_time_hour+payload.submission.from_time_min;
+      var to_time = payload.submission.to_time_hour+payload.submission.to_time_min;
+      if (from_time > to_time) {
+        action.send_message(payload.channel.id,'From time cannot be after To time. Please add the availability again.',prompts.add_more_availability_prompt);
+      }
+      else {
+        // Add availability to Database
+        TutorModel.add_availability(payload);
+        // Get the availibility Prompt
+        action.send_message(payload.channel.id,'Availability added.',prompts.add_more_availability_prompt);
+      }
       res.send('');
     } // End of else if of add availability dialog
     else if (callback_id == 'add_more_availability_prompt') {
@@ -391,11 +403,40 @@ app.post('/message', (req, res) => {
 
         });
       } else {
+          getTutorReview(checkValue, function(json_file)
+          {
+            //console.log(json_file);
+            console.log("++++++++++");
 
-        getTutorReview(checkValue, function(json_file) {
-          console.log(json_file);
-          console.log("++++++++++");
-
+            const display_review = new Promise((resolve, reject) => {
+                //console.log(json_file);
+                if(json_file.review == undefined)
+                {
+                  action.send_message(payload.channel.id, 'Sorry we don not have any review for this tutor at this time');
+                  resolve("OK");
+                }
+                for(var i in json_file.review)
+                {
+                  action.send_message(payload.channel.id,'',
+                  [
+                    {
+                    callback_id: 'schedule_now',
+                    attachment_type: 'default',
+                    fields:
+                    [
+                      {
+                        "title": 'Review',
+                        "value": json_file.review[i].text,
+                        "short":true,
+                      },
+                      {
+                        "title": 'Rating',
+                        "value": json_file.review[i].rating,
+                        "short":true,
+                      },
+                    ],
+                    }
+                  ]);
           const display_review = new Promise((resolve, reject) => {
             console.log(json_file);
             if (json_file.review == undefined) {

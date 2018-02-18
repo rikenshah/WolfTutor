@@ -11,7 +11,8 @@ module.exports = {
   get_all_subjects: function() {
     subject.find({}, '-_id name', function(err, res) {
       if (err) return err;
-      //console.log(res);
+      callback(res);
     });
   }
 }
+
