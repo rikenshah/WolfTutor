@@ -104,12 +104,16 @@ module.exports = {
     });
   },
   tutor,
+  fetch_tutor_rate: function(tutor_id,callback){
+    tutor.findOne({user_id:tutor_id},function(err,res){
+      if(err) return err;
+      callback(null,res.rate);
+    });  
+  }, // End of function
   overall_rating: function () {
     // TODO Calculate Overall Rating
-  },
-
-}
-
+  }
+} // End of module 
 function remove_duplicate_subjects(user_id){
     //console.log("Printing here");
     tutor.findOne({user_id:user_id},function (err,res) {

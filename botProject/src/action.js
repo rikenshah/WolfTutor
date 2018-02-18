@@ -1,8 +1,10 @@
 require('dotenv').config();
+const configure = require('./model/config');
 
 const axios = require('axios');
 const debug = require('debug')('botProject:src/slack_bot');
 const qs = require('querystring');
+const UserModel = require('./model/user');
 
 var Botkit = require('botkit');
 
@@ -20,7 +22,6 @@ var bot = controller.spawn({
     token: process.env.BOT_TOKEN
 }).startRTM();
 
-const UserModel = require('./model/user');
 
 module.exports = {
   open_dialog: function(dialog,res) {
@@ -49,7 +50,7 @@ module.exports = {
       console.error(err);
     });
   },
-  send_tutor_notification(user_id, tutor_id, date, day, from, to){
+  send_tutor_notification: function(user_id, tutor_id, date, day, from, to){
   // send_tutor_notification(){
     // var student_name = "Rikne";
     // var student_phone = "1919191991";
@@ -60,7 +61,7 @@ module.exports = {
     // var to = "cdscds";
     // var date = "Cdcdsdc";
     // var day = "cdcdsd";
-    UserModel.get_user_info(user_id, function(user){
+    usermodel.get_user_info(user_id, function(user){
       console.log(user);
       var student_name = user.name;
       var student_email = user.email;

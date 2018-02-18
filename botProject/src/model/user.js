@@ -29,8 +29,27 @@ module.exports = {
       console.log('1 entry added');
     });
   },
+  get_user_info: function(user_id,callback){
+  	user.findOne({user_id:user_id},function(err,user){
+  		if(err){
+  			console.log(err);
+  			return err;
+  		}
+  		callback(user);
+  	});
+  },
+  fetch_user_points: function(user_id,callback){
+    user.findOne({user_id:user_id},function(err,user){
+      if(err){
+        console.log(err);
+        return err;
+      }
+      callback(null,user.points);
+    });
+  }, //End of function
   // This function will be executed when a user gives review for his session
   give_review: function(payload) {
+    console.log(payload);
     reservationModel.get_reservation_by_user_id(payload.user.id, function(err, reservations) {
       if (err) {
         console.log(err);
@@ -86,5 +105,5 @@ module.exports = {
         }
       }
     });
-  },
-}
+  } // End of function
+} //End of module

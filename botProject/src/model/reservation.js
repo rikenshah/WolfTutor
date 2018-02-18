@@ -1,4 +1,6 @@
 const configure = require('./config');
+const TutorModel = require('./tutor');
+const UserModel = require('./user');
 
 var reservation_schema = new configure.schema({
   tutorid: 'string',
@@ -40,5 +42,36 @@ module.exports = {
       if (err) throw err;
       console.log('1 Entry Updated');
     });
-  }
-}
+  },
+  update_booking_points: function(user_id, tutor_id,points){
+    console.log(UserModel);
+    console.log(TutorModel);
+    UserModel.fetch_user_points(user_id,function(err,user_points){ 
+      if(err){
+        console.log(err);
+        return err;
+      }   
+      console.log('In Update Booking',user_points);
+      UserModel.findOneAndUpdate({user_id:user_id},{$set: {points: user_points-points}},function(err,user){
+        if(err){
+          console.log(err);
+          return err;
+        }
+        Console.log("User points updated to :"+user_points-points);
+      });
+    });
+    UserModel.fetch_user_points(tutor_id,function(err,tutor_points){
+      if(err){
+        console.log(err);
+        return err;
+      }
+      UserModel.findOneAndUpdate({user_id:tutor_id},{$set: {points: tutor_points-points}},function(err,user){
+        if(err){
+          console.log(err);
+          return err;
+        }
+        Console.log("Tutor points updated to :"+(tutor_points+points));
+      });
+    });
+  } // End of function
+}// End of Module
