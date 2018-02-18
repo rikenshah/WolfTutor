@@ -198,13 +198,13 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                                         "name": "review",
                                                         "text": "Review",
                                                         "type": "button",
-                                                        "value": json_file[i].user_id
+                                                        "value": json_file[i].user_id,
                                                     },
                                                     {
                                                         "name": "schedule",
                                                         "text": "Schedule",
                                                         "type": "button",
-                                                        "value": "schedule"
+                                                        "value": "schedule " + json_file[i].user_id,
                                                     }
                                                 ]
                                             }
@@ -331,7 +331,6 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
             //         }
             //     ]
             // })
-            console.log("IM ONLY LOOOOKKKKINININNGNN AT THIS");
 
         });
         // console.log('mongo');
@@ -543,7 +542,7 @@ app.post('/message', (req, res) => {
       console.log("###############################################################");
       console.log(checkValue);
       console.log(payload)
-      if (checkValue == 'schedule')
+      if (checkValue.slice(0,8) == 'schedule')
       {
         getAvailableSlotsTutor("5a760986734d1d3bd58c8cd1", 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
