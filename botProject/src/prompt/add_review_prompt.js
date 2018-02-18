@@ -1,7 +1,7 @@
 var prompt = {
     attachments:[
         {
-            title: 'Please rate your session',
+            title: 'Click here to rate your last session',
             callback_id: 'add_review_prompt',
             attachment_type: 'default',
             actions: [
