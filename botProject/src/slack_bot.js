@@ -547,7 +547,7 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
             let {id, name, real_name} = response.user;
         console.log(id, name, real_name);
 
-        var loggedInUserId = 'U94AXQ6RL'//id;
+        var loggedInUserId = id;
         //Here are your reservations as a tutor
         var reservationSlots=[];
         controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
