@@ -11,4 +11,13 @@ module.exports = {
       console.log('1 entry added');
     });
   },
+  get_user_info: function(user_id,callback){
+  	user.findOne({user_id:user_id},function(err,user){
+  		if(err){
+  			console.log(err);
+  			return err;
+  		}
+  		callback(user);
+  	});
+  }
 }
