@@ -103,14 +103,7 @@ module.exports = {
       console.log(res);
     });
   },
-  add_review : function(payload){
-    // TODO Calculate the overall rating (Sum of all the ratings by number of rating)
-    console.log(payload);
-    tutor.findOneAndUpdate({user_id:payload.user.id},{$push: {review: {text:payload.submission.review,rating:payload.submission.rating}}},function (err,res) {
-      if (err) return err;
-      console.log(res);
-    });
-  }, //End of function
+  tutor,
   fetch_tutor_rate: function(tutor_id,callback){
     tutor.findOne({user_id:tutor_id},function(err,res){
       if(err) return err;
