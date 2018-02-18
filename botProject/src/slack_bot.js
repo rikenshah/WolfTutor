@@ -541,14 +541,13 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 });
 
 controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
-//TODO check if reply works fine.
     bot.startConversation(message, function (err, convo) {
         console.log('Reservation start');
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
         console.log(id, name, real_name);
 
-        var loggedInUserId = id;
+        var loggedInUserId = 'U94AXQ6RL'//id;
         //Here are your reservations as a tutor
         var reservationSlots=[];
         controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
@@ -613,18 +612,20 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
         }}
         else{
             bot.reply(message,'No upcoming reservations');
-        }
-        },{},'default');
 
+        }
+        convo.stop();
         });
     });
-//TODO userid is not needed-can be removed?
+});
+
+
 function getAvailableSlotsTutor(tutorId, userId, callback) {
     //TODO reward points
     //**Check reward points of the user/tutee trying to reserve, give an error if he is left with insufficent points
     controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
 
-        if (tutor.length==null) {
+        if (tutor.length==null||tutor.length==0) {
             console.log('No Tutors found');
             return;
         }
@@ -759,7 +760,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
 function saveReservation(userId, tutorId, date, day, from, to) {
     //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
     var reservation = {
-        id: '5a80931df36d28314de95a74', tutorid: tutorId, userid: userId, date: currentDate, from: '0900', to: '1030',
+        id: userId, tutorid: tutorId, userid: userId, date: currentDate, from: '0900', to: '1030',
         active: 'yes'
     };
     controller.storage.reservation.save(reservation, function (error) {
@@ -768,6 +769,31 @@ function saveReservation(userId, tutorId, date, day, from, to) {
     });
 
 }
+//Method for a user to view rewards
+controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message,direct_mention,mention', function (bot, message) {
+    bot.startConversation(message, function (err, convo) {
+
+        console.log('rewards start');
+        bot.api.users.info({user: message.user}, (error, response) => {
+            let {id, name, real_name} = response.user;
+        console.log(id, name, real_name);
+        //TODO replace with logged in user
+        var loggedInUserId = id;//'U94AXQ6RL';//id;//
+
+        controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
+            if (users != null || users.length > 0) {
+                //update the user rewards
+                console.log(users);
+                bot.reply(message, 'Your Reward points are ' + users[0].points);
+                convo.stop();
+            }
+
+        });
+    });
+        console.log('rewards end');
+    });
+});
+
 
 //bot.reply(message, {
 //  attachments:
