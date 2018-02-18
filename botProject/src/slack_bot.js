@@ -840,6 +840,7 @@ app.post('/message', (req, res) => {
       var user_id = payload.user.id;
       if(response == 'y')
       {
+        // Add points validation and reduce points
         saveReservation(user_id, tutor_id, date, day, from, to);
       }
       else
