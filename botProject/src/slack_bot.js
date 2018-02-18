@@ -637,8 +637,8 @@ app.post('/message', (req, res) => {
                 var tutor_name = '';
                 controller.storage.user.all(function (err, users) {
                     for (var i in users) { 
-                      if (tutor_reviews[0] == users[i]._id) {
-                        tutor_name = users[i].name;  
+                      if (tutor_reviews[0] == users[i].user_id) {
+                        tutor_name += users[i].name;  
                       }
                     }
                     resolve("Reviews for tutor : "+tutor_name);
@@ -783,7 +783,7 @@ app.post('/message', (req, res) => {
                         if(reservation['available'].toString() == "yes")
                         {
                           console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
-                          action.send_message(payload.channel.id, 'Availabile Slots', 
+                          action.send_message(payload.channel.id, '', 
                           [
                             {
                                 title: reservation['Date'].toString().slice(4,15) +" "+reservation['from'].toString()+":"+reservation['to'].toString(),
