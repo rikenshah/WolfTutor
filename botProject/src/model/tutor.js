@@ -68,8 +68,14 @@ module.exports = {
       if (err) return err;
       console.log(res);
     });
-  },
-}
+  }, //End of function
+  fetch_tutor_rate: function(tutor_id,callback){
+    tutor.findOne({user_id:tutor_id},function(err,res){
+      if(err) return err;
+      callback(res.rate);
+    });  
+  } // End of function
+} // End of Module.exports
 
 function remove_duplicate_subjects(user_id){
     //console.log("Printing here");
