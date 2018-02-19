@@ -16,9 +16,6 @@ const TutorModel = require('./model/tutor');
 const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
 
-/*
- * Parse application/x-www-form-urlencoded && application/json
- */
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -271,7 +268,7 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
                 }, {}, 'default');
             }
 
-            console.log("IM ONLY LOOOOKKKKINININNGNN AT THIS");
+            // console.log("IM ONLY LOOOOKKKKINININNGNN AT THIS");
             // console.log('reservations slots are :-'+reservationSlots);
             slots_temp = {};
             var slots_date = [];
@@ -539,12 +536,13 @@ app.post('/message', (req, res) => {
     else if (callback_id == 'review_and_scheduling') {
       var checkValue = payload.actions[0].value;
 
-      console.log("###############################################################");
-      console.log(checkValue);
-      console.log(payload)
+      // console.log("#################HEEEEEEEEE##############################################");
+      // console.log(checkValue);
+      // console.log(payload)
+      // console.log(checkValue.substr(9));
       if (checkValue.slice(0,8) == 'schedule')
       {
-        getAvailableSlotsTutor("U84DXQKPL", 1, function (reservationSlots) {//user_id from tutor information
+        getAvailableSlotsTutor(checkValue.substr(9), 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     // bot.reply('Cool, you said: ' + response.text);
@@ -558,10 +556,10 @@ app.post('/message', (req, res) => {
             var slots_date = [];
             for(var r in reservationSlots){
                 var reservation=reservationSlots[r];
-                    // console.log("############################");
-                    // for(var rs in reservation){
-                    //     console.log(rs+ ''+reservation[rs]);
-                    // }
+                    console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
+                    for(var rs in reservation){
+                        console.log(rs+ ''+reservation[rs]);
+                    }
                     if(reservation['Date'].toString().slice(0,15) in slots_temp)
                     {
                       console.log("Yes, it already exist inside the list");
@@ -579,7 +577,7 @@ app.post('/message', (req, res) => {
                       {
                         slots_date.push({
                           "text" : reservation['Date'].toString().slice(0,15),
-                          "value" : reservation['Date'].toString().slice(0,15) + " "+"U84DXQKPL",
+                          "value" : reservation['Date'].toString().slice(0,15) + " "+checkValue.substr(9),
                         });
                       }
                     }
@@ -637,8 +635,8 @@ app.post('/message', (req, res) => {
                 var tutor_name = '';
                 controller.storage.user.all(function (err, users) {
                     for (var i in users) { 
-                      if (tutor_reviews[0] == users[i]._id) {
-                        tutor_name = users[i].name;  
+                      if (tutor_reviews[0] == users[i].user_id) {
+                        tutor_name += users[i].name;  
                       }
                     }
                     resolve("Reviews for tutor : "+tutor_name);
@@ -688,9 +686,8 @@ app.post('/message', (req, res) => {
     else if(callback_id == 'schedule_now')
     {
       var checkValue = payload.actions[0].value;
-
       console.log(checkValue);
-      getAvailableSlotsTutor("U84DXQKPL", 1, function (reservationSlots) {//user_id from tutor information
+      getAvailableSlotsTutor(checkValue, 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     // bot.reply('Cool, you said: ' + response.text);
@@ -725,7 +722,7 @@ app.post('/message', (req, res) => {
                       {
                         slots_date.push({
                           "text" : reservation['Date'].toString().slice(0,15),
-                          "value" : reservation['Date'].toString().slice(0,15) + " "+"U84DXQKPL",
+                          "value" : reservation['Date'].toString().slice(0,15) + " "+checkValue,
                         });
                       }
                     }
@@ -755,7 +752,7 @@ app.post('/message', (req, res) => {
       var checkValue = payload.actions[0].selected_options[0].value;
       var date_key = checkValue.toString().slice(0,15);
       var tutor_id = checkValue.toString().substr(16);
-      getAvailableSlotsTutor("U84DXQKPL", 1, function (reservationSlots) {//user_id from tutor information
+      getAvailableSlotsTutor(tutor_id, 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     // bot.reply('Cool, you said: ' + response.text);
@@ -783,7 +780,7 @@ app.post('/message', (req, res) => {
                         if(reservation['available'].toString() == "yes")
                         {
                           console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
-                          action.send_message(payload.channel.id, 'Availabile Slots', 
+                          action.send_message(payload.channel.id, '', 
                           [
                             {
                                 title: reservation['Date'].toString().slice(4,15) +" "+reservation['from'].toString()+":"+reservation['to'].toString(),
@@ -1072,7 +1069,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         else
             var avl = tutor[0].availability;
         //TODO remove it
-        userId = '5a760a1f734d1d3bd58c8d16';
+        // userId = '5a760a1f734d1d3bd58c8d16';
 
         //**get availabilities of the tutor for the tutee
 
