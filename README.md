@@ -20,7 +20,7 @@ We have created a Slack application that can be added to any Slack workspace. We
 
 1. Make sure `Node.JS` is installed and is working in your machine. (Check using `node -v`).
 2. Install `MongoDB` and start the server.
-3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the worspace that you used to make the slack app.
+3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app.
 4. Clone the repo, using `git clone https://github.com/rikenshah/WolfTutor`.
 5. Change to that directory `cd WolfTutor/botProject`.
 6. Download node packages using `npm install && npm update`.
@@ -42,19 +42,32 @@ We have created a Slack application that can be added to any Slack workspace. We
 ### Use Cases
 
 The three major use cases of our application are, 
-1. Find a tutor
+#### 1. Find a tutor
 
 <Details>
+    <p>A user can find a tutor on our bot by just typing 'find a tutor'. The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject. 
+    </p>
+</Details>
 
-2. Book a tutor
+#### 2. Book a tutor
 
 <Details>
+    <p> Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account. Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing 'My reservation' in the slack bot.
+    </p>
+</Details>
 
-3. Reward and review the tutor
+#### 3. Become a tutor
 
 <Details>
-    
-Some other use cases are,
+    <p> If a user wants to become a tutor, he/she will just type 'become a tutor' and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
+    </p>
+</Details>
+#### 4. Reward and review the tutor
+
+<Details>
+    <p> After the session is over the user(student) will have an option to review and rate the tutor. If the user wil type 'review' a review form will open and the user can rate the tutor and can write a review, so that the other users(students) can see the reviews and select the tutor. The tutor can also set his rates according to the reviews that he gets. We also have an option of keeping the rate to 0 for the tutors who want to teach for free. All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot 'My points' and the bot will show them their current points.
+    </p>
+</Details>
 
 ### Storyboard (Optional)
 
@@ -75,9 +88,9 @@ Some other use cases are,
 ### Team Information
 
 [Riken Shah](https://github.com/rikenshah)
-[Mateenrehan Shaikh]()
-[Himani Arora]()
-[Aaroh Gala]()
+[Mateenrehan Shaikh](https://github.com/mateenrehan)
+[Himani Arora](https://github.com/hhimani)
+[Aaroh Gala](https://github.com/AarohGala)
 
 TA/Mentor : [Ken Tu](https://github.com/HuyTu7)
 Professor : [Tim Menzies](https://github.com/timm)
