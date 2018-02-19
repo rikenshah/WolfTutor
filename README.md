@@ -41,7 +41,7 @@ We have created a Slack application that can be added to any Slack workspace. We
 
 ### Use Cases
 
-The three major use cases of our application are, 
+The four major use cases of our application are, 
 #### 1. Find a tutor
 
 <Details>
