@@ -123,10 +123,12 @@ module.exports = {
   fetch_tutor_rate: function(tutor_id,callback){
     tutor.findOne({user_id:tutor_id},function(err,res){
       if(err) return err;
-      callback(res.rate);
+
+      callback(null, res.rate);
     });
   } // End of function
 } // End of module
+
 function remove_duplicate_subjects(user_id){
     //console.log("Printing here");
     tutor.findOne({user_id:user_id},function (err,res) {
