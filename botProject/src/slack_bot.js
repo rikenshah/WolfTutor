@@ -124,7 +124,11 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
             //console.log(subjects_display_list);
             // bot.reply(message, subjects_display_list);
             bot.startConversation(message, function (err, convo) {
+                bot.api.users.info({user: message.user}, (error, response) => {
+                    let {id, name, real_name} = response.user;
+                console.log(id, name, real_name);
 
+                var slackUserName = id;//'U84DXQKPL';//id;
                 convo.addQuestion(reply_with_attachments, function (response, convo) {
                     //  console.log(response.text);
 
@@ -133,7 +137,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                     isValidSubject(response.text, function (flag) {
                         if (flag == true) {
                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                            getTutorsForSubject(response.text, function (json_file) {
+                            getTutorsForSubject(response.text,slackUserName ,function (json_file) {
                                 var count = 0;
                                 for (var i in json_file) {
                                     count = count + 1;
@@ -205,7 +209,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                 }, {}, 'default');
                 //});
             });
-
+            });
         });
 
     });
@@ -411,7 +415,7 @@ function getUserForSubject(json_file, callback) {
 
 }
 
-function getTutorsForSubject(subject, callback) {
+function getTutorsForSubject(subject,slackUserName, callback) {
 
 
     controller.storage.tutor.all(function (err, tutors) {
@@ -420,9 +424,13 @@ function getTutorsForSubject(subject, callback) {
         //tutorList.push('Hello');
         // console.log(tutors);
         // console.log("------------------------------------");
-        for (var i in tutors) {
-            // console.log(i);
 
+        for (var i in tutors) {
+             console.log(tutors);
+            if(tutors[i].user_id==slackUserName) {
+                console.log('tutor user id'+tutors[i].user_id+'slack user name'+slackUserName);
+                continue;
+            }
             //Iterate through all the subjects to check if that subject is in tutor list or not
             for (var j in tutors[i].subjects) {
                 // console.log("++++++++++++++++++++++++++++");
@@ -444,6 +452,7 @@ function getTutorsForSubject(subject, callback) {
                 }
             }
         }
+
         // for(var i in json_file)
         // {
         //  console.log(json_file[i].major);
@@ -456,9 +465,8 @@ function getTutorsForSubject(subject, callback) {
             // console.log(json_file);
             callback(json_file);
         });
-
-
     });
+
 }
 
 const sendConfirmation = (tutor) => {
