@@ -89,6 +89,16 @@ The four major use cases of our application are,
 
 <From paper/improvement>
 
+### Design Methodologies and Patterns
+
+We have used agile practices throughout. We used kanban project integration with github to track our progress. Here are some screenshots. 
+
+**Before**
+![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agile.png)
+
+**After**
+![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agileDone.png)
+
 ### Evaluation Results 
 
 <Update after evaluation>
@@ -99,14 +109,10 @@ The four major use cases of our application are,
 
 ### Team Information
 
-[Riken Shah](https://github.com/rikenshah)
+[Riken Shah](https://github.com/rikenshah)<br>
+[Mateenrehan Shaikh](https://github.com/mateenrehan)<br>
+[Himani Arora](https://github.com/hhimani)<br>
+[Aaroh Gala](https://github.com/AarohGala)<br>
 
-[Mateenrehan Shaikh](https://github.com/mateenrehan)
-
-[Himani Arora](https://github.com/hhimani)
-
-[Aaroh Gala](https://github.com/AarohGala)
-
-TA/Mentor : [Ken Tu](https://github.com/HuyTu7)
-
-Professor : [Tim Menzies](https://github.com/timm)
+TA/Mentor : [Ken Tu](https://github.com/HuyTu7)<br>
+Professor : [Tim Menzies](https://github.com/timm)<br>
