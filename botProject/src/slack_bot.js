@@ -879,7 +879,7 @@ app.post('/message', (req, res) => {
               console.log(user_points);
               console.log(tutor_rate);
               UserModel.update_booking_points(user_id, tutor_id, tutor_rate);
-              // saveReservation(user_id, tutor_id, date, day, from, to);
+              ReservationMode.save_reservation(user_id, tutor_id, date, day, from, to);
               UserModel.send_tutor_notification(user_id, tutor_id, date, day, from, to);
               action.send_message(payload.channel.id, "Booking Confirmed! Thank you for booking.");
             }
