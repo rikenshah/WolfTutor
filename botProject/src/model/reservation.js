@@ -44,7 +44,7 @@ module.exports = {
     });
   },
   update_booking_points: function(user_id, tutor_id,points){
-    UserModel.fetch_user_points(user_id,function(user_points){    
+    UserModel.fetch_user_points(user_id,function(user_points){
       UserModel.findOneAndUpdate({user_id:user_id},{$set: {points: user_points-points}},function(err,user){
         if(err){
           console.log(err);

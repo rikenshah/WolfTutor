@@ -87,10 +87,10 @@ module.exports = {
             tutor_id = today_reservations[0].tutorid;
             // Enter the reviews in that particular tutor
             TutorModel.tutor.findOneAndUpdate({
-              user_id: payload.user.id
+              user_id: tutor_id
             }, {
               $push: {
-                review: {
+                reviews: {
                   text: payload.submission.review,
                   rating: payload.submission.rating
                 }
@@ -100,6 +100,8 @@ module.exports = {
             });
             // Set the active flag from yes to no
             reservationModel.set_inactive(today_reservations[0]);
+            // Udate overall rating
+            TutorModel.overall_rating(today_reservations[0].tutorid,payload.submission.rating);
           }
         }
       }
