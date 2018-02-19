@@ -881,6 +881,7 @@ app.post('/message', (req, res) => {
               UserModel.update_booking_points(user_id, tutor_id, tutor_rate);
               // saveReservation(user_id, tutor_id, date, day, from, to);
               UserModel.send_tutor_notification(user_id, tutor_id, date, day, from, to);
+              action.send_message(payload.channel.id, "Booking Confirmed! Thank you for booking.");
             }
             else
             {
@@ -892,7 +893,7 @@ app.post('/message', (req, res) => {
       }
       else
       {
-          console.log("Cancelled booking");
+          action.send_message(payload.channel.id, "No Problem, You can reserve it later");
       }
     }
     else if(callback_id == 'create_user_prompt')
