@@ -42,5 +42,19 @@ module.exports = {
       if (err) throw err;
       console.log('1 Entry Updated');
     });
-  }
+  },
+  save_reservation: function(user_id, tutor_id, date, day, from, to){
+    reservation.create({
+      userid: user_id,
+      tutorid: tutor_id,
+      date:date,
+      day: day,
+      from: from,
+      to: to,
+      active:"yes"
+    }, function(err, res) {
+      if (err) return err;
+      console.log('Reservation Successful');
+    });
+  } // Enf of module
 }// End of Module
