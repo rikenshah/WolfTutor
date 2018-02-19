@@ -23,6 +23,7 @@
     "jfs": "^0.2.6",
     "localtunnel": "^1.8.2",
     "md5": "^2.2.1",
+    "mongoose": "^5.0.4",
     "mustache": "^2.3.0",
     "promise": "^8.0.0",
     "request": "^2.81.0",
