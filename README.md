@@ -100,9 +100,13 @@ The four major use cases of our application are,
 ### Team Information
 
 [Riken Shah](https://github.com/rikenshah)
+
 [Mateenrehan Shaikh](https://github.com/mateenrehan)
+
 [Himani Arora](https://github.com/hhimani)
+
 [Aaroh Gala](https://github.com/AarohGala)
 
 TA/Mentor : [Ken Tu](https://github.com/HuyTu7)
+
 Professor : [Tim Menzies](https://github.com/timm)
