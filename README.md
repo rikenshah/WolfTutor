@@ -70,9 +70,20 @@ The four major use cases of our application are,
     </p>
 </Details>
 
-### Storyboard (Optional)
+### Wireframes
 
-<gifs of all use cases>
+#### 1. Find a tutor
+
+#### 2. Book a tutor
+
+#### 3. Become a tutor
+
+![img](Wireframes/become_a_tutor_p1.gif)
+
+##### Part 2
+![img](Wireframes/become_a_tutor_p2.gif)
+
+#### 4. Reward and review the tutor
 
 ### Architectural Design
 
