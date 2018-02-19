@@ -555,7 +555,7 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
             let {id, name, real_name} = response.user;
         console.log(id, name, real_name);
 
-        var loggedInUserId = 'U84DXQKPL';//id;
+        var loggedInUserId = id;//'U84DXQKPL';//id;
         //Here are your reservations as a tutor
             var hasReservationTutee=new Boolean(false);
             var hasReservationTutor=new Boolean(false);
