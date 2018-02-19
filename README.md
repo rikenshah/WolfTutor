@@ -62,6 +62,7 @@ The three major use cases of our application are,
     <p> If a user wants to become a tutor, he/she will just type 'become a tutor' and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
     </p>
 </Details>
+
 #### 4. Reward and review the tutor
 
 <Details>
