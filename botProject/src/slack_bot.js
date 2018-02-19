@@ -17,15 +17,13 @@ const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
 
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
 
 if (!process.env.BOT_TOKEN) {
-  console.log('Error: Specify token in environment');
-  process.exit(1);
+    console.log('Error: Specify token in environment');
+    process.exit(1);
 }
 /*
 
@@ -40,17 +38,17 @@ var controller = Botkit.slackbot({
 var Botkit = require('botkit');
 
 var mongoStorage = require('botkit-storage-mongo')({
-  mongoUri: process.env.MONGO_CONNECTION_STRING,
-  tables: ['user', 'tutor', 'subject', 'reservation']
+    mongoUri: process.env.MONGO_CONNECTION_STRING,
+    tables: ['user', 'tutor', 'subject', 'reservation']
 });
 var os = require('os');
 
 var controller = Botkit.slackbot({
-  storage: mongoStorage,
+    storage: mongoStorage,
 });
 
 var bot = controller.spawn({
-  token: process.env.BOT_TOKEN
+    token: process.env.BOT_TOKEN
 }).startRTM();
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -69,24 +67,24 @@ controller.hears(['my points'], 'direct_message,direct_mention,mention', functio
 
 controller.hears(['what can I do'], 'direct_message,direct_mention,mention', function(bot, message) {
 
-  bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor.");
+    bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );
 });
 
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
 
-  var name = message.match[1];
-  controller.storage.users.get(message.user, function(err, user) {
-    if (!user) {
-      user = {
-        id: message.user,
-      };
-    }
-    user.name = name;
-    controller.storage.users.save(user, function(err, id) {
-      bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+    var name = message.match[1];
+    controller.storage.users.get(message.user, function (err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        user.name = name;
+        controller.storage.users.save(user, function (err, id) {
+            bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+        });
     });
-  });
 });
 
 controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'select a tutor'],
@@ -129,8 +127,8 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                     //convo.say was not working
                     isValidSubject(response.text, function (flag) {
                         if (flag == true) {
-                          bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                          getTutorsForSubject(response.text, function (json_file) {
+                            bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                            getTutorsForSubject(response.text, function (json_file) {
                                 var count = 0;
                                 for (var i in json_file) {
                                     count = count + 1;
@@ -146,9 +144,8 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                   {
                                     bot.reply(message,
                                     {
-                                        // "text": "Tutor Details",
-                                        "attachments": 
-                                        [
+                                        "text": "Tutor Details",
+                                        "attachments": [
                                             {
 
                                                 "fields":
@@ -229,31 +226,31 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
 
         });
     });
-    
 
 function formatUptime(uptime) {
-  var unit = 'second';
-  if (uptime > 60) {
-    uptime = uptime / 60;
-    unit = 'minute';
-  }
-  if (uptime > 60) {
-    uptime = uptime / 60;
-    unit = 'hour';
-  }
-  if (uptime != 1) {
-    unit = unit + 's';
-  }
+    var unit = 'second';
+    if (uptime > 60) {
+        uptime = uptime / 60;
+        unit = 'minute';
+    }
+    if (uptime > 60) {
+        uptime = uptime / 60;
+        unit = 'hour';
+    }
+    if (uptime != 1) {
+        unit = unit + 's';
+    }
 
-  uptime = uptime + ' ' + unit;
-  return uptime;
+    uptime = uptime + ' ' + unit;
+    return uptime;
 }
 
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
-  bot.reply(message, prompts.become_tutor_prompt);
+    bot.reply(message, prompts.become_tutor_prompt);
 });
 
+//Added test method- to be removed.
 controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
 
     // start a conversation to handle this response.
@@ -421,14 +418,14 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 });
 
 
-var session_over = ['session a over', 'rate the tutor', 'add review', 'review']
+var session_over = ['session a over','rate the tutor','add review','review']
 controller.hears('review', 'direct_message', function(bot, message) {
-  bot.reply(message, prompts.add_review_prompt);
+    bot.reply(message, prompts.add_review_prompt);
 });
 
 
 app.get('/', (req, res) => {
-  res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
+    res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
     ' instructions in the README to configure the Slack App and your environment variables.</p>');
 });
 
@@ -440,7 +437,7 @@ app.post('/message', (req, res) => {
   const trigger_id = payload.trigger_id;
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
 
-    if (callback_id == 'become_tutor_prompt') {
+    if(callback_id=='become_tutor_prompt'){
       //console.log(payload);
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
@@ -465,20 +462,20 @@ app.post('/message', (req, res) => {
     else if(callback_id=='submit_tutor_info_dialog'){
       // immediately respond with a empty 200 response to let
       // Slack know the command was received
-      action.send_message(payload.channel.id, 'Thanks for submitting form', prompts.add_more_subjects_prompt);
+      action.send_message(payload.channel.id,'Thanks for submitting form',prompts.add_more_subjects_prompt);
       // create a tutor
       TutorModel.create_new_tutor(payload);
       //tutor.create(payload.user.id, payload.submission);
       res.send('');
     } // End of else if for submit tutor info
-    else if (callback_id == 'add_more_subjects_prompt') {
+    else if (callback_id =='add_more_subjects_prompt') {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
         // Get the availibility Prompt
-        action.send_message(payload.channel.id, 'Ok.', prompts.add_availability_prompt);
+        action.send_message(payload.channel.id,'Ok.',prompts.add_availability_prompt);
       } else {
         // Dialog for Adding a subject
-        dialogs.add_more_subjects_dialog(function(dialog_attachment){        
+        dialogs.add_more_subjects_dialog(function(dialog_attachment){
           const dialog = {
           token: process.env.SLACK_ACCESS_TOKEN,
           trigger_id,
@@ -489,19 +486,20 @@ app.post('/message', (req, res) => {
         });
       } // End of else for add more subjects
     } // End of else if for tutor add subjects
-    else if (callback_id == 'add_more_subjects_dialog') {
-      action.send_message(payload.channel.id, 'Additional subjects added', prompts.add_more_subjects_prompt);
+    else if (callback_id=='add_more_subjects_dialog') {
+      action.send_message(payload.channel.id,'Additional subjects added',prompts.add_more_subjects_prompt);
       // TODO Store add more subjects
       TutorModel.add_more_subjects(payload);
       res.send('');
-    } else if (callback_id == 'add_availability_prompt') {
+    }
+    else if (callback_id=='add_availability_prompt') {
       const dialog = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        trigger_id,
-        dialog: JSON.stringify(dialogs.add_availability_dialog),
+      token: process.env.SLACK_ACCESS_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify(dialogs.add_availability_dialog),
       }
       // open the dialog by calling dialogs.open method and sending the payload
-      action.open_dialog(dialog, res);
+      action.open_dialog(dialog,res);
       //res.send('');
     } // End of else if for add more availability
     else if (callback_id=='add_availability_dialog') {
@@ -518,19 +516,19 @@ app.post('/message', (req, res) => {
       }
       res.send('');
     } // End of else if of add availability dialog
-    else if (callback_id == 'add_more_availability_prompt') {
+    else if (callback_id=='add_more_availability_prompt') {
       var checkValue = payload.actions[0].value;
       if (checkValue == 'no') {
-        action.send_message(payload.channel.id, 'Ok. Thank you for enrolling as a tutor.')
+        action.send_message(payload.channel.id,'Ok. Thank you for enrolling as a tutor.')
       } else {
         // TutorModel.add_availability(payload);
         const dialog = {
-          token: process.env.SLACK_ACCESS_TOKEN,
-          trigger_id,
-          dialog: JSON.stringify(dialogs.add_availability_dialog),
+        token: process.env.SLACK_ACCESS_TOKEN,
+        trigger_id,
+        dialog: JSON.stringify(dialogs.add_availability_dialog),
         }
         // open the dialog by calling dialogs.open method and sending the payload
-        action.open_dialog(dialog, res);
+        action.open_dialog(dialog,res);
       }
     } // End of else if of add more availability prompt
     else if (callback_id == 'review_and_scheduling') {
@@ -584,7 +582,7 @@ app.post('/message', (req, res) => {
 
             }
 
-            action.send_message(payload.channel.id, 'Slot Dates', 
+            action.send_message(payload.channel.id, 'Slot Dates',
             [
             {
               "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
@@ -642,7 +640,7 @@ app.post('/message', (req, res) => {
                     resolve("Reviews for tutor : "+tutor_name);
                 });
 
-                
+
               });
               display_review.then((result) => {
                 action.send_message(payload.channel.id,result,
@@ -678,7 +676,7 @@ app.post('/message', (req, res) => {
 
               });
             }
-          
+
           });
       }
 
@@ -729,7 +727,7 @@ app.post('/message', (req, res) => {
 
             }
 
-            action.send_message(payload.channel.id, 'Slot Dates', 
+            action.send_message(payload.channel.id, 'Slot Dates',
             [
             {
               "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
@@ -780,6 +778,7 @@ app.post('/message', (req, res) => {
                         if(reservation['available'].toString() == "yes")
                         {
                           console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
+
                           action.send_message(payload.channel.id, '', 
                           [
                             {
@@ -800,7 +799,7 @@ app.post('/message', (req, res) => {
 
                       //TODO appending
                     }
-                  
+
               }
 
             });
@@ -844,7 +843,7 @@ app.post('/message', (req, res) => {
           ]
         }
       ]);
-     
+
     }
     else if(callback_id == 'save_booking')
     {
@@ -900,40 +899,45 @@ app.post('/message', (req, res) => {
     {
 
       console.log(checkValue);
-      if (checkValue == 'no') {
+      if (checkValue == 'no')
+      {
         action.send_message(payload.channel.id, "OK, you can enroll anytime");
-      } else {
-        tutor.new_user(payload.user.id, payload.submission);
-        // UserModel.create_new_user(payload);
-        // action.send_message(payload.channel.id, "Thank you for enrolling.");
-        // const dialog = {
-        // token: process.env.SLACK_ACCESS_TOKEN,
-        // trigger_id,
-        // dialog: JSON.stringify(dialogs.create_new_user_dialog),
-        // }
-        // // open the dialog by calling dialogs.open method and sending the payload
-        // action.open_dialog(dialog,res);
       }
-    } else if (callback_id == 'add_review_prompt') {
+      else
+      {
+          tutor.new_user(payload.user.id, payload.submission);
+          // UserModel.create_new_user(payload);
+          // action.send_message(payload.channel.id, "Thank you for enrolling.");
+          // const dialog = {
+          // token: process.env.SLACK_ACCESS_TOKEN,
+          // trigger_id,
+          // dialog: JSON.stringify(dialogs.create_new_user_dialog),
+          // }
+          // // open the dialog by calling dialogs.open method and sending the payload
+          // action.open_dialog(dialog,res);
+      }
+    }
+    else if(callback_id=='add_review_prompt'){
       const dialog = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        trigger_id,
-        dialog: JSON.stringify(dialogs.add_review_dialog),
+      token: process.env.SLACK_ACCESS_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify(dialogs.add_review_dialog),
       }
       // open the dialog by calling dialogs.open method and sending the payload
-      action.open_dialog(dialog, res);
-    } // End of else if of add_review_prompt
-    else if (callback_id == 'add_review_dialog') {
+      action.open_dialog(dialog,res);
+    }// End of else if of add_review_prompt
+    else if(callback_id=='add_review_dialog'){
       // TODO Store review and rating into database
       UserModel.give_review(payload);
-      action.send_message(payload.channel.id, 'Thank you so much. #GoPack', []);
+      action.send_message(payload.channel.id,'Thank you so much. #GoPack',[]);
       res.send('');
 
-    } else {
+    }
+    else {
       console.log('Reached Else');
       console.log(payload);
     }
-  } else {
+} else {
     debug('Verification token mismatch');
     console.log('Failed Here');
     res.sendStatus(403);
@@ -943,43 +947,40 @@ app.post('/message', (req, res) => {
 
 
 app.post('/botactivity', (req, res) => {
-  console.log(req['body']['event']['text']);
-  // Will need to verify the challenge parameter first
-  res.send("I am here");
-  const query = req.body.event.text;
-  console.log(query);
-  if (query.match(/become a tutor/i)) {
+    console.log(req['body']['event']['text']);
+// Will need to verify the challenge parameter first
+res.send("I am here");
+const query = req.body.event.text;
+console.log(query);
+if (query.match(/become a tutor/i)) {
     console.log('Yes He wants to bocome a Tutor');
-  } else {
+}
+else {
     console.log('No ');
-  }
-  console.log(req['body']);
-  res.send(req.body.challenge);
+}
+console.log(req['body']);
+res.send(req.body.challenge);
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`App listening on port ${process.env.PORT}!`);
+    console.log(`App listening on port ${process.env.PORT}!`);
 });
 
 function isValidSubject(mysubject, callback) {
-  var flag = false;
-  controller.storage.subject.find({
-      name: {
-        $regex: new RegExp(mysubject.toString(), "i")
-      } /*subject.toString()*/
-    },
-    function(error, subject) {
-      if (error) {
-        //return false;
-      }
-      console.log(subject);
-      if (subject.length > 0 && mysubject.toString().toLowerCase() == subject[0].name.toLowerCase()) {
-        console.log('valid subject');
-        flag = true;
-      }
+    var flag = false;
+    controller.storage.subject.find({name: {$regex: new RegExp(mysubject.toString(), "i")}/*subject.toString()*/},
+        function (error, subject) {
+            if (error) {
+                //return false;
+            }
+            console.log(subject);
+            if (subject.length > 0 && mysubject.toString().toLowerCase() == subject[0].name.toLowerCase()) {
+                console.log('valid subject');
+                flag = true;
+            }
 
-      callback(flag);
-    });
+            callback(flag);
+        });
 
 }
 
@@ -999,9 +1000,9 @@ function getTutorReview(user_id, callback)
           {
             tutor_index+=(parseInt(j)+1).toString()+"\n";
             tutor_reviews+=tutors[i].reviews[j].text+"\n";
-            tutor_rating+=tutors[i].reviews[j].rating+"\n";  
+            tutor_rating+=tutors[i].reviews[j].rating+"\n";
           }
-          
+
         }
     }
     // console.log(tutor_reviews);
@@ -1024,35 +1025,36 @@ function getUserForSubject(json_file, callback)
             }
 
         }
-        callback(json_file);    
+        callback(json_file);
     });
 
 }
 
 function getTutorsForSubject(subject, callback) {
-  controller.storage.tutor.all(function(err, tutors) {
-    var json_file = {};
-    for (var i in tutors) {
-      // console.log(i);
-      //Iterate through all the subjects to check if that subject is in tutor list or not
-      for (var j in tutors[i].subjects) {
-        //Check if that subject is taught by the tutor or not
-        if (tutors[i].subjects[j].name == subject) {
-          json_temp = {
-            user_id: tutors[i].user_id,
-            major: tutors[i].major,
-            degree: tutors[i].degree,
-            summary: tutors[i].summary,
-            rate: tutors[i].overall_rating
-          }
-          json_file[tutors[i].user_id] = json_temp;
+    controller.storage.tutor.all(function (err, tutors) {
+        var json_file = {};
+        for (var i in tutors) {
+            // console.log(i);
+            //Iterate through all the subjects to check if that subject is in tutor list or not
+            for (var j in tutors[i].subjects) {
+                //Check if that subject is taught by the tutor or not
+                if (tutors[i].subjects[j].name == subject) {
+                    json_temp =
+                        {
+                            user_id: tutors[i].user_id,
+                            major: tutors[i].major,
+                            degree: tutors[i].degree,
+                            summary: tutors[i].summary,
+                            rate: tutors[i].overall_rating
+                        }
+                    json_file[tutors[i].user_id] = json_temp;
+                }
+            }
         }
-      }
-    }
-    getUserForSubject(json_file, function(json_file) {
-      callback(json_file);
+        getUserForSubject(json_file, function (json_file) {
+            callback(json_file);
+        });
     });
-  });
 }
 
 
@@ -1069,7 +1071,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         else
             var avl = tutor[0].availability;
         //TODO remove it
-        // userId = '5a760a1f734d1d3bd58c8d16';
+        userId = '5a760a1f734d1d3bd58c8d16';
 
         //**get availabilities of the tutor for the tutee
 
@@ -1211,3 +1213,27 @@ function saveReservation(userId, tutorId, date, day, from, to) {
     });
 
 }
+//Method for a user to view rewards
+controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message,direct_mention,mention', function (bot, message) {
+    bot.startConversation(message, function (err, convo) {
+
+        console.log('rewards start');
+        bot.api.users.info({user: message.user}, (error, response) => {
+            let {id, name, real_name} = response.user;
+        console.log(id, name, real_name);
+        //TODO replace with logged in user
+        var loggedInUserId = id;//'U94AXQ6RL';//id;//
+
+        controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
+            if (users != null || users.length > 0) {
+                //update the user rewards
+                console.log(users);
+                bot.reply(message, 'Your Reward points are ' + users[0].points);
+                convo.stop();
+            }
+
+        });
+    });
+        console.log('rewards end');
+    });
+});

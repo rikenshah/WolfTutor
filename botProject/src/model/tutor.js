@@ -12,7 +12,7 @@ var tutor_schema = new configure.schema({
     to: 'number'
   }],
   summary: 'string',
-  review: [{
+  reviews: [{
     text: 'string',
     rating: 'number'
   }],
@@ -104,16 +104,31 @@ module.exports = {
     });
   },
   tutor,
+  overall_rating: function (tutorid, currrent_rating) {
+    tutor.findOne({user_id:tutorid},function (err,res) {
+      if (err) throw err;
+      var num_reviews = res.reviews.length;
+      var overall_rating = res.overall_rating;
+      var curr_rating = Number(currrent_rating);
+      var calculate_rating = ((overall_rating*num_reviews)+curr_rating)/(num_reviews+1);
+      console.log('Rating Calculation',calculate_rating);
+      var new_rating = calculate_rating.toPrecision(3);
+      console.log(new_rating);
+      tutor.findOneAndUpdate({user_id:tutorid},{overall_rating: new_rating},function (err,resp) {
+        if (err) throw err;
+        console.log(resp);
+      });
+    });
+  },
   fetch_tutor_rate: function(tutor_id,callback){
     tutor.findOne({user_id:tutor_id},function(err,res){
       if(err) return err;
-      callback(null,res.rate);
-    });  
-  }, // End of function
-  overall_rating: function () {
-    // TODO Calculate Overall Rating
-  }
-} // End of module 
+
+      callback(null, res.rate);
+    });
+  } // End of function
+} // End of module
+
 function remove_duplicate_subjects(user_id){
     //console.log("Printing here");
     tutor.findOne({user_id:user_id},function (err,res) {

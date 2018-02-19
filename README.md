@@ -14,7 +14,9 @@ We present a peer to peer collaborative tutoring system that is based on peer re
 
 ### Bot's description
 
-### Steps to Install and Run
+We have created a Slack application that can be added to any Slack workspace. We have designed various user query flows with which the user can interact with the application. We have hosted our backend on NodeJS server and for frontend we are using various Slack components like dialog boxes, message menus and other interactive elements. Instead of using the traditional text based chat interface for user interaction, we figured, using interactive elements it becomes easier for user to communicate thoughts more effectively while having full control over the flow of the application.
+
+### Steps to Install and Run (Developer Guide)
 
 1. Make sure `Node.JS` is installed and is working in your machine. (Check using `node -v`).
 2. Install `MongoDB` and start the server.
@@ -39,12 +41,43 @@ We present a peer to peer collaborative tutoring system that is based on peer re
 
 ### Use Cases
 
+The three major use cases of our application are, 
+1. Find a tutor
+
+<Details>
+
+2. Book a tutor
+
+<Details>
+
+3. Reward and review the tutor
+
+<Details>
+    
+Some other use cases are,
+
 ### Storyboard (Optional)
+
+<gifs of all use cases>
 
 ### Architectural Design
 
-### Evaluation
+<From paper/improvement>
+
+### Evaluation Results 
+
+<Update after evaluation>
+
+### Reports
+
+1. [Feb 1 report](https://github.com/rikenshah/WolfTutor/blob/master/Reports/Report_Feb/team_l_wolftutor_feb_report.pdf) 
 
 ### Team Information
 
-### Reports
+[Riken Shah](https://github.com/rikenshah)
+[Mateenrehan Shaikh]()
+[Himani Arora]()
+[Aaroh Gala]()
+
+TA/Mentor : [Ken Tu](https://github.com/HuyTu7)
+Professor : [Tim Menzies](https://github.com/timm)
