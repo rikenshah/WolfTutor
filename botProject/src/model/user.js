@@ -105,5 +105,98 @@ module.exports = {
         }
       }
     });
-  } // End of function
+  }, // End of function
+  update_booking_points: function(user_id, tutor_id,points){
+    console.log('Ids are ');
+    console.log(user_id);
+    console.log(tutor_id);
+    console.log(points);
+    module.exports.fetch_user_points(user_id,function(err,user_points){ 
+      if(err){
+        console.log(err);
+        return err;
+      }   
+      console.log('In Update Booking',user_points);
+      user.findOneAndUpdate({user_id:user_id},{$set: {points: (user_points-points)}},function(err,user){
+        if(err){
+          console.log(err);
+          return err;
+        }
+        console.log("User points updated to :"+(user_points-points));
+      });
+    });
+    module.exports.fetch_user_points(tutor_id,function(err,tutor_points){
+      if(err){
+        console.log(err);
+        return err;
+      }
+      user.findOneAndUpdate({user_id:tutor_id},{$set: {points: (tutor_points+points)}},function(err,user){
+        if(err){
+          console.log(err);
+          return err;
+        }
+        console.log("Tutor points updated to :"+(tutor_points+points));
+      });
+    });
+  }, // End of function
+  send_tutor_notification: function(user_id, tutor_id, date, day, from, to){
+  // send_tutor_notification(){
+    // var student_name = "Rikne";
+    // var student_phone = "1919191991";
+    // var student_email = "rshah9@ncsu.edu";
+    // var tutor_id = "U93ELGP8S"
+    // var user_id = "U8XDVJD26";
+    // var from = "csdcd";
+    // var to = "cdscds";
+    // var date = "Cdcdsdc";
+    // var day = "cdcdsd";
+    module.exports.get_user_info(user_id, function(user){
+      console.log("sending notification");
+      var student_name = user.name;
+      var student_email = user.email;
+      var student_phone = user.phone;
+      action.send_message(tutor_id,"Hello There",[
+              {
+                  "fields":
+                  [
+                   {
+                      "title": 'Student Name',
+                      "value": student_name,
+                      "short":true,
+                    },
+                    {
+                      "title": 'Email',
+                      "value": student_email,
+                      "short":true,
+                    },
+                    {
+                      "title": 'Phone',
+                      "value": student_phone,
+                      "short":true,
+                    },
+                    {
+                      "title": 'Date',
+                      "value": date,
+                      "short":true,
+                    },
+                    {
+                      "title": 'Day',
+                      "value": day,
+                      "short":true,
+                    },
+                    {
+                      "title": 'From',
+                      "value": from,
+                      "short":true,
+                    },
+                    {
+                      "title": 'To',
+                      "value": to,
+                      "short":true,
+                    }
+                  ]
+              }
+          ]);
+    }); // End of query
+  }// End of function
 } //End of module

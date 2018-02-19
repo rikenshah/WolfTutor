@@ -882,10 +882,9 @@ app.post('/message', (req, res) => {
               console.log("Points Adjusted");
               console.log(user_points);
               console.log(tutor_rate);
-              console.log(UserModel);
-              ReservationModel.update_booking_points(user_id, tutor_id, tutor_rate);
+              UserModel.update_booking_points(user_id, tutor_id, tutor_rate);
               // saveReservation(user_id, tutor_id, date, day, from, to);
-              //action.send_tutor_notification(user_id, "U93ELGP8S", date, day, from, to);
+              UserModel.send_tutor_notification(user_id, tutor_id, date, day, from, to);
             }
             else
             {
