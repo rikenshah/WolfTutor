@@ -59,7 +59,7 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
 });
 
 controller.hears(['my points'], 'direct_message,direct_mention,mention', function(bot, message) {
-  UserModel.fetch_user_points(message.user,function(points){
+  UserModel.fetch_user_points(message.user,function(err,points){
     bot.reply(message, 'Your points are : '+points);
     bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
   });
