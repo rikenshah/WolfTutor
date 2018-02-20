@@ -1477,8 +1477,8 @@ controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message
     });
 });
 
-//Method for a user to view rewards
-controller.hears(['my availability','availability'], 'direct_message,direct_mention,mention', function (bot, message) {
+//Method for a user to view availibility
+controller.hears(['my availability','availability', 'view my availability'], 'direct_message,direct_mention,mention', function (bot, message) {
     
     bot.startConversation(message, function (err, convo) {
 
@@ -1515,6 +1515,49 @@ controller.hears(['my availability','availability'], 'direct_message,direct_ment
             if(flag == 0)
             {
               bot.reply(message, "Sorry, you haven't entered any availability");
+            }
+            convo.stop();
+        });
+    });
+        console.log('availability end');
+    });
+});
+
+//Method for a user to view subjects
+controller.hears(['my subject','subject', 'view my subject'], 'direct_message,direct_mention,mention', function (bot, message) {
+    
+    bot.startConversation(message, function (err, convo) {
+
+        console.log('availability start');
+        bot.api.users.info({user: message.user}, (error, response) => {
+            let {id, name, real_name} = response.user;
+            console.log(id, name, real_name);
+        //TODO replace with logged in user
+            var loggedInUserId = 'U84DXQKPL';//id;//
+
+            var user_subjects = '';
+            var flag = 0;
+
+        controller.storage.tutor.find({user_id: loggedInUserId}, function (error, tutors) {
+            if (tutors != null && tutors.length > 0) {
+                
+                console.log(tutors[0].subjects);
+                if(tutors[0].subjects.length != 0)
+                {
+                  for(var i in tutors[0].subjects)
+                  {
+                    flag = 1;
+                    user_subjects += tutors[0].subjects[i].name + "\n";
+                  }
+
+                  console.log(user_subjects);
+                  bot.reply(message, "Your subjects are:\n"+user_subjects);
+                }
+                
+            }
+            if(flag == 0)
+            {
+              bot.reply(message, "Sorry, you haven't entered any subjects");
             }
             convo.stop();
         });
