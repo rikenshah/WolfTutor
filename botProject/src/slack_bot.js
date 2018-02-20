@@ -253,7 +253,7 @@ function formatUptime(uptime) {
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
 });
-
+//TODO remove-was added to test slots
 //Added test method- to be removed.
 controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
 
@@ -1021,9 +1021,11 @@ function isValidSubject(mysubject, callback) {
             if (error) {
                 //return false;
             }
-            console.log(subject);
-            if (subject.length > 0 && mysubject.toString().toLowerCase() == subject[0].name.toLowerCase()) {
-                console.log('valid subject');
+            //console.log(subject);
+            var tuteeSubject=mysubject;
+            var givenSubject=subject[0].name.toString().toLowerCase();
+            if (subject.length > 0 && (tuteeSubject.toLowerCase() === givenSubject)) {
+               // console.log('valid subject');
                 flag = true;
             }
 
@@ -1087,7 +1089,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
         // console.log("------------------------------------");
 
         for (var i in tutors) {
-             console.log(tutors);
+             //console.log(tutors);
             if(tutors[i].user_id==slackUserName) {
                 console.log('tutor user id'+tutors[i].user_id+'slack user name'+slackUserName);
                 continue;
@@ -1095,7 +1097,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
             //Iterate through all the subjects to check if that subject is in tutor list or not
             for (var j in tutors[i].subjects) {
                 //Check if that subject is taught by the tutor or not
-                if (tutors[i].subjects[j].name == subject) {
+                if (tutors[i].subjects[j].name.toLowerCase() == subject.toLowerCase()) {
                     json_temp =
                         {
                             user_id: tutors[i].user_id,
@@ -1130,7 +1132,7 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
     // start a conversation to handle this response.
     bot.startConversation(message, function (err, convo) {
-        getAvailableSlotsTutor("U84DXQKPL", 1, function (reservationSlots) {//user_id from tutor information
+        getAvailableSlotsTutor("U84DLLKPL", 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     // bot.reply('Cool, you said: ' + response.text);
@@ -1293,7 +1295,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
     //**Check reward points of the user/tutee trying to reserve, give an error if he is left with insufficent points
     controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
 
-        if (tutor.length==null||tutor.length==0) {
+        if (tutor==null||tutor.length==0) {
             console.log('No Tutors found');
             return;
         }
