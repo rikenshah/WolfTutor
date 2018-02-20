@@ -47,7 +47,7 @@ module.exports = {
     reservation.create({
       userid: user_id,
       tutorid: tutor_id,
-      date:date,
+      date:date.date,
       day: day,
       from: from,
       to: to,
