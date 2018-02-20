@@ -805,34 +805,50 @@ app.post('/message', (req, res) => {
 
                       if(reservation['Date'].toString().slice(0,15) == date_key)
                       {
-                        // console.log("#######################################################");
-                        // console.log(reservation['Date'].toString());
-                        // console.log(reservation['from'].toString());
-                        // console.log(reservation['to'].toString());
-                        // console.log(reservation['available'].toString());
-                        if(reservation['available'].toString() == "yes")
-                        {
-                          console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
-
-                          flag_no_time_slot += 1;
-
-                          action.send_message(payload.channel.id, '', 
-                          [
+                        console.log("#########HIMANIII BUG##############################################");
+                        console.log(reservation['Date'].toString());
+                        console.log(reservation['from'].toString());
+                        console.log(reservation['to'].toString());
+                        console.log(reservation['available'].toString());
+                        valid_slot(tutor_id, reservation['Date'].toString(), reservation['Day'].toString(), reservation['from'].toString(), reservation['to'].toString(),  function (callback, tutor_id_aa, date_aa, day_aa, from_aa, to_aa) {
+                          console.log("I am happy", callback);
+                          if(callback == 0)
                             {
-                                title: reservation['Date'].toString().slice(4,15) +" "+reservation['from'].toString()+":"+reservation['to'].toString(),
-                                callback_id: 'booking_now',
-                                attachment_type: 'default',
-                                actions: [
-                                    {
-                                        "name":"booking",
-                                        "text": "Book",
-                                        "value": tutor_id +" "+reservation['Date'].toString() +" "+reservation['from'].toString()+" "+reservation['to'].toString()+" "+reservation['Day'].toString(),
-                                        "type": "button",
-                                    }
-                                ]
-                            }
-                        ]);
-                      }
+                              console.log("#########HIMANIII BUG 2##############################################");
+                              console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
+                              console.log(tutor_id_aa, date_aa, day_aa, from_aa, to_aa);
+
+                              flag_no_time_slot += 1;
+
+                              action.send_message(payload.channel.id, '', 
+                              [
+                                {
+                                    title: date_aa.slice(0, 15) +" "+from_aa+":"+to_aa,
+                                    callback_id: 'booking_now',
+                                    attachment_type: 'default',
+                                    actions: [
+                                        {
+                                            "name":"booking",
+                                            "text": "Book",
+                                            "value": tutor_id_aa +" "+date_aa +" "+from_aa+" "+to_aa+" "+day_aa,
+                                            "type": "button",
+                                        }
+                                    ]
+                                }
+                            ]);
+                          }
+
+                          // console.log("#####No of availabe slots ###################");
+                          // console.log(flag_no_time_slot);
+
+                          // if(flag_no_time_slot == 0)
+                          // {
+                          //     action.send_message(payload.channel.id, "Sorry! There are no slots availabe for this tutor on this day!");
+                          // }
+                            
+                        });
+
+                        
 
                       //TODO appending
                     }
@@ -841,13 +857,7 @@ app.post('/message', (req, res) => {
 
               }
 
-              console.log("#####No of availabe slots ###################");
-              console.log(flag_no_time_slot);
-
-              if(flag_no_time_slot == 0)
-              {
-                  action.send_message(payload.channel.id, "Sorry! There are no slots availabe for this tutor on this day!");
-              }
+              
 
             });
 
@@ -1121,6 +1131,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
 
         getUserForSubject(json_file, function (json_file) {
             callback(json_file);
+
         });
     });
 
@@ -1475,3 +1486,56 @@ controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message
         console.log('rewards end');
     });
 });
+
+
+controller.hears(['all reservation'], 'direct_message,direct_mention,mention', function (bot, message) {
+
+  controller.storage.reservation.find({tutorid: "U84DXQKPL"}, function (error, reservations) {
+            if (reservations != null && reservations.length > 0) {
+                //all reservations
+                console.log(reservations);
+            }
+        });
+});
+
+function valid_slot(tutor_id, date, day, from, to, callback)
+{
+  
+
+  console.log(tutor_id, date.slice(0,33), from, to);
+  // date = date.slice(0,33);
+  var flag = 0;
+
+  controller.storage.reservation.find({tutorid: tutor_id}, function (error, reservations) {
+      if (reservations != null && reservations.length > 0) {
+          //all reservations
+          for(var i in reservations)
+          {
+            console.log(reservations[i].tutorid.toString(), reservations[i].date.toString(), reservations[i].from.toString(), reservations[i].to.toString());
+            console.log(tutor_id, date, from, to);
+            if(reservations[i].tutorid.toString() == tutor_id && reservations[i].date.toString() == date.slice(0,33) && reservations[i].from.toString() == from && reservations[i].to.toString() == to)
+            {
+              flag = 1;
+            }  
+          }
+          
+      }
+      callback(flag, tutor_id, date, day, from, to);
+  });
+    // controller.storage.user.all(function (err, users)
+    // {
+    //     for (var i in users)
+    //     {
+    //         for (var j in json_file)
+    //         {
+    //             if (json_file[j].user_id == users[i].user_id) {
+    //                 json_file[j].name = users[i].name;
+    //                 json_file[j].email = users[i].email;
+    //             }
+    //         }
+
+    //     }
+    //     callback(json_file);
+    // });
+
+}
