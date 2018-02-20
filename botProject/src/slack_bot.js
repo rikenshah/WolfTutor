@@ -624,7 +624,7 @@ app.post('/message', (req, res) => {
                 action.send_message(payload.channel.id,"",
                 [
                   {
-                    title: 'No reviews for this tutor available',
+                    title: 'No reviews for this tutor available! Do you still want to book?',
                     callback_id: 'schedule_now',
                     attachment_type: 'default',
                     actions: [
@@ -739,8 +739,24 @@ app.post('/message', (req, res) => {
 
             }
 
+
+
+            console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
+            
+            console.log(slots_date.length);
+            
+            if(slots_date.length == 0)
+            {
+
+                action.send_message(payload.channel.id, "Sorry! There are no slots available for this tutor!");
+            
+            }
+            else
+            {
+
             action.send_message(payload.channel.id, 'Slot Dates',
             [
+
             {
               "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
               "attachment_type": "default",
@@ -753,7 +769,12 @@ app.post('/message', (req, res) => {
                       "options": slots_date,
                   }
               ]
-          }]);
+          }
+          ]
+          );
+
+          }
+
         });
       
     }
@@ -770,6 +791,8 @@ app.post('/message', (req, res) => {
 
                 }, {}, 'default');
             }
+
+            var flag_no_time_slot = 0;
 
             var slots_date = [];
             for(var r in reservationSlots){
@@ -791,6 +814,7 @@ app.post('/message', (req, res) => {
                         {
                           console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
 
+                          
                           action.send_message(payload.channel.id, '', 
                           [
                             {
