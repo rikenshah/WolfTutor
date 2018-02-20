@@ -814,7 +814,8 @@ app.post('/message', (req, res) => {
                         {
                           console.log(reservation['Date'].toString().slice(0,15) +" "+reservation['from'].toString()+" "+reservation['to'].toString());
 
-                          
+                          flag_no_time_slot += 1;
+
                           action.send_message(payload.channel.id, '', 
                           [
                             {
@@ -836,6 +837,16 @@ app.post('/message', (req, res) => {
                       //TODO appending
                     }
 
+
+
+              }
+
+              console.log("#####No of availabe slots ###################");
+              console.log(flag_no_time_slot);
+
+              if(flag_no_time_slot == 0)
+              {
+                  action.send_message(payload.channel.id, "Sorry! There are no slots availabe for this tutor on this day!");
               }
 
             });
