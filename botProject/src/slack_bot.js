@@ -558,7 +558,7 @@ app.post('/message', (req, res) => {
             var slots_date = [];
             for(var r in reservationSlots){
                 var reservation=reservationSlots[r];
-                    console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
+                    // console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
                     for(var rs in reservation){
                         console.log(rs+ ''+reservation[rs]);
                     }
@@ -585,22 +585,30 @@ app.post('/message', (req, res) => {
                     }
 
             }
-
-            action.send_message(payload.channel.id, 'Slot Dates',
-            [
+            console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
+            console.log(slots_date.length);
+            if(slots_date.length == 0)
             {
-              "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
-              "attachment_type": "default",
-              "callback_id": "date_selection",
-              "actions": [
-                  {
-                      "name": "date_list",
-                      "text": "Pick a date...",
-                      "type": "select",
-                      "options": slots_date,
-                  }
-              ]
-          }]);
+                action.send_message(payload.channel.id, "Sorry! There are no slots available for this tutor!");
+            }
+            else
+            {
+              action.send_message(payload.channel.id, 'Slot Dates',
+              [
+              {
+                "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
+                "attachment_type": "default",
+                "callback_id": "date_selection",
+                "actions": [
+                    {
+                        "name": "date_list",
+                        "text": "Pick a date...",
+                        "type": "select",
+                        "options": slots_date,
+                    }
+                ]
+            }]);
+          }
         });
       }
       else
@@ -1398,7 +1406,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
 function saveReservation(userId, tutorId, date, day, from, to) {
     //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
     var reservation = {
-        id: userId, tutorid: tutorId, userid: userId, date: currentDate, from: '0900', to: '1030',
+        id: userId, tutorid: tutorId, userid: userId, date: currentDate, from: from, to: to,
         active: 'yes'
     };
     controller.storage.reservation.save(reservation, function (error) {
@@ -1410,31 +1418,7 @@ function saveReservation(userId, tutorId, date, day, from, to) {
 //Method for a user to view rewards
 controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message,direct_mention,mention', function (bot, message) {
     bot.startConversation(message, function (err, convo) {
-/*<<<<<<< HEAD
 
-        console.log('rewards start');
-        bot.api.users.info({user: message.user}, (error, response) => {
-            let {id, name, real_name} = response.user;
-        console.log(id, name, real_name);
-        //TODO replace with logged in user
-        var loggedInUserId = id;//'U94AXQ6RL';//id;//
-
-        controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
-            if (users != null || users.length > 0) {
-                //update the user rewards
-                console.log(users);
-                bot.reply(message, 'Your Reward points are ' + users[0].points);
-                convo.stop();
-            }
-
-        });
-    });
-        console.log('rewards end');
-    });
-});
-
-=======
->>>>>>> 5d3dec1580df95fd1202e345339c64c3b6772392*/
 
         console.log('rewards start');
         bot.api.users.info({user: message.user}, (error, response) => {
