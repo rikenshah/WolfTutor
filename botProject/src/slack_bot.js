@@ -1450,6 +1450,7 @@ function saveReservation(userId, tutorId, date, day, from, to) {
     });
 
 }
+
 //Method for a user to view rewards
 controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message,direct_mention,mention', function (bot, message) {
     bot.startConversation(message, function (err, convo) {
@@ -1473,5 +1474,51 @@ controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message
         });
     });
         console.log('rewards end');
+    });
+});
+
+//Method for a user to view rewards
+controller.hears(['my availability','availability'], 'direct_message,direct_mention,mention', function (bot, message) {
+    
+    bot.startConversation(message, function (err, convo) {
+
+        console.log('availability start');
+        bot.api.users.info({user: message.user}, (error, response) => {
+            let {id, name, real_name} = response.user;
+            console.log(id, name, real_name);
+        //TODO replace with logged in user
+            var loggedInUserId = id;//
+
+            var day = '';
+            var from = '';
+            var to = '';
+            var flag = 0;
+
+        controller.storage.tutor.find({user_id: loggedInUserId}, function (error, tutors) {
+            if (tutors != null && tutors.length > 0) {
+                
+                console.log(tutors[0].availability);
+                if(tutors[0].availability.length != 0)
+                {
+                  for(var i in tutors[0].availability)
+                  {
+                    flag = 1;
+                      day += tutors[0].availability[i].day + "\t"+ tutors[0].availability[i].from + "\t"+tutors[0].availability[i].to + "\n";
+                      from += tutors[0].availability[i].from +"\n";
+                      to += tutors[0].availability[i].to + "\n";
+                  }
+                  console.log(day, from, to);
+                  bot.reply(message, "Your availability are:\n"+day);
+                }
+                
+            }
+            if(flag == 0)
+            {
+              bot.reply(message, "Sorry, you haven't entered any availability");
+            }
+            convo.stop();
+        });
+    });
+        console.log('availability end');
     });
 });
