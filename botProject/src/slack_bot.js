@@ -93,8 +93,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
         //TODO put in a method
         var sub_list = '';
         controller.storage.subject.all(function (err, subjects) {
-            //console.log(subjects);
-            //Commenting old plain text logic of subjects
+
             for (var temp in subjects) {
                 sub_list = sub_list + subjects[temp].name.toString() + '\n ';
             }
@@ -1084,19 +1083,15 @@ function getUserForSubject(json_file, callback)
 function getTutorsForSubject(subject,slackUserName, callback) {
     controller.storage.tutor.all(function (err, tutors) {
         var json_file = {};
-        //tutorList.push('Hello');
-        // console.log(tutors);
-        // console.log("------------------------------------");
 
         for (var i in tutors) {
-             //console.log(tutors);
+
             if(tutors[i].user_id==slackUserName) {
-                console.log('tutor user id'+tutors[i].user_id+'slack user name'+slackUserName);
                 continue;
             }
-            //Iterate through all the subjects to check if that subject is in tutor list or not
+
             for (var j in tutors[i].subjects) {
-                //Check if that subject is taught by the tutor or not
+
                 if (tutors[i].subjects[j].name.toLowerCase() == subject.toLowerCase()) {
                     json_temp =
                         {
@@ -1127,7 +1122,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
     });
 
 }
-
+//TODO dummy method to be removed-final refractring
 controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
 
     // start a conversation to handle this response.
@@ -1163,20 +1158,20 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
 
 controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
     bot.startConversation(message, function (err, convo) {
-        console.log('Reservation start');
+
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
-        console.log(id, name, real_name);
 
         var loggedInUserId = id;//'U84DXQKPL';//id;
-        //Here are your reservations as a tutor
+
             var hasReservationTutee=new Boolean(false);
             var hasReservationTutor=new Boolean(false);
+
             controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
             if (reservations != null && reservations.length>0) {
-                //console.log(reservations);
+
                 hasReservationTutor=new Boolean(true);
-                //console.log(hasReservationTutor);
+
                 for (var r in reservations) {
                     bot.reply(message,
                         {
@@ -1210,38 +1205,13 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
                                 ]
                         });
                 }
-                /*for (var r in reservations) {
-                    {
-                        var res = {
-                            Date: reservations[r].date,
-                            Day: reservations[r].day,
-                            from: reservations[r].from,
-                            to: reservations[r].to,
-                            available: reservations[r].available
-                        };
-                        reservationSlots.push(res);
-                    }
-                }*/
 
             }
         });
         //Here are your reservation as a tutee.
         controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
             if (reservations != null && reservations.length>0) {
-                //console.log(reservations);
-                /*
 
-                                    for (var r in reservations) {
-                                        {
-                                            var res = {
-                                                Date: reservations[r].date,
-                                                Day: reservations[r].day,
-                                                from: reservations[r].from,
-                                                to: reservations[r].to
-                                            };
-                                            reservationSlots.push(res);
-                                        }
-                                    }*/
                 hasReservationTutee=new Boolean(true);
                 //console.log(hasReservationTutee);
                 for (var r in reservations) {
@@ -1291,8 +1261,7 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 
 
 function getAvailableSlotsTutor(tutorId, userId, callback) {
-    //TODO reward points
-    //**Check reward points of the user/tutee trying to reserve, give an error if he is left with insufficent points
+
     controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
 
         if (tutor==null||tutor.length==0) {
@@ -1344,7 +1313,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
             var futureDate = new Date();
 
             futureDate.setDate(futureDate.getDate() + numberOfDays);
-            //We just need date, no need to store timestamp of when the reservation is made
+
             futureDate.setHours(0,0,0,0);
             //TODO same day availability
             if(availabeDayVal==currentDay){
@@ -1353,37 +1322,29 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
                     ()>)*/
             }
             //
-            var slots=[];
+
             for(j=Number(avl[i].from);j<Number(avl[i].to);){
-                //console.log('j:'+j+'startTime :'+startTime+' '+endTime);
                 var startTime=j.toString();
                 var endTime='';
-                //console.log('start time is '+startTime);
                 if(startTime.includes('00',2)||startTime.includes('00',1)) {
                     endTime = Number(j + 30).toString();
                     j=j+30;
-                    //console.log('I include 00');
                 }
                 else {
                     endTime = Number(j + 70).toString();
                     j=j+70;
-                    //console.log('I include 30');
                 }
-                //console.log('j:'+j+'startTime :'+startTime+' '+endTime);
-                slots={from:startTime,to:endTime};
-                //console.log('from:'+startTime+',to:'+endTime);
 
                 if(startTime.length==3)
                     startTime='0'+startTime;
                 if(endTime.length==3)
                     endTime='0'+endTime;
 
-              //  console.log('from:'+startTime+',to:'+endTime);
 
                 //saving 30 minutes reservation slots
                 var futureReservationTimeStamp=futureDate.getFullYear()+''+futureDate.getMonth()+''+
                     futureDate.getDate() + '' + futureDay+''+startTime+''+endTime;
-                console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
+                //console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
                 reservationSlots[futureReservationTimeStamp] = {
                     Date: futureDate,
                     Day: futureDay,
@@ -1400,38 +1361,21 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
         controller.storage.reservation.find({tutorid: tutorId, active: 'yes'}, function (error, reservations) {
 
             if (reservations.length > 0) {
-                console.log(reservations);
                 for (var i in reservations) {
                     //TODO mark reservations as active:'No' when a user reviews an old reservation
-                    //when you pull out reservations, make sure to mark the inactive ones as no, check current date and
-                    //if the reservation date has passed mark them inactive.
-                    /* if (reservations[i].date.getTime() < currentDate.getTime()) {
-                         console.log('inactive yes');
-                         //update old reservation, i.e. make it inactive
-                         controller.storage.reservation.save
-                     }*/
 
                     var reservationDay = new Date(reservations[i].date.toString());
-                   // console.log('reservationDay'+reservationDay);
+
                     var existingReservationTimeStamp = reservationDay.getFullYear()+''+reservationDay.getMonth()+''+
                         reservationDay.getDate() + '' + reservations[i].day+'' +reservations[i].from+''+
                         reservations[i].to;
 
-                    //console.log('existing reservations timestamp :'+existingReservationTimeStamp);
 
-                    // if(existingReservationTimeStamp.equals())
-                     //   console.log('equal');
-                    //else
-                      //  consolelog('Not equal');
                     if (reservationSlots[existingReservationTimeStamp] != null) {
-
-                        console.log('Oh no! '+existingReservationTimeStamp+'is already reserved');
                         reservationSlots[existingReservationTimeStamp].available = 'No';
-                        console.log('updated value of availabe slot is '+reservationSlots[existingReservationTimeStamp].available);
+                        //console.log('updated value of availabe slot is '+reservationSlots[existingReservationTimeStamp].available);
                     }
-                    else{//adde only for testing purposes
-                        console.log(existingReservationTimeStamp+'is not already reserved');
-                    }
+
                 }
             }
         });
@@ -1458,24 +1402,23 @@ controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message
     bot.startConversation(message, function (err, convo) {
 
 
-        console.log('rewards start');
+
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
-        console.log(id, name, real_name);
+
         //TODO replace with logged in user
         var loggedInUserId = id;//'U94AXQ6RL';//id;//
 
         controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
             if (users != null && users.length > 0) {
                 //update the user rewards
-                console.log(users);
                 bot.reply(message, 'Your Reward points are ' + users[0].points);
 
             }
             convo.stop();
         });
     });
-        console.log('rewards end');
+
     });
 });
 
