@@ -241,12 +241,11 @@ controller.hears(['my subject','subject', 'view my subject'], 'direct_message,di
     
     bot.startConversation(message, function (err, convo) {
 
-        console.log('availability start');
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
             console.log(id, name, real_name);
         //TODO replace with logged in user
-            var loggedInUserId = 'U84DXQKPL';//id;//
+            var loggedInUserId = id;//
 
             var user_subjects = '';
             var flag = 0;
@@ -275,7 +274,7 @@ controller.hears(['my subject','subject', 'view my subject'], 'direct_message,di
             convo.stop();
         });
     });
-        console.log('availability end');
+
     });
 });
 
