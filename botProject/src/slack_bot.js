@@ -15,6 +15,7 @@ const UserModel = require('./model/user');
 const TutorModel = require('./model/tutor');
 const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
+const Tutor_Display_Info = require('./prompt/tutor_info_prompt');
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -146,70 +147,8 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 {
                                   for (var i in json_file)
                                   {
-                                    bot.reply(message,
-                                    {
-                                        "text": "Tutor Details",
-                                        "attachments": [
-                                            {
-
-                                                "fields":
-                                                [
-                                                 {
-                                                    "title": 'Name',
-                                                    "value": json_file[i].name,
-                                                    "short":true,
-                                                  },
-                                                  {
-                                                    "title": 'Email',
-                                                    "value": json_file[i].email,
-                                                    "short":true,
-                                                  },
-                                                  {
-                                                    "title": 'Major',
-                                                    "value": json_file[i].major,
-                                                    "short":true,
-                                                  },
-                                                  {
-                                                    "title": 'Degree',
-                                                    "value": json_file[i].degree,
-                                                    "short":true,
-                                                  },
-                                                  {
-                                                    "title": 'Summary',
-                                                    "value": json_file[i].summary,
-                                                    "short":true,
-                                                  },
-                                                  {
-                                                    "title": 'Rate',
-                                                    "value": json_file[i].rate,
-                                                    "short":true,
-                                                  },
-
-                                                ],
-
-                                            },
-                                            {
-                                                "fallback": "Review and Scheduling",
-                                                "title": "Review and Scheduling",
-                                                "callback_id": "review_and_scheduling",
-                                                "attachment_type": "default",
-                                                "actions": [
-                                                    {
-                                                        "name": "review",
-                                                        "text": "Review",
-                                                        "type": "button",
-                                                        "value": json_file[i].user_id,
-                                                    },
-                                                    {
-                                                        "name": "schedule",
-                                                        "text": "Schedule",
-                                                        "type": "button",
-                                                        "value": "schedule " + json_file[i].user_id,
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    });
+                                    console.log(Tutor_Display_Info);
+                                    bot.reply(message, Tutor_Display_Info.tutor_info_display(json_file[i]));
                                   }
                                 }
                             });
