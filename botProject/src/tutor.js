@@ -160,4 +160,30 @@ function valid_user(tutor, callback)
   });
 }
 
-module.exports = { create, sendConfirmation, new_user };
+function getTutorReview(user_id, callback)
+{
+  var tutor_index = "";
+  var tutor_reviews = "";
+  var tutor_rating = "";
+  controller.storage.tutor.all(function(err,tutors)
+  {
+    var json_file = {}
+    for(var i in tutors)
+    {
+      if(tutors[i].user_id == user_id)
+        {
+          for(var j in tutors[i].reviews)
+          {
+            tutor_index+=(parseInt(j)+1).toString()+"\n";
+            tutor_reviews+=tutors[i].reviews[j].text+"\n";
+            tutor_rating+=tutors[i].reviews[j].rating+"\n";
+          }
+
+        }
+    }
+    // console.log(tutor_reviews);
+    callback([user_id,tutor_reviews,tutor_rating]);
+  });
+}
+
+module.exports = { create, sendConfirmation, new_user, getTutorReview };

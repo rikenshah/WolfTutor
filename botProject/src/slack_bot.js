@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const qs = require('querystring');
 const tutor = require('./tutor');
+const subject = require('./subject');
 const dialogs = require('./dialog');
 const prompts = require('./prompt');
 const action = require('./action');
@@ -312,7 +313,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
 
 
                     //convo.say was not working
-                    isValidSubject(response.text, function (flag) {
+                    subject.isValidSubject(response.text, function (flag) {
                         if (flag == true) {
                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
                             getTutorsForSubject(response.text,slackUserName ,function (json_file) {
@@ -606,8 +607,7 @@ app.post('/message', (req, res) =>
         } 
         else 
         {
-
-          getTutorReview(checkValue, function(tutor_reviews) {
+            tutor.getTutorReview(checkValue, function(tutor_reviews) {
 
               if (tutor_reviews[2] == "") {
                   // console.log("No reviews");
@@ -896,51 +896,33 @@ app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}!`);
 });
 
-function isValidSubject(mysubject, callback) {
-    var flag = false;
-    controller.storage.subject.find({name: {$regex: new RegExp(mysubject.toString(), "i")}/*subject.toString()*/},
-        function (error, subject) {
-            if (error) {
-                //return false;
-            }
-            //console.log(subject);
-            var tuteeSubject=mysubject;
-            var givenSubject=subject[0].name.toString().toLowerCase();
-            if (subject.length > 0 && (tuteeSubject.toLowerCase() === givenSubject)) {
-               // console.log('valid subject');
-                flag = true;
-            }
 
-            callback(flag);
-        });
 
-}
+// function getTutorReview(user_id, callback)
+// {
+//   var tutor_index = "";
+//   var tutor_reviews = "";
+//   var tutor_rating = "";
+//   controller.storage.tutor.all(function(err,tutors)
+//   {
+//     var json_file = {}
+//     for(var i in tutors)
+//     {
+//       if(tutors[i].user_id == user_id)
+//         {
+//           for(var j in tutors[i].reviews)
+//           {
+//             tutor_index+=(parseInt(j)+1).toString()+"\n";
+//             tutor_reviews+=tutors[i].reviews[j].text+"\n";
+//             tutor_rating+=tutors[i].reviews[j].rating+"\n";
+//           }
 
-function getTutorReview(user_id, callback)
-{
-  var tutor_index = "";
-  var tutor_reviews = "";
-  var tutor_rating = "";
-  controller.storage.tutor.all(function(err,tutors)
-  {
-    var json_file = {}
-    for(var i in tutors)
-    {
-      if(tutors[i].user_id == user_id)
-        {
-          for(var j in tutors[i].reviews)
-          {
-            tutor_index+=(parseInt(j)+1).toString()+"\n";
-            tutor_reviews+=tutors[i].reviews[j].text+"\n";
-            tutor_rating+=tutors[i].reviews[j].rating+"\n";
-          }
-
-        }
-    }
-    // console.log(tutor_reviews);
-    callback([user_id,tutor_reviews,tutor_rating]);
-  });
-}
+//         }
+//     }
+//     // console.log(tutor_reviews);
+//     callback([user_id,tutor_reviews,tutor_rating]);
+//   });
+// }
 
 function getUserForSubject(json_file, callback)
 {
@@ -1124,19 +1106,19 @@ function getAvailableSlotsTutor(tutorId, userId, callback) {
     });
 }
 
-//save reservation if user clicks on book button
-function saveReservation(userId, tutorId, date, day, from, to) {
-    //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
-    var reservation = {
-        id: userId, tutorid: tutorId, userid: userId, date: currentDate, from: from, to: to,
-        active: 'yes'
-    };
-    controller.storage.reservation.save(reservation, function (error) {
-        if (error)
-            console.log('There is an error');
-    });
+// //save reservation if user clicks on book button
+// function saveReservation(userId, tutorId, date, day, from, to) {
+//     //does not save if you donot send an id, if this id is sent as the same, old reservation is overwritten,[TBC]
+//     var reservation = {
+//         id: userId, tutorid: tutorId, userid: userId, date: currentDate, from: from, to: to,
+//         active: 'yes'
+//     };
+//     controller.storage.reservation.save(reservation, function (error) {
+//         if (error)
+//             console.log('There is an error');
+//     });
 
-}
+// }
 
 
 /*
