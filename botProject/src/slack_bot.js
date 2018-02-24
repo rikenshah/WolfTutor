@@ -16,6 +16,8 @@ const TutorModel = require('./model/tutor');
 const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
 const Tutor_Display_Info = require('./prompt/tutor_info_prompt');
+const DisplayDate = require('./prompt/display_date_prompt');
+const TutorReview = require('./prompt/review_tutor_prompt');
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -523,29 +525,17 @@ app.post('/message', (req, res) => {
                     }
 
             }
-            console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
-            console.log(slots_date.length);
+            
             if(slots_date.length == 0)
             {
                 action.send_message(payload.channel.id, "Sorry! There are no slots available for this tutor!");
             }
             else
             {
-              action.send_message(payload.channel.id, 'Slot Dates',
-              [
-              {
-                "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
-                "attachment_type": "default",
-                "callback_id": "date_selection",
-                "actions": [
-                    {
-                        "name": "date_list",
-                        "text": "Pick a date...",
-                        "type": "select",
-                        "options": slots_date,
-                    }
-                ]
-            }]);
+              console.log("##############MMMMAAAAATTTTEEEEEENNNNNN##############");
+            console.log(slots_date.length);
+            console.log(slots_date);
+              action.send_message(payload.channel.id, 'Slot Dates', DisplayDate.tutor_date_display(slots_date));
           }
         });
       }
@@ -593,36 +583,9 @@ app.post('/message', (req, res) => {
 
               });
               display_review.then((result) => {
-                action.send_message(payload.channel.id,result,
-                [
-                  {
-                  attachment_type: 'default',
-                  callback_id: 'schedule_now',
-                  fields:
-                  [
-                    {
-                      "title": 'Review',
-                      "value": tutor_reviews[1],
-                      "short":true,
-                    },
-                    {
-                      "title": 'Rating',
-                      "value": tutor_reviews[2],
-                      "short":true,
-                    },
-                  ],
-                  actions: [
-                      {
-                          "name":"Schedule",
-                          "text": "Schedule",
-                          "value": tutor_reviews[0],
-                          "type": "button",
-                        },
-                    ]
+                console.log(TutorReview.tutor_review_display, tutor_reviews);
+                action.send_message(payload.channel.id,result, TutorReview.tutor_review_display(tutor_reviews));
 
-                  }
-                ]);
-                // resolve("OK");
 
               });
             }
