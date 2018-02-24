@@ -21,6 +21,7 @@ const TutorReview = require('./prompt/review_tutor_prompt');
 const SubjectList = require('./prompt/subject_list_prompt');
 const NoreviewSchedule = require('./prompt/noreview_schedule_prompt');
 const SlotBooking = require('./prompt/slot_booking_prompt');
+const BookingConfirmation = require('./prompt/booking_confirmation_prompt');
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -746,7 +747,6 @@ app.post('/message', (req, res) =>
                           flag_no_time_slot += 1;
                           var title_send = reservation['Date'].toString().slice(4, 15) + " " + reservation['from'].toString() + ":" + reservation['to'].toString();
                           var value_send = tutor_id + " " + reservation['Date'].toString() + " " + reservation['from'].toString() + " " + reservation['to'].toString() + " " + reservation['Day'].toString();
-                          console.log(SlotBooking.slot_booking, title_send, value_send);
                           action.send_message(payload.channel.id, '', SlotBooking.slot_booking(title_send, value_send));
                       }
                   }
@@ -763,42 +763,21 @@ app.post('/message', (req, res) =>
           });
 
       } 
-        else if (callback_id == 'booking_now') {
-            //TODO Point validation
-            // console.log(payload.actions[0].value);
-            var tutor_id = payload.actions[0].value.slice(0, 9);
-            var day = payload.actions[0].value.substr(60);
-            var date = payload.actions[0].value.slice(14, 25);
-            var from = payload.actions[0].value.slice(50, 54);
-            var to = payload.actions[0].value.slice(55, 59);
-            console.log("######################BOOKING_NOW########################");
-            console.log(payload.actions[0].value);
-            console.log(tutor_id);
-            console.log(date);
-            console.log(day);
-            console.log(from);
-            console.log(to);
-            action.send_message(payload.channel.id, "", [{
+      else if (callback_id == 'booking_now') 
+      {
+          var tutor_id = payload.actions[0].value.slice(0, 9);
+          var day = payload.actions[0].value.substr(60);
+          var date = payload.actions[0].value.slice(14, 25);
+          var from = payload.actions[0].value.slice(50, 54);
+          var to = payload.actions[0].value.slice(55, 59);
+          // console.log(payload.actions[0].value);
+          
+          var title_send = 'Are you sure about this booking\n' + date + " " + from + ":" + to;
+          var value_send = payload.actions[0].value;
+          action.send_message(payload.channel.id, "", BookingConfirmation.booking_confirmation(title_send, value_send));
 
-                title: 'Are you sure about this booking\n' + date + " " + from + ":" + to,
-                callback_id: 'save_booking',
-                attachment_type: 'default',
-                actions: [{
-                        "name": "yes",
-                        "text": "Yes",
-                        "value": payload.actions[0].value + " yes",
-                        "type": "button",
-                    },
-                    {
-                        "name": "no",
-                        "text": "No",
-                        "value": payload.actions[0].value + " no",
-                        "type": "button",
-                    }
-                ]
-            }]);
-
-        } else if (callback_id == 'save_booking') {
+      } 
+        else if (callback_id == 'save_booking') {
             // console.log(payload);
             var tutor_id = payload.actions[0].value.slice(0, 9);
             var day = payload.actions[0].value.substr(60);
@@ -1286,72 +1265,4 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 
 
 
-// controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
-
-//     var name = message.match[1];
-//     controller.storage.users.get(message.user, function (err, user) {
-//         if (!user) {
-//             user = {
-//                 id: message.user,
-//             };
-//         }
-//         user.name = name;
-//         controller.storage.users.save(user, function (err, id) {
-//             bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
-//         });
-//     });
-// });
-
-
-// function formatUptime(uptime) {
-//     var unit = 'second';
-//     if (uptime > 60) {
-//         uptime = uptime / 60;
-//         unit = 'minute';
-//     }
-//     if (uptime > 60) {
-//         uptime = uptime / 60;
-//         unit = 'hour';
-//     }
-//     if (uptime != 1) {
-//         unit = unit + 's';
-//     }
-
-//     uptime = uptime + ' ' + unit;
-//     return uptime;
-// }
-
-
-// //TODO dummy method to be removed-final refractring
-// controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
-
-//     // start a conversation to handle this response.
-//     bot.startConversation(message, function (err, convo) {
-//         getAvailableSlotsTutor("U84DLLKPL", 1, function (reservationSlots) {//user_id from tutor information
-//             if (reservationSlots==null) {
-//                 convo.addQuestion('No tutor information available', function (response, convo) {
-//                     // bot.reply('Cool, you said: ' + response.text);
-//                     console.log('reservations slots are :-'+reservationSlots);
-//                     for(var r in reservationSlots){
-//                         console.log(r+' ')
-//                         var reservation=reservationSlots[r];
-//                         for(var rs in reservation){
-//                             console.log(rs+ ''+reservation[rs]);
-//                         }
-//                     }
-//                     convo.next();
-
-//                 }, {}, 'default');
-//             }/*
-//             console.log('reservations slots are :-'+reservationSlots);
-//             for(var r in reservationSlots){
-//                 console.log(r+' ')
-//                 var reservation=reservationSlots[r];
-//                     for(var rs in reservation){
-//                         console.log(rs+ ''+reservation[rs]);
-//                     }
-//             }*/
-
-//         });
-//     })
-// });
+// controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', fun
