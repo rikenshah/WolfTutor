@@ -777,8 +777,8 @@ app.post('/message', (req, res) =>
           action.send_message(payload.channel.id, "", BookingConfirmation.booking_confirmation(title_send, value_send));
 
       } 
-        else if (callback_id == 'save_booking') {
-            // console.log(payload);
+        else if (callback_id == 'save_booking') 
+        {
             var tutor_id = payload.actions[0].value.slice(0, 9);
             var day = payload.actions[0].value.substr(60);
             var date = payload.actions[0].value.slice(14, 25) + " 00:00:00 GMT-0500";
@@ -787,45 +787,48 @@ app.post('/message', (req, res) =>
             var response = day.split(" ")[1].slice(0, 1);
             day = day.split(" ")[0];
             var user_id = payload.user.id;
-            // console.log("##################Save_booking####################");
-            // console.log(tutor_id);
-            // console.log(user_id);
-            // console.log(day);
-            // console.log(date);
-            // console.log(from);
-            // console.log(to);
-            // console.log(response);
-
-            if (response == 'y') {
-                // Add points validation and reduce points
-                // actions.send_user_notification(user_id, tutor_id, date, day, from, to);
-                // saveReservation(user_id, tutor_id, date, day, from, to);
-                UserModel.fetch_user_points(user_id, function(err, user_points) {
-                    TutorModel.fetch_tutor_rate(tutor_id, function(err, tutor_rate) {
+        
+            if (response == 'y') 
+            {
+                
+                UserModel.fetch_user_points(user_id, function(err, user_points) 
+                {
+                    TutorModel.fetch_tutor_rate(tutor_id, function(err, tutor_rate) 
+                    {
                         tutor_rate = tutor_rate / 2;
-                        if (user_points >= tutor_rate) {
+                        if (user_points >= tutor_rate) 
+                        {
                             console.log("Points Adjusted");
                             console.log(user_points);
                             console.log(tutor_rate);
                             UserModel.update_booking_points(user_id, tutor_id, tutor_rate);
-                            ReservationModel.save_reservation(user_id, tutor_id, date, day, from, to);
+                            // ReservationModel.save_reservation(user_id, tutor_id, date, day, from, to);
                             UserModel.send_tutor_notification(user_id, tutor_id, date, day, from, to);
                             action.send_message(payload.channel.id, "Booking Confirmed! Thank you for booking.");
-                        } else {
+                        } 
+                        else 
+                        {
                             action.send_message(payload.channel.id, "You do not have enough points to book");
                         }
                     });
                 });
 
-            } else {
+            } 
+            else 
+            {
                 action.send_message(payload.channel.id, "No Problem, You can reserve it later");
             }
-        } else if (callback_id == 'create_user_prompt') {
+        } 
+        else if (callback_id == 'create_user_prompt') 
+        {
 
             console.log(checkValue);
-            if (checkValue == 'no') {
+            if (checkValue == 'no') 
+            {
                 action.send_message(payload.channel.id, "OK, you can enroll anytime");
-            } else {
+            } 
+            else 
+            {
                 tutor.new_user(payload.user.id, payload.submission);
                 // UserModel.create_new_user(payload);
                 // action.send_message(payload.channel.id, "Thank you for enrolling.");
@@ -837,8 +840,11 @@ app.post('/message', (req, res) =>
                 // // open the dialog by calling dialogs.open method and sending the payload
                 // action.open_dialog(dialog,res);
             }
-        } else if (callback_id == 'add_review_prompt') {
-            const dialog = {
+        } 
+        else if (callback_id == 'add_review_prompt') 
+        {
+            const dialog = 
+            {
                 token: process.env.SLACK_ACCESS_TOKEN,
                 trigger_id,
                 dialog: JSON.stringify(dialogs.add_review_dialog),
@@ -846,17 +852,23 @@ app.post('/message', (req, res) =>
             // open the dialog by calling dialogs.open method and sending the payload
             action.open_dialog(dialog, res);
         } // End of else if of add_review_prompt
-        else if (callback_id == 'add_review_dialog') {
+        else if (callback_id == 'add_review_dialog') 
+        {
             // TODO Store review and rating into database
             UserModel.give_review(payload);
             action.send_message(payload.channel.id, 'Thank you so much. #GoPack', []);
             res.send('');
 
-        } else {
+        } 
+        else 
+        {
             console.log('Reached Else');
             console.log(payload);
         }
-    } else {
+    } 
+    else 
+    {
+
         debug('Verification token mismatch');
         console.log('Failed Here');
         res.sendStatus(403);
@@ -977,16 +989,6 @@ function getTutorsForSubject(subject,slackUserName, callback) {
                 }
             }
         }
-
-
-        // for(var i in json_file)
-        // {
-        //  console.log(json_file[i].major);
-        //  json_file[i].aaroh = "Aaroh";
-
-        // }
-        // console.log(json_file);
-        // console.log("++++++++++++++++++++++++++");
 
         getUserForSubject(json_file, function (json_file) {
             callback(json_file);
