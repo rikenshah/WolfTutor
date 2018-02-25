@@ -186,4 +186,58 @@ function getTutorReview(user_id, callback)
   });
 }
 
-module.exports = { create, sendConfirmation, new_user, getTutorReview };
+function getUserForSubject(json_file, callback)
+{
+    controller.storage.user.all(function (err, users)
+    {
+        for (var i in users)
+        {
+            for (var j in json_file)
+            {
+                if (json_file[j].user_id == users[i].user_id) {
+                    json_file[j].name = users[i].name;
+                    json_file[j].email = users[i].email;
+                }
+            }
+
+        }
+        callback(json_file);
+    });
+
+}
+
+
+function getTutorsForSubject(subject,slackUserName, callback) {
+    controller.storage.tutor.all(function (err, tutors) {
+        var json_file = {};
+
+        for (var i in tutors) {
+
+            if(tutors[i].user_id==slackUserName) {
+                continue;
+            }
+
+            for (var j in tutors[i].subjects) {
+
+                if (tutors[i].subjects[j].name.toLowerCase() == subject.toLowerCase()) {
+                    json_temp =
+                        {
+                            user_id: tutors[i].user_id,
+                            major: tutors[i].major,
+                            degree: tutors[i].degree,
+                            summary: tutors[i].summary,
+                            rate: tutors[i].overall_rating
+                        }
+                    json_file[tutors[i].user_id] = json_temp;
+                }
+            }
+        }
+
+        getUserForSubject(json_file, function (json_file) {
+            callback(json_file);
+        });
+    });
+
+}
+
+module.exports = { create, sendConfirmation, new_user, getTutorReview, getTutorsForSubject };

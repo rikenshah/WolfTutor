@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const qs = require('querystring');
 const tutor = require('./tutor');
 const subject = require('./subject');
+const tutorSlot = require('./tutor_slot');
 const dialogs = require('./dialog');
 const prompts = require('./prompt');
 const action = require('./action');
@@ -57,14 +58,17 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
 
 });
 
-controller.hears(['my points'], 'direct_message,direct_mention,mention', function(bot, message) {
-  UserModel.fetch_user_points(message.user,function(err,points){
+controller.hears(['my points'], 'direct_message,direct_mention,mention', function(bot, message) 
+{
+  UserModel.fetch_user_points(message.user,function(err,points)
+  {
     bot.reply(message, 'Your points are : '+points);
     bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
   });
 });
 
-controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
+controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) 
+{
     bot.startConversation(message, function (err, convo) {
 
         bot.api.users.info({user: message.user}, (error, response) => {
@@ -316,7 +320,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                     subject.isValidSubject(response.text, function (flag) {
                         if (flag == true) {
                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                            getTutorsForSubject(response.text,slackUserName ,function (json_file) {
+                            tutor.getTutorsForSubject(response.text,slackUserName ,function (json_file) {
                                 var count = 0;
                                 for (var i in json_file) {
                                     count = count + 1;
@@ -342,9 +346,6 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                         }
                     });
 
-                    //TODO this method directly prints the list of tutors, TODO get name based on user id
-                    //getTutorsForSubject(response.text);
-                    //console.log(tutorList);
                     convo.next();
                 }, {}, 'default');
                 //});
@@ -366,7 +367,7 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
     // start a conversation to handle this response.
     bot.startConversation(message, function (err, convo) {
         //Make it dynamic by adding tutor id
-        getAvailableSlotsTutor("U84DLLKPL", 1, function (reservationSlots) {//user_id from tutor information
+        tutorSlot.getAvailableSlotsTutor("U84DLLKPL", 1, function (reservationSlots) {//user_id from tutor information
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     
@@ -544,7 +545,7 @@ app.post('/message', (req, res) =>
         var checkValue = payload.actions[0].value;
         if (checkValue.slice(0, 8) == 'schedule') 
         {
-            getAvailableSlotsTutor(checkValue.substr(9), 1, function(reservationSlots) 
+            tutorSlot.getAvailableSlotsTutor(checkValue.substr(9), 1, function(reservationSlots) 
             { 
                 if (reservationSlots == null) 
                 {
@@ -648,7 +649,7 @@ app.post('/message', (req, res) =>
       {
           var checkValue = payload.actions[0].value;
           // console.log(checkValue);
-          getAvailableSlotsTutor(checkValue, 1, function(reservationSlots) 
+          tutorSlot.getAvailableSlotsTutor(checkValue, 1, function(reservationSlots) 
           { //user_id from tutor information
               if (reservationSlots == null) 
               {
@@ -718,7 +719,7 @@ app.post('/message', (req, res) =>
           var checkValue = payload.actions[0].selected_options[0].value;
           var date_key = checkValue.toString().slice(0, 15);
           var tutor_id = checkValue.toString().substr(16);
-          getAvailableSlotsTutor(tutor_id, 1, function(reservationSlots) 
+          tutorSlot.getAvailableSlotsTutor(tutor_id, 1, function(reservationSlots) 
           { //user_id from tutor information
               if (reservationSlots == null) 
               {
@@ -898,213 +899,6 @@ app.listen(process.env.PORT, () => {
 
 
 
-// function getTutorReview(user_id, callback)
-// {
-//   var tutor_index = "";
-//   var tutor_reviews = "";
-//   var tutor_rating = "";
-//   controller.storage.tutor.all(function(err,tutors)
-//   {
-//     var json_file = {}
-//     for(var i in tutors)
-//     {
-//       if(tutors[i].user_id == user_id)
-//         {
-//           for(var j in tutors[i].reviews)
-//           {
-//             tutor_index+=(parseInt(j)+1).toString()+"\n";
-//             tutor_reviews+=tutors[i].reviews[j].text+"\n";
-//             tutor_rating+=tutors[i].reviews[j].rating+"\n";
-//           }
-
-//         }
-//     }
-//     // console.log(tutor_reviews);
-//     callback([user_id,tutor_reviews,tutor_rating]);
-//   });
-// }
-
-function getUserForSubject(json_file, callback)
-{
-    controller.storage.user.all(function (err, users)
-    {
-        for (var i in users)
-        {
-            for (var j in json_file)
-            {
-                if (json_file[j].user_id == users[i].user_id) {
-                    json_file[j].name = users[i].name;
-                    json_file[j].email = users[i].email;
-                }
-            }
-
-        }
-        callback(json_file);
-    });
-
-}
-
-
-function getTutorsForSubject(subject,slackUserName, callback) {
-    controller.storage.tutor.all(function (err, tutors) {
-        var json_file = {};
-
-        for (var i in tutors) {
-
-            if(tutors[i].user_id==slackUserName) {
-                continue;
-            }
-
-            for (var j in tutors[i].subjects) {
-
-                if (tutors[i].subjects[j].name.toLowerCase() == subject.toLowerCase()) {
-                    json_temp =
-                        {
-                            user_id: tutors[i].user_id,
-                            major: tutors[i].major,
-                            degree: tutors[i].degree,
-                            summary: tutors[i].summary,
-                            rate: tutors[i].overall_rating
-                        }
-                    json_file[tutors[i].user_id] = json_temp;
-                }
-            }
-        }
-
-        getUserForSubject(json_file, function (json_file) {
-            callback(json_file);
-        });
-    });
-
-}
-
-
-
-
-
-
-function getAvailableSlotsTutor(tutorId, userId, callback) {
-
-    controller.storage.tutor.find({user_id: tutorId}, function (error, tutor) {
-
-        if (tutor==null||tutor.length==0) {
-            console.log('No Tutors found');
-            return;
-        }
-        else
-            var avl = tutor[0].availability;
-
-        //**get availabilities of the tutor for the tutee
-
-        var currentDate = new Date();
-        var currentDay = currentDate.getDay();
-        var currentDateOnly = currentDate.getDate()
-
-        var dayMap = {};
-        dayMap[0] = {day: 'Sunday'};
-        dayMap[1] = {day: 'Monday'};
-        dayMap[2] = {day: 'Tuesday'};
-        dayMap[3] = {day: 'Wednesday'};
-        dayMap[4] = {day: 'Thursday'};
-        dayMap[5] = {day: 'Friday'};
-        dayMap[6] = {day: 'Saturday'};
-
-        var dayNumMap = {};
-        dayNumMap['Sunday'] = {day: '0'};
-        dayNumMap['Monday'] = {day: '1'};
-        dayNumMap['Tuesday'] = {day: '2'};
-        dayNumMap['Wednesday'] = {day: '3'};
-        dayNumMap['Thursday'] = {day: '4'};
-        dayNumMap['Friday'] = {day: '5'};
-        dayNumMap['Saturday'] = {day: '6'};
-
-        var reservationSlots = {};
-
-        for (var i in avl) {
-            var availableDay = avl[i].day;
-            var availableDaykey=dayNumMap[availableDay];
-            var availabeDayVal;//Corresponding numeric value
-
-            for(var v in availableDaykey){
-                if(v=='day')
-                    availabeDayVal=availableDaykey[v];
-            }
-
-            var numberOfDays = (Number(7 - currentDay) + Number(availabeDayVal))%7;
-            var futureDay = dayMap[availabeDayVal].day;
-
-            var futureDate = new Date();
-
-            futureDate.setDate(futureDate.getDate() + numberOfDays);
-
-            futureDate.setHours(0,0,0,0);
-            //TODO same day availability
-            if(availabeDayVal==currentDay){
-                /*if(futureDate.
-
-                    ()>)*/
-            }
-            //
-
-            for(j=Number(avl[i].from);j<Number(avl[i].to);){
-                var startTime=j.toString();
-                var endTime='';
-                if(startTime.includes('00',2)||startTime.includes('00',1)) {
-                    endTime = Number(j + 30).toString();
-                    j=j+30;
-                }
-                else {
-                    endTime = Number(j + 70).toString();
-                    j=j+70;
-                }
-
-                if(startTime.length==3)
-                    startTime='0'+startTime;
-                if(endTime.length==3)
-                    endTime='0'+endTime;
-
-
-                //saving 30 minutes reservation slots
-                var futureReservationTimeStamp=futureDate.getFullYear()+''+futureDate.getMonth()+''+
-                    futureDate.getDate() + '' + futureDay+''+startTime+''+endTime;
-                //console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
-                reservationSlots[futureReservationTimeStamp] = {
-                    Date: futureDate,
-                    Day: futureDay,
-                    from: startTime,
-                    to: endTime,
-                    available: 'yes'
-                };
-            }
-        }
-
-        //**Get existing reservation for the tutor, (what if tutee is busy at that time as per his old
-        //reservation-tutee is busy at that time)
-
-        controller.storage.reservation.find({tutorid: tutorId, active: 'yes'}, function (error, reservations) {
-
-            if (reservations.length > 0) {
-                for (var i in reservations) {
-                    //TODO mark reservations as active:'No' when a user reviews an old reservation
-
-                    var reservationDay = new Date(reservations[i].date.toString());
-
-                    var existingReservationTimeStamp = reservationDay.getFullYear()+''+reservationDay.getMonth()+''+
-                        reservationDay.getDate() + '' + reservations[i].day+'' +reservations[i].from+''+
-                        reservations[i].to;
-
-
-                    if (reservationSlots[existingReservationTimeStamp] != null) {
-                        reservationSlots[existingReservationTimeStamp].available = 'No';
-                        //console.log('updated value of availabe slot is '+reservationSlots[existingReservationTimeStamp].available);
-                    }
-
-                }
-            }
-        });
-        callback(reservationSlots);
-    });
-}
 
 // //save reservation if user clicks on book button
 // function saveReservation(userId, tutorId, date, day, from, to) {
@@ -1249,3 +1043,29 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 
 
 // controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', fun
+
+// function getTutorReview(user_id, callback)
+// {
+//   var tutor_index = "";
+//   var tutor_reviews = "";
+//   var tutor_rating = "";
+//   controller.storage.tutor.all(function(err,tutors)
+//   {
+//     var json_file = {}
+//     for(var i in tutors)
+//     {
+//       if(tutors[i].user_id == user_id)
+//         {
+//           for(var j in tutors[i].reviews)
+//           {
+//             tutor_index+=(parseInt(j)+1).toString()+"\n";
+//             tutor_reviews+=tutors[i].reviews[j].text+"\n";
+//             tutor_rating+=tutors[i].reviews[j].rating+"\n";
+//           }
+
+//         }
+//     }
+//     // console.log(tutor_reviews);
+//     callback([user_id,tutor_reviews,tutor_rating]);
+//   });
+// }
