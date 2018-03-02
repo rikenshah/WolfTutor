@@ -356,55 +356,6 @@ controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
 });
 
-//TODO remove-was added to test slots
-//Added test method- to be removed.
-controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
-
-    // start a conversation to handle this response.
-    bot.startConversation(message, function (err, convo) {
-        //Make it dynamic by adding tutor id
-        tutorSlot.getAvailableSlotsTutor("U84DLLKPL", 1, function (reservationSlots) {//user_id from tutor information
-            console.log(reservationSlots);
-            if (reservationSlots==null) {
-                convo.addQuestion('No tutor information available', function (response, convo) {
-                    
-                    convo.next();
-
-                }, {}, 'default');
-            }
-
-            slots_temp = {};
-            var slots_date = [];
-            for(var r in reservationSlots){
-                
-                var reservation=reservationSlots[r];
-                  
-                    if(reservation['Date'].toString().slice(0,15) in slots_temp)
-                    {
-                      console.log("Yes");
-                      //TODO appending
-                    }
-                    else
-                    {
-                      var temp_slot = reservation['from'].toString() + " "  + reservation['to'].toString();
-                      slots_temp[reservation['Date'].toString().slice(0,15)] = {
-
-                        "time" : temp_slot,
-                        "available" : reservation['available'].toString(),
-                      };
-                      slots_date.push({
-                        "text" : reservation['Date'].toString().slice(0,15),
-                        "value" : reservation['Date'].toString().slice(0,15),
-                      });
-                      console.log("No");
-                    }
-            }
-            console.log(slots_date);
-
-        });
-    })
-});
-
 var session_over = ['session a over','rate the tutor','add review','review']
 controller.hears('review', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.add_review_prompt);
@@ -648,7 +599,7 @@ app.post('/message', (req, res) =>
           // console.log(checkValue);
           tutorSlot.getAvailableSlotsTutor(checkValue, 1, function(reservationSlots) 
           { //user_id from tutor information
-              console.log(reservationSlots);
+
               if (reservationSlots == null) 
               {
                   convo.addQuestion('No tutor information available', function(response, convo) {
@@ -894,140 +845,5 @@ res.send(req.body.challenge);
 app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}!`);
 });
-
-
-
-
-
-
-/*
-
-var Botkit = require('./lib/Botkit.js');
-var os = require('os');
-
-var controller = Botkit.slackbot({
-    debug: true,
-});
-*/
-
-/*
-controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message) {
-    // start a conversation to handle this response.
-    bot.startConversation(message, function (err, convo) {
-        console.log('Reservation start');
-              //  convo.addQuestion('Here is the list of reservations', function (response, convo) {
-        //get logged user name
-        bot.api.users.info({user: message.user}, (error, response) => {
-            let {id, name, real_name} = response.user;
-        console.log(id, name, real_name);
-
-        var loggedInUserId = id;
-        //Here are your reservations as a tutor
-        var reservationSlots=[];
-        controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
-            //bot.reply(convo,)
-            //reply the reservations with Date day from and to
-            if(reservations!=null) {
-                for (var r in reservations) {
-                    reservationSlots.push({
-                        Date: reservations[r].date,
-                        Day: reservations[r].day,
-                        from: reservations[r].from,
-                        to: reservations[r].to,
-                        available: reservations[r].available
-                    })
-                }
-            }
-        });
-        //Here are your reservation as a tutee.
-        controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
-            //reply the reservations with Date day from and to
-            if(reservations!=null) {
-                for (var r in reservations) {
-                    reservationSlots.push({
-                        Date: reservations[r].date,
-                        Day: reservations[r].day,
-                        from: reservations[r].from,
-                        to: reservations[r].to
-                    })
-                }
-            }
-        });
-        if(reservationSlots!=null){
-        for (var r in reservations) {
-            bot.reply(message,
-                {
-                    attachments:
-                        [
-                            {
-                                fields:
-                                    [
-                                        {
-                                            title: 'Date',
-                                            value: reservations[r].date,
-                                            short: true,
-                                        },
-                                        {
-                                            title: 'Day',
-                                            value: reservations[r].day,
-                                            short: true,
-                                        },
-                                        {
-                                            title: 'Start time',
-                                            value: reservations[r].from,
-                                            short: true,
-                                        },
-                                        {
-                                            title: 'End time',
-                                            value: reservations[r].to,
-                                            short: true,
-                                        }
-                                    ]
-                            }
-                        ]
-                });
-        }}
-        else{
-            bot.reply(message,'No upcoming reservations');
-        }
-        },{},'default');
-
-        });
-        console.log('Reservation end');
-});
-*/
-
-            // for(var i in slots_temp)
-            // {
-            //   console.log(i);
-            //   console.log(slots_temp[i]);
-            // }
-
-            // action.send_message(payload.channel.id, '', {
-            //     "text": "Would you like to play a game?",
-            //     "response_type": "in_channel",
-            //     "attachments": [
-            //         {
-            //             "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
-            //             "attachment_type": "default",
-            //             "callback_id": "date_selection",
-            //             "actions": [
-            //                 {
-            //                     "name": "date_list",
-            //                     "text": "Pick a date...",
-            //                     "type": "select",
-            //                     "options": slots_date,
-            //                 }
-            //             ]
-            //         }
-            //     ]
-            // })
-            
-        // console.log('mongo');
-
-
-
-// controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', fun
-
 
 

@@ -20,7 +20,6 @@ function isValidSubject(mysubject, callback)
 
             if (subject.length > 0 && (tuteeSubject.toLowerCase() === subject[0].name.toString().toLowerCase()))
             {
-               // console.log('valid subject');
                 flag = true;
             }
 
