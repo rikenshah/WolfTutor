@@ -286,7 +286,6 @@ controller.hears(['what can I do'], 'direct_message,direct_mention,mention', fun
 controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'select a tutor'],
     'direct_message,direct_mention,mention', function (bot, message) {
 
-        //TODO put in a method
         var sub_list = '';
         controller.storage.subject.all(function (err, subjects) {
 
@@ -298,7 +297,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                 throw new Error(err);
             }
 
-            var subjects_display_list = 'Choose one of the subjects :-' + '\n' + sub_list;
+            var subjects_display_list = 'Choose one of the subjects :-' + '\n' + sub_list+'\n'+'Enter exit to go back!';
 
 
             bot.startConversation(message, function (err, convo) {
@@ -309,8 +308,11 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                 var slackUserName = id;//'U84DXQKPL';//id;
                 convo.addQuestion(SubjectList.subject_list_display(subjects_display_list), function (response, convo) {
                     //  console.log(response.text);
-
-
+                    if(response.text.toLowerCase()==='exit') {
+                        bot.reply(message,'Cool, you are out finding a tutor!');
+                        convo.stop();
+                        return;
+                    }
                     //convo.say was not working
                     subject.isValidSubject(response.text, function (flag) {
                         if (flag == true) {
