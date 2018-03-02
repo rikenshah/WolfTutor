@@ -74,58 +74,59 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
 
-        var loggedInUserId = id;//'U84DXQKPL';//id;
+        var loggedInUserId = 'U84DLLKPL';//id;//U84DXQKPL
 
-            var hasReservationTutee=new Boolean(false);
-            var hasReservationTutor=new Boolean(false);
-
-            controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error, reservations) {
-            if (reservations != null && reservations.length>0) {
-
-                hasReservationTutor=new Boolean(true);
-
-                for (var r in reservations) {
-                    bot.reply(message,
-                        {
-                            attachments:
-                                [
-                                    {
-                                        fields:
-                                            [
-                                                {
-                                                    title: 'Date',
-                                                    value: reservations[r].date,
-                                                    short: true,
-                                                },
-                                                {
-                                                    title: 'Day',
-                                                    value: reservations[r].day,
-                                                    short: true,
-                                                },
-                                                {
-                                                    title: 'Start time',
-                                                    value: reservations[r].from,
-                                                    short: true,
-                                                },
-                                                {
-                                                    title: 'End time',
-                                                    value: reservations[r].to,
-                                                    short: true,
-                                                }
-                                            ]
-                                    }
-                                ]
-                        });
+        //TODO does not print no upcoming reservations
+            controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error,reservations) {
+                console.log('in');
+                if(reservations==null ||reservations.length==0) {
+                    bot.reply(message, 'No upcoming reservations');
                 }
-
+                //if (reservations != null && reservations.length>0) {
+                else {
+                for (var r in reservations) {
+                    if (reservations[r].tutorid === loggedInUserId || reservations[r].userid === loggedInUserId) {
+                        bot.reply(message,
+                            {
+                                attachments:
+                                    [
+                                        {
+                                            fields:
+                                                [
+                                                    {
+                                                        title: 'Date',
+                                                        value: reservations[r].date,
+                                                        short: true,
+                                                    },
+                                                    {
+                                                        title: 'Day',
+                                                        value: reservations[r].day,
+                                                        short: true,
+                                                    },
+                                                    {
+                                                        title: 'Start time',
+                                                        value: reservations[r].from,
+                                                        short: true,
+                                                    },
+                                                    {
+                                                        title: 'End time',
+                                                        value: reservations[r].to,
+                                                        short: true,
+                                                    }
+                                                ]
+                                        }
+                                    ]
+                            });
+                    }
+                }
             }
         });
         //Here are your reservation as a tutee.
-        controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
+      /*  controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
             if (reservations != null && reservations.length>0) {
+                console.log(reservations);
+                hasReservationTutee=true;
 
-                hasReservationTutee=new Boolean(true);
-                //console.log(hasReservationTutee);
                 for (var r in reservations) {
                     bot.reply(message,
                         {
@@ -162,8 +163,8 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
             }
 
         });
-        if(hasReservationTutee!=true && hasReservationTutor!=true)
-            bot.reply(message, 'No upcoming reservations');
+        if(hasReservationTutee===false && hasReservationTutor===false)
+            bot.reply(message, 'No upcoming reservations');*/
 
     });
         convo.stop();
@@ -174,12 +175,9 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message,direct_mention,mention', function (bot, message) {
     bot.startConversation(message, function (err, convo) {
 
-
-
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
 
-        //TODO replace with logged in user
         var loggedInUserId = id;//'U94AXQ6RL';//id;//
 
         controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
@@ -188,6 +186,8 @@ controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message
                 bot.reply(message, 'Your Reward points are ' + users[0].points);
 
             }
+            else
+                bot.reply(message,'You are not enrolled into the system! Enter Hi to enroll yourself');
             convo.stop();
         });
     });
@@ -203,8 +203,7 @@ controller.hears(['my availability','availability', 'view my availability'], 'di
         console.log('availability start');
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
-            console.log(id, name, real_name);
-        //TODO replace with logged in user
+
             var loggedInUserId = id;//
 
             var day = '';
@@ -248,9 +247,8 @@ controller.hears(['my subject','subject', 'view my subject'], 'direct_message,di
 
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
-            console.log(id, name, real_name);
-        //TODO replace with logged in user
-            var loggedInUserId = id;//
+
+            var loggedInUserId = id;
 
             var user_subjects = '';
             var flag = 0;
@@ -360,6 +358,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.become_tutor_prompt);
 });
+
 //TODO remove-was added to test slots
 //Added test method- to be removed.
 controller.hears(['slots'], 'direct_message,direct_mention,mention', function (bot, message) {
@@ -368,6 +367,7 @@ controller.hears(['slots'], 'direct_message,direct_mention,mention', function (b
     bot.startConversation(message, function (err, convo) {
         //Make it dynamic by adding tutor id
         tutorSlot.getAvailableSlotsTutor("U84DLLKPL", 1, function (reservationSlots) {//user_id from tutor information
+            console.log(reservationSlots);
             if (reservationSlots==null) {
                 convo.addQuestion('No tutor information available', function (response, convo) {
                     
@@ -546,7 +546,7 @@ app.post('/message', (req, res) =>
         if (checkValue.slice(0, 8) == 'schedule') 
         {
             tutorSlot.getAvailableSlotsTutor(checkValue.substr(9), 1, function(reservationSlots) 
-            { 
+            {
                 if (reservationSlots == null) 
                 {
                     convo.addQuestion('No tutor information available', function(response, convo) 
@@ -651,6 +651,7 @@ app.post('/message', (req, res) =>
           // console.log(checkValue);
           tutorSlot.getAvailableSlotsTutor(checkValue, 1, function(reservationSlots) 
           { //user_id from tutor information
+              console.log(reservationSlots);
               if (reservationSlots == null) 
               {
                   convo.addQuestion('No tutor information available', function(response, convo) {
@@ -770,7 +771,7 @@ app.post('/message', (req, res) =>
           var date = payload.actions[0].value.slice(14, 25);
           var from = payload.actions[0].value.slice(50, 54);
           var to = payload.actions[0].value.slice(55, 59);
-          // console.log(payload.actions[0].value);
+          console.log(payload.actions[0].value);
           
           var title_send = 'Are you sure about this booking\n' + date + " " + from + ":" + to;
           var value_send = payload.actions[0].value;
@@ -787,7 +788,7 @@ app.post('/message', (req, res) =>
             var response = day.split(" ")[1].slice(0, 1);
             day = day.split(" ")[0];
             var user_id = payload.user.id;
-        
+           // console.log('date payload :'+payload.actions[0].value.slice(14, 25)+' and : '+payload.actions[0].value.slice(14, 50));
             if (response == 'y') 
             {
                 
@@ -802,7 +803,7 @@ app.post('/message', (req, res) =>
                             console.log(user_points);
                             console.log(tutor_rate);
                             UserModel.update_booking_points(user_id, tutor_id, tutor_rate);
-                            // ReservationModel.save_reservation(user_id, tutor_id, date, day, from, to);
+                            ReservationModel.save_reservation(user_id, tutor_id, date, day, from, to);
                             UserModel.send_tutor_notification(user_id, tutor_id, date, day, from, to);
                             action.send_message(payload.channel.id, "Booking Confirmed! Thank you for booking.");
                         } 
@@ -1069,3 +1070,4 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 //     callback([user_id,tutor_reviews,tutor_rating]);
 //   });
 // }
+

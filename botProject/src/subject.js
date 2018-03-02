@@ -17,8 +17,8 @@ function isValidSubject(mysubject, callback)
             }
             //console.log(subject);
             var tuteeSubject=mysubject;
-            var givenSubject=subject[0].name.toString().toLowerCase();
-            if (subject.length > 0 && (tuteeSubject.toLowerCase() === givenSubject)) 
+
+            if (subject.length > 0 && (tuteeSubject.toLowerCase() === subject[0].name.toString().toLowerCase()))
             {
                // console.log('valid subject');
                 flag = true;

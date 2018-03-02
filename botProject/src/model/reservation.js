@@ -5,7 +5,7 @@ const TutorModel = require('./tutor');
 var reservation_schema = new configure.schema({
   tutorid: 'string',
   userid: 'string',
-  date: 'Date',
+  date: 'string',
   day: 'string',
   from: 'string',
   to: 'string',
@@ -47,7 +47,7 @@ module.exports = {
     reservation.create({
       userid: user_id,
       tutorid: tutor_id,
-      date:date.date,
+      date:date,
       day: day,
       from: from,
       to: to,

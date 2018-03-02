@@ -35,64 +35,22 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
         var currentDateOnly = currentDate.getDate()
 
         var dayMap = {};
-        dayMap[0] = 
-        {
-            day: 'Sunday'
-        };
-        dayMap[1] = 
-        {
-            day: 'Monday'
-        };
-        dayMap[2] = 
-        {
-            day: 'Tuesday'
-        };
-        dayMap[3] = 
-        {
-            day: 'Wednesday'
-        };
-        dayMap[4] = 
-        {
-            day: 'Thursday'
-        };
-        dayMap[5] = 
-        {
-            day: 'Friday'
-        };
-        dayMap[6] = 
-        {
-            day: 'Saturday'
-        };
+        dayMap[0] = {day: 'Sunday'};
+        dayMap[1] = {day: 'Monday'};
+        dayMap[2] = {day: 'Tuesday'};
+        dayMap[3] = {day: 'Wednesday'};
+        dayMap[4] = {day: 'Thursday'};
+        dayMap[5] = {day: 'Friday'};
+        dayMap[6] = {day: 'Saturday'};
 
         var dayNumMap = {};
-        dayNumMap['Sunday'] = 
-        {
-            day: '0'
-        };
-        dayNumMap['Monday'] = 
-        {
-            day: '1'
-        };
-        dayNumMap['Tuesday'] = 
-        {
-            day: '2'
-        };
-        dayNumMap['Wednesday'] = 
-        {
-            day: '3'
-        };
-        dayNumMap['Thursday'] = 
-        {
-            day: '4'
-        };
-        dayNumMap['Friday'] = 
-        {
-            day: '5'
-        };
-        dayNumMap['Saturday'] = 
-        {
-            day: '6'
-        };
+        dayNumMap['Sunday'] = {day: '0'};
+        dayNumMap['Monday'] = {day: '1'};
+        dayNumMap['Tuesday'] = {day: '2'};
+        dayNumMap['Wednesday'] = {day: '3'};
+        dayNumMap['Thursday'] = {day: '4'};
+        dayNumMap['Friday'] = {day: '5'};
+        dayNumMap['Saturday'] = {day: '6'};
 
         var reservationSlots = {};
 
@@ -123,7 +81,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
 
                     ()>)*/
             }
-            //
+
 
             for (j = Number(avl[i].from); j < Number(avl[i].to);) 
             {
@@ -149,7 +107,7 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
                 //saving 30 minutes reservation slots
                 var futureReservationTimeStamp = futureDate.getFullYear() + '' + futureDate.getMonth() + '' +
                     futureDate.getDate() + '' + futureDay + '' + startTime + '' + endTime;
-                //console.log('futureReservationTimeStamp is :'+futureReservationTimeStamp);
+
                 reservationSlots[futureReservationTimeStamp] = {
                     Date: futureDate,
                     Day: futureDay,
@@ -160,18 +118,16 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
             }
         }
 
-        //**Get existing reservation for the tutor, (what if tutee is busy at that time as per his old
-        //reservation-tutee is busy at that time)
-
+        /*Getting existing reservations*/
         controller.storage.reservation.find({
             tutorid: tutorId,
             active: 'yes'
-        }, function(error, reservations) 
+        }, function(error, reservations)
         {
 
-            if (reservations.length > 0) 
+            if (reservations.length > 0)
             {
-                for (var i in reservations) 
+                for (var i in reservations)
                 {
                     //TODO mark reservations as active:'No' when a user reviews an old reservation
 
@@ -182,16 +138,18 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
                         reservations[i].to;
 
 
-                    if (reservationSlots[existingReservationTimeStamp] != null) 
-                    {
+                    if (reservationSlots[existingReservationTimeStamp] != null) {
                         reservationSlots[existingReservationTimeStamp].available = 'No';
-                        //console.log('updated value of availabe slot is '+reservationSlots[existingReservationTimeStamp].available);
                     }
 
                 }
+
             }
+
+            callback(reservationSlots);
         });
-        callback(reservationSlots);
+
+
     });
 }
 
@@ -199,3 +157,4 @@ module.exports =
 {
     getAvailableSlotsTutor
 };
+
