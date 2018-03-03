@@ -1,1 +1,1 @@
-web: node src/slack_bot.js
+web: npm start
