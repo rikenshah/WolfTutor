@@ -3,7 +3,7 @@ Software Engineering Spring 2018 project
 
 ### Problem Statement
 
-We present a peer to peer collaborative tutoring system that is based on peer reviews and rewards earned through tutoring. According to our preliminary studies, the current proportion of students who need outside tutoring for clarifications of conceptual doubts, is considerable. A platform designed for students where they can help each other to clear such doubts and help them perform better would be much appreciated. Although students have many resources available in the university like open office hours of TA, professor, etc. , still many students hesitate to ask TA/Professor the doubts and queries that they have. Also, they are more comfortable in asking silly doubts to their peers without the fear of losing marks. Hence, the system to facilitate this process and maintained by students themselves would create a positive impact in the campus community. 
+We present a peer to peer collaborative tutoring system that is based on peer reviews and rewards earned through tutoring. According to our preliminary studies, the current proportion of students who need outside tutoring for clarifications of conceptual doubts, is considerable. A platform designed for students where they can help each other to clear such doubts and help them perform better would be much appreciated. Although students have many resources available in the university like open office hours of TA, professor, etc. , still many students hesitate to ask TA/Professor the doubts and queries that they have. Also, they are more comfortable in asking silly doubts to their peers without the fear of losing marks. Hence, the system to facilitate this process and maintained by students themselves would create a positive impact in the campus community.
 
 ### Goals
 
@@ -33,7 +33,7 @@ We have created a Slack application that can be added to any Slack workspace. We
     BOT_TOKEN='Enter your bot token here'
     MONGO_CONNECTION_STRING='Enter your mongo db url'
     ```
-10. Run the tests by using `npm test`. 
+10. Run the tests by using `npm test`.
 11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
 12. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
 13. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
@@ -42,11 +42,11 @@ We have created a Slack application that can be added to any Slack workspace. We
 
 ### Use Cases
 
-The four major use cases of our application are, 
+The four major use cases of our application are,
 #### 1. Find a tutor
 
 <Details>
-    <p>A user can find a tutor on our bot by just typing 'find a tutor'. The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject. 
+    <p>A user can find a tutor on our bot by just typing 'find a tutor'. The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject.
     </p>
 </Details>
 
@@ -79,10 +79,10 @@ The four major use cases of our application are,
 
 #### 3. Become a tutor
 
-![img](Wireframes/become_a_tutor_p1.gif)
+![img](Reports/Wireframes/become_a_tutor_p1.gif)
 
 ##### Part 2
-![img](Wireframes/become_a_tutor_p2.gif)
+![img](Reports/Wireframes/become_a_tutor_p2.gif)
 
 #### 4. Reward and review the tutor
 
@@ -92,7 +92,7 @@ The four major use cases of our application are,
 
 ### Design Methodologies and Patterns
 
-We have used agile practices throughout. We used kanban project integration with github to track our progress. Here are some screenshots. 
+We have used agile practices throughout. We used kanban project integration with github to track our progress. Here are some screenshots.
 
 **Before**
 ![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agile.png)
@@ -100,13 +100,13 @@ We have used agile practices throughout. We used kanban project integration with
 **After**
 ![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agileDone.png)
 
-### Evaluation Results 
+### Evaluation Results
 
 <Update after evaluation>
 
 ### Reports
 
-1. [Feb 1 report](https://github.com/rikenshah/WolfTutor/blob/master/Reports/Report_Feb/team_l_wolftutor_feb_report.pdf) 
+1. [Feb 1 report](https://github.com/rikenshah/WolfTutor/blob/master/Reports/Report_Feb/team_l_wolftutor_feb_report.pdf)
 
 ### Team Information
 

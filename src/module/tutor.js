@@ -2,16 +2,19 @@ require('dotenv').config();
 const axios = require('axios');
 const debug = require('debug')('slash-command-template:tutor');
 const qs = require('querystring');
-const users = require('./users');
 const MongoClient = require('mongodb').MongoClient;
-const UserModel = require('./model/user');
-var url = process.env.MONGO_CONNECTION_STRING;
+const UserModel = require('../model/user');
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
 var Botkit = require('botkit');
 var controller = Botkit.slackbot({
     storage: mongoStorage,
 });
 
+const find = (slackUserId) => {
+  const body = { token: process.env.SLACK_ACCESS_TOKEN, user: slackUserId };
+  const promise = axios.post('https://slack.com/api/users.info', qs.stringify(body));
+  return promise;
+};
 // Uncomment the lines below to test the connection with the database
 // MongoClient.connect(url, function (err) {
 //     if (err) throw err;
@@ -65,46 +68,6 @@ const sendConfirmation = (tutor) => {
     console.error(err);
   });
 };
-
-// Create tutor. Call users.find to get the user's email address
-// from their user ID
-const create = (userId, submission) => {
-  const tutor = {};
-  const fetchUserEmail = new Promise((resolve, reject) => {
-    users.find(userId).then((result) => {
-      debug(`Find user: ${userId}`);
-      resolve(result.data.user.profile);
-      //console.log(result.data.user.profile.real_name);
-    }).catch((err) => { reject(err); });
-  });
-  fetchUserEmail.then((result) => {
-    tutor.userId = userId;
-    tutor.userName = result.real_name;
-    tutor.userEmail = result.email;
-    tutor.major = submission.major;
-    tutor.degree = submission.degree;
-    tutor.subject = submission.subject;
-    tutor.rate = submission.rate;
-    tutor.summary = submission.summary;
-    sendConfirmation(tutor);
-    console.log(tutor);
-    // //console.log(result);
-    // MongoClient.connect(url, function (err, db) {
-    //     if(err) throw err;
-    //     var dbo = db.db("wolftutor");
-    //     dbo.collection("testtutors").insertOne(tutor, function(err, res) {
-    //     if (err) throw err;
-    //     console.log("1 Tutor inserted");
-    //     db.close();
-    //   });
-    // });
-    //controller.s
-
-
-    //return tutor;
-  }).catch((err) => { console.error(err); });
-};
-
 
 const new_user = (userId, submission) => {
   const tutor = {};
@@ -240,4 +203,4 @@ function getTutorsForSubject(subject,slackUserName, callback) {
 
 }
 
-module.exports = { create, sendConfirmation, new_user, getTutorReview, getTutorsForSubject };
+module.exports = { sendConfirmation, new_user, getTutorReview, getTutorsForSubject };
