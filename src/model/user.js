@@ -157,7 +157,7 @@ module.exports = {
       var student_name = user.name;
       var student_email = user.email;
       var student_phone = user.phone;
-      action.send_message(tutor_id,"Hello There",[
+      action.send_message(tutor_id,"Voila, a student has booked you for the tutoring session.",[
               {
                   "fields":
                   [
