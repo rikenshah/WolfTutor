@@ -1,1 +1,1 @@
-web: nodemon src/slack_bot.js
+web: node src/slack_bot.js
