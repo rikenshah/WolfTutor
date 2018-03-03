@@ -198,7 +198,7 @@ module.exports = {
                 else
                 {
                     // console.log(slots_date);
-                    action.send_message(payload.channel.id, 'Slot Dates', prompts.DisplayDate.tutor_date_display(slots_date));
+                    action.send_message(payload.channel.id, 'Slot Dates', prompts.DisplayDate(slots_date));
                 }
             });
         }
@@ -208,7 +208,7 @@ module.exports = {
 
               if (tutor_reviews[2] == "") {
                   // console.log("No reviews");
-                  action.send_message(payload.channel.id, "", prompts.NoreviewSchedule.noreview_schedule(tutor_reviews[0]));
+                  action.send_message(payload.channel.id, "", prompts.NoreviewSchedule(tutor_reviews[0]));
 
               }
               else
@@ -304,7 +304,7 @@ module.exports = {
               else
               {
 
-                  action.send_message(payload.channel.id, 'Slot Dates', prompts.DisplayDate.tutor_date_display(slots_date));
+                  action.send_message(payload.channel.id, 'Slot Dates', prompts.DisplayDate(slots_date));
 
               }
 
@@ -344,7 +344,7 @@ module.exports = {
                           flag_no_time_slot += 1;
                           var title_send = reservation['Date'].toString().slice(4, 15) + " " + reservation['from'].toString() + ":" + reservation['to'].toString();
                           var value_send = tutor_id + " " + reservation['Date'].toString() + " " + reservation['from'].toString() + " " + reservation['to'].toString() + " " + reservation['Day'].toString();
-                          action.send_message(payload.channel.id, '', prompts.SlotBooking.slot_booking(title_send, value_send));
+                          action.send_message(payload.channel.id, '', prompts.SlotBooking(title_send, value_send));
                       }
                   }
               }
@@ -371,7 +371,7 @@ module.exports = {
 
           var title_send = 'Are you sure about this booking\n' + date + " " + from + ":" + to;
           var value_send = payload.actions[0].value;
-          action.send_message(payload.channel.id, "", prompts.BookingConfirmation.booking_confirmation(title_send, value_send));
+          action.send_message(payload.channel.id, "", prompts.BookingConfirmation(title_send, value_send));
 
       }
         else if (callback_id == 'save_booking')

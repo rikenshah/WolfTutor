@@ -22,11 +22,12 @@ module.exports = {
   create_user_prompt : create_user_prompt.create_user_prompt,
   add_scheduling_prompt : add_scheduling_prompt.add_scheduling_prompt,
   add_review_prompt : add_review_prompt.add_review_prompt,
-  Tutor_Display_Info : tutor_info_prompt.tutor_info_prompt,
-  DisplayDate : display_date_prompt.display_date_prompt,
-  TutorReview : review_tutor_prompt.review_tutor_prompt,
-  SubjectList : subject_list_prompt.subject_list_prompt,
-  NoreviewSchedule : noreview_schedule_prompt.noreview_schedule_prompt,
-  SlotBooking : slot_booking_prompt.slot_booking_prompt,
-  BookingConfirmation : booking_confirmation_prompt.booking_confirmation_prompt
+
+  Tutor_Display_Info : tutor_info_prompt.tutor_info_display,
+  DisplayDate : display_date_prompt.tutor_date_display,
+  TutorReview : review_tutor_prompt.tutor_review_display,
+  SubjectList : subject_list_prompt.subject_list_display,
+  NoreviewSchedule : noreview_schedule_prompt.noreview_schedule,
+  SlotBooking : slot_booking_prompt.slot_booking,
+  BookingConfirmation : booking_confirmation_prompt.booking_confirmation
 };

@@ -1,7 +1,7 @@
 {
-  "name": "botProject",
-  "version": "0.6.9",
-  "description": "Building blocks for Building Bots",
+  "name": "WolfTutor",
+  "version": "2.0.9",
+  "description": "Peer to peer Tutoring System",
   "main": "lib/Botkit.js",
   "types": "lib/Botkit.d.ts",
   "dependencies": {
@@ -54,22 +54,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/howdyai/botkit.git"
+    "url": "https://github.com/rikenshah/WolfTutor.git"
   },
   "bugs": {
-    "url": "https://github.com/howdyai/botkit/issues"
+    "url": "https://github.com/rikenshah/WolfTutor/issues"
   },
-  "homepage": "http://howdy.ai/botkit",
+  "homepage": "http://woltutor.herokuapp.com/",
   "keywords": [
     "bots",
     "chatbots",
-    "slack",
-    "cisco spark",
-    "facebook messenger",
-    "twilio ipm",
-    "microsoft bot framework"
+    "slack"
   ],
-  "author": "ben@howdy.ai",
+  "author": "wolftutor",
   "license": "MIT",
   "jest": {
     "testEnvironment": "node"

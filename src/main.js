@@ -290,7 +290,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                 console.log(id, name, real_name);
 
                 var slackUserName = id;//'U84DXQKPL';//id;
-                convo.addQuestion(prompts.SubjectList.subject_list_display(subjects_display_list), function (response, convo) {
+                convo.addQuestion(prompts.SubjectList(subjects_display_list), function (response, convo) {
                     //  console.log(response.text);
                     if(response.text.toLowerCase()==='exit') {
                         bot.reply(message,'Cool, you are out finding a tutor!');
@@ -315,9 +315,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 {
                                   for (var i in json_file)
                                   {
-                                    console.log(Tutor_Display_Info);
-                                    bot.reply(message, prompts.
-                                      prompts.Tutor_Display_Info.tutor_info_display(json_file[i]));
+                                    bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
                                   }
                                 }
                             });
@@ -355,7 +353,7 @@ controller.hears(['buy', 'buy points'], 'direct_message', function(bot, message)
 });
 
 app.get('/', (req, res) => {
-    res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
+    res.send('<h2>Welcome to Wolf Tutor</h2> <p>Follow the' +
     ' instructions in the README to configure the Slack App and your environment variables.</p>');
 });
 
