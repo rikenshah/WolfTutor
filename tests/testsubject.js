@@ -1,4 +1,7 @@
-var assert = require("assert"); // node.js core module
+var chai = require('chai');
+var expect = chai.expect;
+var assert = chai.assert;
+var should = chai.should();
 const subjectsModel = require('../src/model/subject');
 
 
@@ -11,12 +14,10 @@ describe('Subject', function(){
           resolve(subjects);
       });
     });
-
       return testPromise.then(function (subjects) {
-        console.log(subjects);
+        expect(subjects).to.be.a('Array');
+        subjects[0].should.have.property('name');
       });
-
-      //assert.equal(-1, [1,2,3].indexOf(4)); // 4 is not present in this array so indexOf returns -1
     });
   });
 });
