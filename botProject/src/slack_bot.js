@@ -58,14 +58,6 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
 
 });
 
-controller.hears(['my points'], 'direct_message,direct_mention,mention', function(bot, message)
-{
-  UserModel.fetch_user_points(message.user,function(err,points)
-  {
-    bot.reply(message, 'Your points are : '+points);
-    bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
-  });
-});
 //TODO show only active reservations, not the old ones
 controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message)
 {
@@ -169,7 +161,7 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 });
 
 //Method for a user to view rewards
-controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message,direct_mention,mention', function (bot, message) {
+controller.hears(['rewards','get my rewards','view my rewards','my points'], 'direct_message,direct_mention,mention', function (bot, message) {
     bot.startConversation(message, function (err, convo) {
 
         bot.api.users.info({user: message.user}, (error, response) => {
@@ -181,6 +173,7 @@ controller.hears(['rewards','get my rewards','view my rewards'], 'direct_message
             if (users != null && users.length > 0) {
                 //update the user rewards
                 bot.reply(message, 'Your Reward points are ' + users[0].points);
+                bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
 
             }
             else
@@ -363,6 +356,13 @@ controller.hears('review', 'direct_message', function(bot, message) {
     bot.reply(message, prompts.add_review_prompt);
 });
 
+controller.hears('redeem', 'direct_message', function(bot, message) {
+    bot.reply(message, '1) Get $15 Giftcard of wolfoutfitter for 300 points\n 2) Get $30 Giftcard of wolfoutfitter 500 points \n 3) Get $60 Giftcard of wolfoutfitter 1000 points \n Contact wolftutor@gmail.com for getting your giftcard');
+});
+
+controller.hears(['buy', 'buy points'], 'direct_message', function(bot, message) {
+    bot.reply(message, '1) Get 200 points for $25\n 2) Get 500 points for $40 \n 3) Get 1000 points for $80 \n Contact wolftutor@gmail.com for buying points');
+});
 
 app.get('/', (req, res) => {
     res.send('<h2>The Slash Command and Dialog app is running</h2> <p>Follow the' +
@@ -782,7 +782,7 @@ app.post('/message', (req, res) =>
             else
             {
                 action.send_message(payload.channel.id, "Thank you for Enrolling in WolfTutor");
-                action.send_message(payload.channel.id, "\n If you want to find a tutor type \"find a tutor\"\n If you want to Become a tutor in our system type \"become a tutor\"\n If you want to view your review a session type \"review\"\n If you want to view your rewards type \"rewards\"\n If you want to check your availability type \"my availability\"\n If you want to check the subjects you are teaching type \"my subjects\"\n If you want to check your reservations type \"my reservations\"");
+                action.send_message(payload.channel.id, "\n If you want to find a tutor type \"find a tutor\"\n If you want to Become a tutor in our system type \"become a tutor\"\n If you want to view your review a session type \"review\"\n If you want to view your rewards type \"rewards\"\n If you want to check your availability type \"my availability\"\n If you want to check the subjects you are teaching type \"my subjects\"\n If you want to check your reservations type \"my reservations\"\n If you want to know how to redeem your rewards type \"redeem\"\n If you want to buy points type \"buy\"");
                 tutor.new_user(payload.user.id, payload.submission);
                 // UserModel.create_new_user(payload);
                 // action.send_message(payload.channel.id, "Thank you for enrolling.");
