@@ -36,15 +36,14 @@
   "devDependencies": {
     "jest-cli": "^20.0.1",
     "jscs": "^3.0.7",
-    "mocha": "^3.2.0",
+    "mocha": "^3.5.3",
     "should": "^11.2.1",
     "should-sinon": "0.0.5",
     "sinon": "^2.1.0",
     "winston": "^2.3.1"
   },
   "scripts": {
-    "pretest": "jscs ./lib/ ./__test__ --fix",
-    "test": "jest --coverage",
+    "test": "mocha ./tests/*.js",
     "test-legacy": "mocha ./tests/*.js",
     "test-watch": "jest --watch"
   },
