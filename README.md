@@ -1,5 +1,4 @@
-# WolfTutor 
-[![Build Status](https://travis-ci.org/rikenshah/WolfTutor.svg?branch=master)](https://travis-ci.org/rikenshah/WolfTutor)
+# WolfTutor [![Build Status](https://travis-ci.org/rikenshah/WolfTutor.svg?branch=master)](https://travis-ci.org/rikenshah/WolfTutor)
 Software Engineering Spring 2018 project
 
 ### Problem Statement
