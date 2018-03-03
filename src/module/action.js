@@ -1,5 +1,5 @@
 require('dotenv').config();
-const configure = require('./model/config');
+const configure = require('../model/config');
 
 const axios = require('axios');
 const debug = require('debug')('botProject:src/slack_bot');

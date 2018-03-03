@@ -1,4 +1,4 @@
-const subjectsModel = require('../model/subject');
+const subjectsModel = require('../../model/subject');
 
 module.exports= {
   add_more_subjects_dialog : function(callback){

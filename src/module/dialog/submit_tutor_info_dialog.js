@@ -1,4 +1,4 @@
-const subjectsModel = require('../model/subject');
+const subjectsModel = require('../../model/subject');
 
 module.exports= {
   submit_tutor_info_dialog: function(callback){

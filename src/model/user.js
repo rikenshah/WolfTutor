@@ -1,6 +1,6 @@
 const configure = require('./config');
 const reservationModel = require('./reservation');
-const action = require('../action');
+const action = require('../module/action');
 const TutorModel = require('./tutor.js');
 
 var user_schema = new configure.schema({
@@ -113,11 +113,11 @@ module.exports = {
     console.log(user_id);
     console.log(tutor_id);
     console.log(points);
-    module.exports.fetch_user_points(user_id,function(err,user_points){ 
+    module.exports.fetch_user_points(user_id,function(err,user_points){
       if(err){
         console.log(err);
         return err;
-      }   
+      }
       console.log('In Update Booking',user_points);
       user.findOneAndUpdate({user_id:user_id},{$set: {points: (user_points-points)}},function(err,user){
         if(err){

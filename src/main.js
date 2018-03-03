@@ -7,9 +7,9 @@ const qs = require('querystring');
 const tutor = require('./tutor');
 const subject = require('./subject');
 const tutorSlot = require('./tutor_slot');
-const dialogs = require('./dialog');
-const prompts = require('./prompt');
-const action = require('./action');
+const dialogs = require('./module/dialog.js');
+const prompts = require('./module/prompt.js');
+const action = require('./module/action');
 const debug = require('debug')('slash-command-template:index');
 const users = require('./users');
 const app = express();
@@ -17,13 +17,6 @@ const UserModel = require('./model/user');
 const TutorModel = require('./model/tutor');
 const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
-const Tutor_Display_Info = require('./prompt/tutor_info_prompt');
-const DisplayDate = require('./prompt/display_date_prompt');
-const TutorReview = require('./prompt/review_tutor_prompt');
-const SubjectList = require('./prompt/subject_list_prompt');
-const NoreviewSchedule = require('./prompt/noreview_schedule_prompt');
-const SlotBooking = require('./prompt/slot_booking_prompt');
-const BookingConfirmation = require('./prompt/booking_confirmation_prompt');
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -299,7 +292,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                 console.log(id, name, real_name);
 
                 var slackUserName = id;//'U84DXQKPL';//id;
-                convo.addQuestion(SubjectList.subject_list_display(subjects_display_list), function (response, convo) {
+                convo.addQuestion(prompts.SubjectList.subject_list_display(subjects_display_list), function (response, convo) {
                     //  console.log(response.text);
                     if(response.text.toLowerCase()==='exit') {
                         bot.reply(message,'Cool, you are out finding a tutor!');
@@ -325,7 +318,8 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                   for (var i in json_file)
                                   {
                                     console.log(Tutor_Display_Info);
-                                    bot.reply(message, Tutor_Display_Info.tutor_info_display(json_file[i]));
+                                    bot.reply(message, prompts.
+                                      prompts.Tutor_Display_Info.tutor_info_display(json_file[i]));
                                   }
                                 }
                             });
@@ -552,7 +546,7 @@ app.post('/message', (req, res) =>
                 else
                 {
                     // console.log(slots_date);
-                    action.send_message(payload.channel.id, 'Slot Dates', DisplayDate.tutor_date_display(slots_date));
+                    action.send_message(payload.channel.id, 'Slot Dates', prompts.DisplayDate.tutor_date_display(slots_date));
                 }
             });
         }
@@ -562,7 +556,7 @@ app.post('/message', (req, res) =>
 
               if (tutor_reviews[2] == "") {
                   // console.log("No reviews");
-                  action.send_message(payload.channel.id, "", NoreviewSchedule.noreview_schedule(tutor_reviews[0]));
+                  action.send_message(payload.channel.id, "", prompts.NoreviewSchedule.noreview_schedule(tutor_reviews[0]));
 
               }
               else
@@ -587,7 +581,7 @@ app.post('/message', (req, res) =>
 
                   display_review.then((result) =>
                   {
-                      action.send_message(payload.channel.id, result, TutorReview.tutor_review_display(tutor_reviews));
+                      action.send_message(payload.channel.id, result, prompts.TutorReview.tutor_review_display(tutor_reviews));
                   });
               }
 
@@ -658,7 +652,7 @@ app.post('/message', (req, res) =>
               else
               {
 
-                  action.send_message(payload.channel.id, 'Slot Dates', DisplayDate.tutor_date_display(slots_date));
+                  action.send_message(payload.channel.id, 'Slot Dates', prompts.DisplayDate.tutor_date_display(slots_date));
 
               }
 
@@ -698,7 +692,7 @@ app.post('/message', (req, res) =>
                           flag_no_time_slot += 1;
                           var title_send = reservation['Date'].toString().slice(4, 15) + " " + reservation['from'].toString() + ":" + reservation['to'].toString();
                           var value_send = tutor_id + " " + reservation['Date'].toString() + " " + reservation['from'].toString() + " " + reservation['to'].toString() + " " + reservation['Day'].toString();
-                          action.send_message(payload.channel.id, '', SlotBooking.slot_booking(title_send, value_send));
+                          action.send_message(payload.channel.id, '', prompts.SlotBooking.slot_booking(title_send, value_send));
                       }
                   }
               }
@@ -725,7 +719,7 @@ app.post('/message', (req, res) =>
 
           var title_send = 'Are you sure about this booking\n' + date + " " + from + ":" + to;
           var value_send = payload.actions[0].value;
-          action.send_message(payload.channel.id, "", BookingConfirmation.booking_confirmation(title_send, value_send));
+          action.send_message(payload.channel.id, "", prompts.BookingConfirmation.booking_confirmation(title_send, value_send));
 
       }
         else if (callback_id == 'save_booking')
