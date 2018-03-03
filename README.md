@@ -33,11 +33,12 @@ We have created a Slack application that can be added to any Slack workspace. We
     BOT_TOKEN='Enter your bot token here'
     MONGO_CONNECTION_STRING='Enter your mongo db url'
     ```
-10. Start the server using, `node src/slack_bot.js`. This will start the server at `localhost:3000`.
-11. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
-12. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
-13. Add the `ngrok url` that you noted in previous step under `Interactive Elements` settings in Slack App settings. This will tell slack where to send the post request.
-14. Reinstall the app to your workspace. And start communicating with the app via direct messages.
+10. Run the tests by using `npm test`. 
+11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
+12. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
+13. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
+14. Add the `ngrok url` that you noted in previous step under `Interactive Elements` settings in Slack App settings. This will tell slack where to send the post request.
+15. Reinstall the app to your workspace. And start communicating with the app via direct messages.
 
 ### Use Cases
 
