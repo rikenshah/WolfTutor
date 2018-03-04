@@ -47,23 +47,25 @@ The four major use cases of our application are,
 <Details>
 <p>
   #### Find a tutor-
-    A user can find a tutor on our bot by just typing one of the following keywords,
+    <p>A user can find a tutor on our bot by just typing one of the following keywords,
     'find a tutor',
     'need a tutor',
     'want a tutor', or
      'select a tutor'.
-    The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject.
-
+    The user will get the list of all the available subjects from which the user can select one subject.
+    Once a subject is selected we will be returning all the tutors who teach that subject.
+    </p>
 
     #### Book a tutor-
-        Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.
+     <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.
         Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
          'My reservation' in the slack bot.
-
+        </p>
 
    #### View my Reservations-
-            Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
+       <p>     Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
              'My reservation' in the slack bot.
+             </p>
 
 </p>
 </Details>
