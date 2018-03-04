@@ -56,7 +56,7 @@ The four major use cases of our application are,
        'select a tutor'.
         The user will get the list of all the available subjects from which the user can select one subject.
         Once a subject is selected we will be returning all the tutors who teach that subject.
-       </p>
+      </p>
     </Details>
     **Book a tutor**
      <Details>
@@ -72,9 +72,8 @@ The four major use cases of our application are,
              'My reservation'
             in the slack bot.
 
-            </p>
-            </Details>
-
+       </p>
+       </Details>
 
 #### 2. Become a tutor
 
