@@ -45,9 +45,8 @@ We have created a Slack application that can be added to any Slack workspace. We
 ### Use Cases
 
 The four major use cases of our application are,
-#### 1. Find and Book a tutor
+#### 1. Find a tutor
 <Details>
-**Find a tutor**
     <p> A user can find a tutor on our bot by just typing one of the following keywords,
        'find a tutor',
        'need a tutor',
@@ -56,20 +55,14 @@ The four major use cases of our application are,
         The user will get the list of all the available subjects from which the user can select one subject.
         Once a subject is selected we will be returning all the tutors who teach that subject.
       </p>
-
-  **Book a tutor**
-     <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.
-        Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
-        'My reservation' in the slack bot.
-        </p>
-
-  **View my Reservations**
-       <p>     Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
-             'My reservation' in the slack bot.</p>
-
+</Details>
+#### 2. Book a tutor
+<Details>
+     <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.</p>
+       <p> Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing 'My reservation' in the slack bot.</p>
  </Details>
 
-#### 2. Become a tutor
+#### 3. Become a tutor
 
 <Details>
     <p> If a user wants to become a tutor, he/she will just type
@@ -78,7 +71,7 @@ The four major use cases of our application are,
     </p>
 </Details>
 
-#### 3. Review the tutor
+#### 4. Reward and Review the tutor
 
 <Details>
     <p> After the session is over the user(student) will have an option to review and rate the tutor.
@@ -86,12 +79,7 @@ The four major use cases of our application are,
     so that the other users(students) can see the reviews and select the tutor.
     The tutor can also set his rates according to the reviews that he gets.
     We also have an option of keeping the rate to 0 for the tutors who want to teach for free.
-
     </p>
-</Details>
-
-#### 4. Reward points in WolfTutor
-<Details>
     <p>
     All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following-
     'My points','rewards','get my rewards','view my rewards' and the bot will show them their current points.
@@ -103,7 +91,7 @@ The four major use cases of our application are,
       <p>2) Get 500 points for $40 </p>
       <p> 3) Get 1000 points for $80</p>
         </p>
-    </Details>
+</Details>
 
 ### Wireframes
 
