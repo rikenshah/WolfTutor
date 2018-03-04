@@ -47,7 +47,7 @@ The four major use cases of our application are,
 <Details>
 <p>
   **Find a tutor**
-    <p>A user can find a tutor on our bot by just typing one of the following keywords,
+    <p> A user can find a tutor on our bot by just typing one of the following keywords,
     'find a tutor',
     'need a tutor',
     'want a tutor', or
