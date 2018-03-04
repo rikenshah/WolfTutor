@@ -46,7 +46,12 @@ The four major use cases of our application are,
 #### 1. Find a tutor
 
 <Details>
-    <p>A user can find a tutor on our bot by just typing 'find a tutor'. The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject.
+    <p>A user can find a tutor on our bot by just typing one of the following keywords
+    'find a tutor'
+    'need a tutor'
+    'want a tutor'
+     'select a tutor'
+    The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject.
     </p>
 </Details>
 
