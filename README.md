@@ -7,10 +7,12 @@ We present a peer to peer collaborative tutoring system that is based on peer re
 
 ### Goals
 
-1. Provide high quality tutoring through the platform that we build which will help students clear their concepts and succeed in the course.
-2. Tutors will get experience of teaching and will increase their confidence and will enhance their subject skills.
-3. Tutors can share their success tips which can help student excel in that particular course.
-4. Our project will also help tutors in earning points which they can use to get tangible things on campus.
+1. Rewards based system which enhances knowledge sharing among NC state students.
+2. Provide high quality tutoring through the platform that we build which will help students clear their concepts and succeed in the course.
+3. Tutors will get experience of teaching and will increase their confidence and will enhance their subject skills.
+4. A review and rating based system to maintain credibililty of tutoring provided, tutee can see reviews and ratings prior to booking a tutor.
+5. Tutors can share their success tips which can help student excel in that particular course.
+
 
 ### Bot's description
 
@@ -47,10 +49,10 @@ The four major use cases of our application are,
 <Details>
   **Find a tutor**
     <p> A user can find a tutor on our bot by just typing one of the following keywords,
-        'find a tutor',
-        'need a tutor',
-        'want a tutor', or
-        'select a tutor'.
+       > 'find a tutor',
+       > 'need a tutor',
+       > 'want a tutor', or
+       > 'select a tutor'.
         The user will get the list of all the available subjects from which the user can select one subject.
         Once a subject is selected we will be returning all the tutors who teach that subject.
        </p>
@@ -58,19 +60,23 @@ The four major use cases of our application are,
     **Book a tutor**
      <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.
         Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
-         'My reservation' in the slack bot.
+        > 'My reservation'
+        in the slack bot.
         </p>
 
   **View my Reservations**
        <p>     Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
-             'My reservation' in the slack bot.
+            > 'My reservation'
+            in the slack bot.
              </p>
 </Details>
 
 #### 2. Become a tutor
 
 <Details>
-    <p> If a user wants to become a tutor, he/she will just type 'become a tutor' and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
+    <p> If a user wants to become a tutor, he/she will just type
+     >'become a tutor'
+     and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
     </p>
 </Details>
 
@@ -91,9 +97,13 @@ The four major use cases of our application are,
     <p>
     All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following-
     'My points','rewards','get my rewards','view my rewards' and the bot will show them their current points.
-     Some of the rewards for WolfTutor points are :-
+     Tutor can get rewards for his accumulated points, some of the rewards for WolfTutor points are :-
      <p>1) Get $15 Giftcard of wolfoutfitter for 300 points.</p>
      <p>2) Get $30 Giftcard of wolfoutfitter 500 points.</p>
+     Tutee can also buy points in case his points get over, policies for buying rewards are :-
+     <p>1) Get 200 points for $25</p>
+      <p>2) Get 500 points for $40 </p>
+      <p> 3) Get 1000 points for $80</p>
         </p>
     </Details>
 
