@@ -53,8 +53,9 @@ The four major use cases of our application are,
     'want a tutor', or
      'select a tutor'.
     The user will get the list of all the available subjects from which the user can select one subject. Once a subject is selected we will be returning all the tutors who teach that subject.
-    </Details>
     </p>
+    </Details>
+
     #### Book a tutor
     <Details>
         <p> Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.
