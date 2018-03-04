@@ -45,7 +45,6 @@ We have created a Slack application that can be added to any Slack workspace. We
 The four major use cases of our application are,
 #### 1. Find and Book a tutor
 <Details>
-<p>
   **Find a tutor**
     <p> A user can find a tutor on our bot by just typing one of the following keywords,
         'find a tutor',
@@ -66,8 +65,6 @@ The four major use cases of our application are,
        <p>     Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing
              'My reservation' in the slack bot.
              </p>
-
-</p>
 </Details>
 
 #### 2. Become a tutor
