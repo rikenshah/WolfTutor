@@ -14,6 +14,7 @@ const UserModel = require('../model/user');
 const TutorModel = require('../model/tutor');
 const ReservationModel = require('../model/reservation');
 const SubjectModel = require('../model/subject');
+const BookingValidation = require('./booking_validation');
 
 
 module.exports = {
@@ -139,6 +140,7 @@ module.exports = {
       else if (callback_id == 'review_and_scheduling')
       {
         var checkValue = payload.actions[0].value;
+        console.log(checkValue);
         if (checkValue.slice(0, 8) == 'schedule')
         {
             tutorSlot.getAvailableSlotsTutor(checkValue.substr(9), 1, function(reservationSlots)
@@ -368,10 +370,50 @@ module.exports = {
           var from = payload.actions[0].value.slice(50, 54);
           var to = payload.actions[0].value.slice(55, 59);
           console.log(payload.actions[0].value);
+          var user_id = payload.user.id;
 
-          var title_send = 'Are you sure about this booking\n' + date + " " + from + ":" + to;
-          var value_send = payload.actions[0].value;
-          action.send_message(payload.channel.id, "", prompts.BookingConfirmation(title_send, value_send));
+          console.log(tutor_id, day, date, from, to);
+          var full_date = date+ " 00:00:00 GMT-0500";
+          //Dynamic and fetch userid
+          BookingValidation.bookingValidation(user_id, full_date, day, from, to, function(flag)
+          {
+            flag = 'false';
+            console.log(flag, user_id, full_date, day, from, to);
+            if(flag == true)
+            {
+              console.log("True");
+              var title_send = 'Are you sure about this booking\n' + date + " " + from + ":" + to;
+              var value_send = payload.actions[0].value;
+              action.send_message(payload.channel.id, "", prompts.BookingConfirmation(title_send, value_send));
+            }
+            else
+            {
+              console.log("False",tutor_id+" schedule");
+
+              action.send_message(payload.channel.id, "Sorry, you already have a booking with other tutor at the same time.");
+              action.send_message(payload.channel.id, "",
+                [
+                  {
+                    title: 'Do you want to book other slot?',
+                    callback_id: 'review_and_scheduling',
+                    attachment_type: 'default',
+                    actions: 
+                    [
+                      {
+                        "name": "yes",
+                        "text": "Yes",
+                        "value": "schedule "+ tutor_id,
+                        "type": "button",
+                      }
+                    ]
+                  }
+                ]
+
+              );
+            }
+          });
+
+    
 
       }
         else if (callback_id == 'save_booking')

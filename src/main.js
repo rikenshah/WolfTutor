@@ -64,8 +64,10 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 
                 if (reservations != null && reservations.length>0) {
                     hasReservationTutor=true;
+
                 for (var r in reservations) {
                     //if (reservations[r].tutorid === loggedInUserId || reservations[r].userid === loggedInUserId) {
+                    
                         bot.reply(message,
                             {
                                 attachments:
