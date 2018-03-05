@@ -206,6 +206,7 @@ module.exports = {
         }
         else
         {
+
             tutor.getTutorReview(checkValue, function(tutor_reviews) {
 
               if (tutor_reviews[2] == "") {
@@ -215,28 +216,34 @@ module.exports = {
               }
               else
               {
-                  const display_review = new Promise((resolve, reject) =>
-                  {
-                      var tutor_name = '';
-                      controller.storage.user.all(function(err, users)
-                      {
-                          for (var i in users)
-                          {
-                              if (tutor_reviews[0] == users[i].user_id)
-                              {
-                                  tutor_name += users[i].name;
-                              }
-                          }
-                          resolve("Reviews for tutor : " + tutor_name);
-                      });
+
+                  // const display_review = new Promise((resolve, reject) =>
+                  // {
+                  //   console.log("In here");
+                  //     var tutor_name = '';
+                  //     controller.storage.user.all(function(err, users)
+                  //     {
+                  //       console.log("Inn", users);
+                  //         for (var i in users)
+                  //         {
+                  //             if (tutor_reviews[0] == users[i].user_id)
+                  //             {
+                  //                 tutor_name += users[i].name;
+                  //             }
+
+                  //         }
+
+                  //         resolve("Reviews for tutor : " + tutor_name);
+                  //     });
 
 
-                  });
+                  // });
 
-                  display_review.then((result) =>
-                  {
-                      action.send_message(payload.channel.id, result, prompts.TutorReview.tutor_review_display(tutor_reviews));
-                  });
+                  // display_review.then((result) =>
+                  // {
+                  //   console.log("In here",result); 
+                      action.send_message(payload.channel.id, "", prompts.TutorReview(tutor_reviews));
+                  // });
               }
 
           });
