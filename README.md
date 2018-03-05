@@ -55,12 +55,17 @@ The four major use cases of our application are,
         The user will get the list of all the available subjects from which the user can select one subject.
         Once a subject is selected we will be returning all the tutors who teach that subject.
       </p>
+    Here is the flow demonstrating this use case.<br>
+    <img src="Reports/Wireframes/find_a_tutor.gif"></img>
 </Details>
 
 #### 2. Book a tutor
 <Details>
      <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.</p>
        <p> Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing 'My reservation' in the slack bot.</p>
+    Here is the flow demonstrating this use case.<br>
+    <img src="Reports/Wireframes/book_a_tutor.gif"></img>
+    <img src="Reports/Wireframes/my_reservations.gif"></img>
  </Details>
 
 #### 3. Become a tutor
@@ -70,6 +75,9 @@ The four major use cases of our application are,
      'become a tutor'
      and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
     </p>
+    Here is the flow demonstrating this use case.<br>
+    <img src="Reports/Wireframes/become_a_tutor_p1.gif"></img>
+    <img src="Reports/Wireframes/become_a_tutor_p2.gif"></img>
 </Details>
 
 #### 4. Reward and Review the tutor
@@ -92,25 +100,24 @@ The four major use cases of our application are,
       <p>2) Get 500 points for $40 </p>
       <p> 3) Get 1000 points for $80</p>
         </p>
+     Here is the flow demonstrating this use case.<br>
+    <img src="Reports/Wireframes/my_rewards.gif"></img>
 </Details>
 
-### Wireframes
+#### 5. Other minor usecases
 
-#### 1. Find a tutor
-![img](Reports/Wireframes/find_a_tutor.gif)
-
-#### 2. Book a tutor
-![img](Reports/Wireframes/book_a_tutor.gif)
-![img](Reports/Wireframes/my_reservations.gif)
-#### 3. Become a tutor
-
-![img](Reports/Wireframes/become_a_tutor_p1.gif)
-
-##### Part 2
-![img](Reports/Wireframes/become_a_tutor_p2.gif)
-
-#### 4. Reward and review the tutor
-![img](Reports/Wireframes/my_rewards.gif)
+Here is a list of all possible commands that you can try out with the WolfTutor app.
+<br>
+- For enrolling in the system or viewing this list anytime, type `hi`
+- If you want to find a tutor type `find a tutor`
+- If you want to Become a tutor in our system type `become a tutor`
+- If you want to view your review a session type `review"`
+- If you want to view your rewards type `rewards`
+- If you want to check your availability type `my availability`
+- If you want to check the subjects you are teaching type `my subjects`
+- If you want to check your reservations type `my reservations`
+- If you want to know how to redeem your rewards type `redeem`
+- If you want to buy points type `buy`
 
 ### Design Methodologies and Patterns
 
