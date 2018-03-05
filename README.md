@@ -46,7 +46,7 @@ We have created a Slack application that can be added to any Slack workspace. We
 
 - There are two types of uses in the system, tutors and students. (They can be overlapping).
 - Anyone can enroll in the system by choosing so after saying `hi`. Note that all the communication is done with the `WolfTutor` bot.
-- Anyone can enroll in the system by saying `become a tutor` and following further instructions. 
+- Anyone can enroll in the system by saying `become a tutor` and following further instructions.
 - Students can `find a tutor` and `book a tutor` and make a reservation. This will also notify the tutor that the reservation is made. (Also, it can send email notification as per slack settings of that tutor).
 - Tutoring session is done offline (or online maybe on skype of hangout).
 - On reservation of the session, the points are deducted automatically from the student account and added to the tutor account
@@ -87,8 +87,7 @@ The four major use cases of our application are,
      and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
     </p>
     Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/become_a_tutor_p1.gif"></img>
-    <img src="Reports/Wireframes/become_a_tutor_p2.gif"></img>
+    <img src="Reports/Wireframes/become_a_tutor.gif"></img>
 </Details>
 
 #### 4. Reward and Review the tutor
@@ -110,7 +109,7 @@ The four major use cases of our application are,
      2. Get 500 points for $40  <br>
      3. Get 1000 points for $80  <br><br>
      Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/my_rewards.gif"></img>
+    <img src="Reports/Wireframes/review_rewards.gif"></img>
     </p>
 </Details>
 
