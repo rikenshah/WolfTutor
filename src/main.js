@@ -67,7 +67,9 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
 
                 for (var r in reservations) {
                     //if (reservations[r].tutorid === loggedInUserId || reservations[r].userid === loggedInUserId) {
-                    
+                    controller.storage.tutor.find({user_id: reservations[r].tutorid}, function (error, users) {
+                            console.log(user_id, reservations[r].tutorid);
+                    });
                         bot.reply(message,
                             {
                                 attachments:
