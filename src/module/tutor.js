@@ -71,8 +71,9 @@ const sendConfirmation = (tutor) => {
 
 const new_user = (userId, submission) => {
   const tutor = {};
+  console.log(submission);
   const fetchUserEmail = new Promise((resolve, reject) => {
-    users.find(userId).then((result) => {
+    find(userId).then((result) => {
       debug(`Find user: ${userId}`);
       resolve(result.data.user.profile);
       //console.log(result.data.user.profile.real_name);
