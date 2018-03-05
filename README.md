@@ -96,9 +96,11 @@ The four major use cases of our application are,
 ### Wireframes
 
 #### 1. Find a tutor
+![img](Reports/Wireframes/find_a_tutor.gif)
 
 #### 2. Book a tutor
-
+![img](Reports/Wireframes/book_a_tutor.gif)
+![img](Reports/Wireframes/my_reservations.gif)
 #### 3. Become a tutor
 
 ![img](Reports/Wireframes/become_a_tutor_p1.gif)
@@ -107,7 +109,7 @@ The four major use cases of our application are,
 ![img](Reports/Wireframes/become_a_tutor_p2.gif)
 
 #### 4. Reward and review the tutor
-
+![img](Reports/Wireframes/my_rewards.gif)
 ### Architectural Design
 
 <From paper/improvement>
