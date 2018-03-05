@@ -120,7 +120,7 @@ Here is a list of all possible commands that you can try out with the WolfTutor 
 - For enrolling in the system or viewing this list anytime, type `hi`
 - If you want to find a tutor type `find a tutor`
 - If you want to Become a tutor in our system type `become a tutor`
-- If you want to view your review a session type `review"`
+- If you want to view your review a session type `review`
 - If you want to view your rewards type `rewards`
 - If you want to check your availability type `my availability`
 - If you want to check the subjects you are teaching type `my subjects`
