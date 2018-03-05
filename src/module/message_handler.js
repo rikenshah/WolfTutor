@@ -377,7 +377,7 @@ module.exports = {
           //Dynamic and fetch userid
           BookingValidation.bookingValidation(user_id, full_date, day, from, to, function(flag)
           {
-            flag = 'false';
+
             console.log(flag, user_id, full_date, day, from, to);
             if(flag == true)
             {
