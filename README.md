@@ -56,6 +56,7 @@ The four major use cases of our application are,
         Once a subject is selected we will be returning all the tutors who teach that subject.
       </p>
 </Details>
+
 #### 2. Book a tutor
 <Details>
      <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.</p>
@@ -110,9 +111,6 @@ The four major use cases of our application are,
 
 #### 4. Reward and review the tutor
 ![img](Reports/Wireframes/my_rewards.gif)
-### Architectural Design
-
-<From paper/improvement>
 
 ### Design Methodologies and Patterns
 
