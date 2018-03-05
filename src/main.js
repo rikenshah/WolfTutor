@@ -313,7 +313,7 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 // console.log("Json file length");
                                 // console.log(count);
                                 if (count == 0) {
-                                    bot.reply(message, "Sorry! There are no tutor currently available for this course");
+                                    bot.reply(message, "Sorry! There are no tutor currently available for this course.\n Try to find a tutor again");
                                 }
                                 else
                                 {
