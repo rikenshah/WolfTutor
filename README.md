@@ -42,6 +42,17 @@ We have created a Slack application that can be added to any Slack workspace. We
 14. Add the `ngrok url` that you noted in previous step under `Interactive Elements` settings in Slack App settings. This will tell slack where to send the post request.
 15. Reinstall the app to your workspace. And start communicating with the app via direct messages.
 
+### General flow of the application
+
+- There are two types of uses in the system, tutors and students. (They can be overlapping).
+- Anyone can enroll in the system by choosing so after saying `hi`. Note that all the communication is done with the `WolfTutor` bot.
+- Anyone can enroll in the system by saying `become a tutor` and following further instructions. 
+- Students can `find a tutor` and `book a tutor` and make a reservation. This will also notify the tutor that the reservation is made. (Also, it can send email notification as per slack settings of that tutor).
+- Tutoring session is done offline (or online maybe on skype of hangout).
+- On reservation of the session, the points are deducted automatically from the student account and added to the tutor account
+- After the session the student can give review to the tutor, which will be added to tutor profile and later visible to all students.
+- There are bunch of other features, for details see usecases point #5.
+
 ### Use Cases
 
 The four major use cases of our application are,
@@ -88,23 +99,22 @@ The four major use cases of our application are,
     so that the other users(students) can see the reviews and select the tutor.
     The tutor can also set his rates according to the reviews that he gets.
     We also have an option of keeping the rate to 0 for the tutors who want to teach for free.
-    </p>
-    <p>
-    All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following-
-    'My points','rewards','get my rewards','view my rewards' and the bot will show them their current points.
-     Tutor can get rewards for his accumulated points, some of the rewards for WolfTutor points are :-
-     <p>1) Get $15 Giftcard of wolfoutfitter for 300 points.</p>
-     <p>2) Get $30 Giftcard of wolfoutfitter 500 points.</p>
-     Tutee can also buy points in case his points get over, policies for buying rewards are :-
-     <p>1) Get 200 points for $25</p>
-      <p>2) Get 500 points for $40 </p>
-      <p> 3) Get 1000 points for $80</p>
-        </p>
+    <br><br>
+    All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following. <br>
+    `My points`,`rewards`,`get my rewards`,`view my rewards` and the bot will show them their current points.<br><br>
+     Tutor can get rewards for his accumulated points, some of the rewards for WolfTutor points are as follows. <br>
+     1. Get $15 Giftcard of wolfoutfitter for 300 points.<br>
+     2. Get $30 Giftcard of wolfoutfitter 500 points.<br><br>
+     Tutee can also buy points in case his points get over, policies for buying rewards are :- <br>
+     1. Get 200 points for $25 <br>
+     2. Get 500 points for $40  <br>
+     3. Get 1000 points for $80  <br><br>
      Here is the flow demonstrating this use case.<br>
     <img src="Reports/Wireframes/my_rewards.gif"></img>
+    </p>
 </Details>
 
-#### 5. Other minor usecases
+#### 5. List of all usecases
 
 Here is a list of all possible commands that you can try out with the WolfTutor app.
 <br>
