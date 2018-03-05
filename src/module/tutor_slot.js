@@ -66,7 +66,20 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
                     availabeDayVal = availableDaykey[v];
             }
 
-            var numberOfDays = (Number(7 - currentDay) + Number(availabeDayVal)) % 7;
+            var numberOfDays = (currentDay == availabeDayVal)?7:(Number(7 - currentDay) + Number(availabeDayVal)) % 7;
+
+            //if(currentDay === availabeDayVal)
+              //  numberOfDays=7;
+
+            //console.log('no of days is '+numberOfDays+'current day '+currentDay+' available day'+availabeDayVal);
+           /* const noOfDays=new Promise((resolve,reject) => {
+                var test = (currentDay == availabeDayVal)?7:(Number(7 - currentDay) + Number(availabeDayVal)) % 7;
+                resolve(test);
+            });
+
+            noOfDays.then((result) => {
+                console.log('result is '+result);
+            });*/
             var futureDay = dayMap[availabeDayVal].day;
 
             var futureDate = new Date();
@@ -74,6 +87,8 @@ function getAvailableSlotsTutor(tutorId, userId, callback)
             futureDate.setDate(futureDate.getDate() + numberOfDays);
 
             futureDate.setHours(0, 0, 0, 0);
+
+
             //TODO same day availability
             if (availabeDayVal == currentDay) 
             {
