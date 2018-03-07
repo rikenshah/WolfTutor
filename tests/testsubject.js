@@ -6,7 +6,7 @@ const subjectsModel = require('../src/model/subject');
 
 describe('Subject', function(){
   describe('get_all_subjects()', function(){
-    it('should should extract all subjects from the database', function(){
+    it('should extract all subjects from the database', function(){
       var testPromise = new Promise(function (resolve,reject) {
         subjectsModel.get_all_subjects(function (subjects) {
           resolve(subjects);

@@ -26,10 +26,17 @@ module.exports = {
       points: 100
     }, function(err, res) {
       if (err) return err;
+      return true;
       console.log('1 entry added');
     });
   },
   user,
+  get_user: function(callback){
+    user.findOne({},function(err,user){
+      if(err) return err;
+      callback(user);
+    });
+  },
   get_user_info: function(user_id,callback){
   	user.findOne({user_id:user_id},function(err,user){
   		if(err){
@@ -79,7 +86,7 @@ module.exports = {
           }
           // Check if there are no reservations for that user today
           if (today_reservations.length == 0) {
-            action.send_message(payload.channel.id, 'Sorry, you don\'t have any sessions to review', []);
+            action.send_message(payload.channel.id, 'Sorry, you don\'t have any sessions to review for today', []);
           } else {
             today_reservations.sort(function(a, b) {
               var num_a = Number(a.to);
