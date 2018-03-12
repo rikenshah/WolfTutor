@@ -128,6 +128,10 @@ Here is a list of all possible commands that you can try out with the WolfTutor 
 - If you want to know how to redeem your rewards type `redeem`
 - If you want to buy points type `buy`
 
+### Architectural Design
+
+![img](https://github.com/rikenshah/WolfTutor/blob/master/Reports/pictures/Architecture_final.png)
+
 ### Design Methodologies and Patterns
 
 We have used agile practices throughout. We used kanban project integration with github to track our progress. Here are some screenshots.
