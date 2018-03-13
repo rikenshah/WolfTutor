@@ -142,10 +142,6 @@ We have used agile practices throughout. We used kanban project integration with
 **After**
 ![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agileDone.png)
 
-### Evaluation Results
-
-<Update after evaluation>
-
 ### Reports
 
 1. [Feb 1 report](https://github.com/rikenshah/WolfTutor/blob/master/Reports/Report_Feb/team_l_wolftutor_feb_report.pdf)
