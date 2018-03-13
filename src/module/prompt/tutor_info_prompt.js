@@ -1,15 +1,15 @@
-const tutor_info_display = (json_file) => 
+const tutor_info_display = (json_file) =>
 {
 
-    // console.log(json_file);
-    const details = 
+    //console.log(json_file);
+    const details =
     {
         "text": "Tutor Details",
-        "attachments": 
+        "attachments":
         [
           {
 
-                "fields": 
+                "fields":
                 [
                     {
                         "title": 'Name',
@@ -50,7 +50,7 @@ const tutor_info_display = (json_file) =>
                 "title": "Review and Scheduling",
                 "callback_id": "review_and_scheduling",
                 "attachment_type": "default",
-                "actions": 
+                "actions":
                 [
                     {
                         "name": "review",
@@ -74,7 +74,7 @@ const tutor_info_display = (json_file) =>
 
 
 
-module.exports = 
+module.exports =
 {
     tutor_info_display
 };

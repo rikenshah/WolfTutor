@@ -190,7 +190,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
                             major: tutors[i].major,
                             degree: tutors[i].degree,
                             summary: tutors[i].summary,
-                            rate: tutors[i].overall_rating
+                            rate: tutors[i].rate/2
                         }
                     json_file[tutors[i].user_id] = json_temp;
                 }
