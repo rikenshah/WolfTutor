@@ -28,18 +28,21 @@ We have created a Slack application that can be added to any Slack workspace. We
 6. Download node packages using `npm install && npm update`.
 7. Rename `.env.example` to `.env`.
 8. Add appropriate tokens in `.env`. The four things you will need are,
-    ```
-    SLACK_ACCESS_TOKEN='Enter your slack access token here'
-    PORT=3000
-    SLACK_VERIFICATION_TOKEN='Enter your slack app verification token'
-    BOT_TOKEN='Enter your bot token here'
-    MONGO_CONNECTION_STRING='Enter your mongo db url'
-    ```
+```
+SLACK_ACCESS_TOKEN='Enter your slack access token here'
+PORT=3000
+SLACK_VERIFICATION_TOKEN='Enter your slack app verification token'
+BOT_TOKEN='Enter your bot token here'
+MONGO_CONNECTION_STRING='Enter your mongo db url'
+```
 10. Run the tests by using `npm test`.
 11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
 12. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
 13. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
-14. Add the `ngrok url` that you noted in previous step under `Interactive Elements` settings in Slack App settings. This will tell slack where to send the post request.
+14. Add the `ngrok url` that you noted in previous step under
+    `Interactive Elements` settings in Slack App settings. This will
+    tell slack where to send the post request.  Don't forget to add
+    /message to the end of the URL for the REST API to work
 15. Reinstall the app to your workspace. And start communicating with the app via direct messages.
 
 ### General flow of the application
@@ -58,59 +61,59 @@ We have created a Slack application that can be added to any Slack workspace. We
 The four major use cases of our application are,
 #### 1. Find a tutor
 <Details>
-    <p> A user can find a tutor on our bot by just typing one of the following keywords,
-       'find a tutor',
-       'need a tutor',
-       'want a tutor', or
-       'select a tutor'.
-        The user will get the list of all the available subjects from which the user can select one subject.
-        Once a subject is selected we will be returning all the tutors who teach that subject.
-      </p>
-    Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/find_a_tutor.gif"></img>
+<p> A user can find a tutor on our bot by just typing one of the following keywords,
+'find a tutor',
+'need a tutor',
+'want a tutor', or
+'select a tutor'.
+The user will get the list of all the available subjects from which the user can select one subject.
+Once a subject is selected we will be returning all the tutors who teach that subject.
+</p>
+Here is the flow demonstrating this use case.<br>
+<img src="Reports/Wireframes/find_a_tutor.gif"></img>
 </Details>
 
 #### 2. Book a tutor
 <Details>
-     <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.</p>
-       <p> Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing 'My reservation' in the slack bot.</p>
-    Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/book_a_tutor.gif"></img>
-    <img src="Reports/Wireframes/my_reservations.gif"></img>
- </Details>
+<p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.</p>
+<p> Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing 'My reservation' in the slack bot.</p>
+Here is the flow demonstrating this use case.<br>
+<img src="Reports/Wireframes/book_a_tutor.gif"></img>
+<img src="Reports/Wireframes/my_reservations.gif"></img>
+</Details>
 
 #### 3. Become a tutor
 
 <Details>
-    <p> If a user wants to become a tutor, he/she will just type
-     'become a tutor'
-     and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
-    </p>
-    Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/become_a_tutor.gif"></img>
+<p> If a user wants to become a tutor, he/she will just type
+'become a tutor'
+and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
+</p>
+Here is the flow demonstrating this use case.<br>
+<img src="Reports/Wireframes/become_a_tutor.gif"></img>
 </Details>
 
 #### 4. Reward and Review the tutor
 
 <Details>
-    <p> After the session is over the user(student) will have an option to review and rate the tutor.
-    If the user wil type 'review' a review form will open and the user can rate the tutor and can write a review,
-    so that the other users(students) can see the reviews and select the tutor.
-    The tutor can also set his rates according to the reviews that he gets.
-    We also have an option of keeping the rate to 0 for the tutors who want to teach for free.
-    <br><br>
-    All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following. <br>
-    `My points`,`rewards`,`get my rewards`,`view my rewards` and the bot will show them their current points.<br><br>
-     Tutor can get rewards for his accumulated points, some of the rewards for WolfTutor points are as follows. <br>
-     1. Get $15 Giftcard of wolfoutfitter for 300 points.<br>
-     2. Get $30 Giftcard of wolfoutfitter 500 points.<br><br>
-     Tutee can also buy points in case his points get over, policies for buying rewards are :- <br>
-     1. Get 200 points for $25 <br>
-     2. Get 500 points for $40  <br>
-     3. Get 1000 points for $80  <br><br>
-     Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/review_rewards.gif"></img>
-    </p>
+<p> After the session is over the user(student) will have an option to review and rate the tutor.
+If the user wil type 'review' a review form will open and the user can rate the tutor and can write a review,
+so that the other users(students) can see the reviews and select the tutor.
+The tutor can also set his rates according to the reviews that he gets.
+We also have an option of keeping the rate to 0 for the tutors who want to teach for free.
+<br><br>
+All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following. <br>
+`My points`,`rewards`,`get my rewards`,`view my rewards` and the bot will show them their current points.<br><br>
+Tutor can get rewards for his accumulated points, some of the rewards for WolfTutor points are as follows. <br>
+1. Get $15 Giftcard of wolfoutfitter for 300 points.<br>
+2. Get $30 Giftcard of wolfoutfitter 500 points.<br><br>
+Tutee can also buy points in case his points get over, policies for buying rewards are :- <br>
+1. Get 200 points for $25 <br>
+2. Get 500 points for $40  <br>
+3. Get 1000 points for $80  <br><br>
+Here is the flow demonstrating this use case.<br>
+<img src="Reports/Wireframes/review_rewards.gif"></img>
+</p>
 </Details>
 
 #### 5. List of all usecases
