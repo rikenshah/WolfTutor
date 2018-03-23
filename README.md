@@ -22,12 +22,28 @@ We have created a Slack application that can be added to any Slack workspace. We
 
 1. Make sure `Node.JS` is installed and is working in your machine. (Check using `node -v`).
 2. Install `MongoDB` and start the server.
-3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app. Find your application's details at slack API home --> your apps --> (your app)
+3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app. Find your application's details at slack API home --> your apps --> (your app).
 4. Make sure you have a Bot User enabled in your new slack app.
-5. Clone the repo, using `git clone https://github.com/NCSU-CSC510-Group-E/WolfTutor.git`.
-6. Download node packages using `npm install && npm update`.
-7. Rename `.env.example` to `.env`.
-8. Add appropriate tokens in `.env`. The four things you will need are,
+5. Add the following permissions to your app at OAuth & Permissions --> Scopes
+<list>
+Add a bot user with the username @bot
+Post to specific channels in Slack	
+Access user’s public channels
+Access information about user’s public channels
+Send messages as Test App
+Send messages as user
+Access content in user’s private channels
+Access content in user’s direct messages
+Access information about user’s direct messages
+Modify user’s direct messages
+Access your workspace’s profile information
+View email addresses of people on this workspace
+</list>
+
+6. Clone the repo, using `git clone https://github.com/NCSU-CSC510-Group-E/WolfTutor.git`.
+7. Download node packages using `npm install && npm update`.
+8. Rename `.env.example` to `.env`.
+9. Add appropriate tokens in `.env`. The four things you will need are,
 ```
 SLACK_ACCESS_TOKEN='Enter your slack access token here'
 PORT=3000
@@ -41,16 +57,16 @@ SLACK_VERIFICATION_TOKEN can be found at Basic Information --> App Credentials (
 BOT_TOKEN can be found at Features --> OAuth & Permissions --> Bot User OAuth Access Token
 MONGO_CONNECTION_STRING should be 'mongodb://localhost:27017', unless you choose a different port
 
-9. Use Mongo's Compass Community program to connect to the currently running server. Add a table, 'subjects' to already existing 'admin' database. Add at least one item to that table as name: 'subject'. These are the tutoring subjects the users can choose from.
-10. Run the tests by using `npm test`.
-11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
-12. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
-13. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
-14. Add the `ngrok url` that you noted in previous step under
+10. Use Mongo's Compass Community program to connect to the currently running server. Add a table, 'subjects' to already existing 'admin' database. Add at least one item to that table as name: 'subject'. These are the tutoring subjects the users can choose from.
+11. Run the tests by using `npm test`.
+12. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
+13. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
+14. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
+15. Add the `ngrok url` that you noted in previous step under
     `Interactive Elements` settings in Slack App settings. This will
     tell slack where to send the post request.  Don't forget to add
     /message to the end of the URL for the REST API to work
-15. Reinstall the app to your workspace. And start communicating with the app via direct messages.
+16. Reinstall the app to your workspace. And start communicating with the app via direct messages.
 
 ### General flow of the application
 
