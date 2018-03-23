@@ -25,20 +25,18 @@ We have created a Slack application that can be added to any Slack workspace. We
 3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app. Find your application's details at slack API home --> your apps --> (your app).
 4. Make sure you have a Bot User enabled in your new slack app.
 5. Add the following permissions to your app at OAuth & Permissions --> Scopes
-<list>
-Add a bot user with the username @bot
-Post to specific channels in Slack	
-Access user’s public channels
-Access information about user’s public channels
-Send messages as Test App
-Send messages as user
-Access content in user’s private channels
-Access content in user’s direct messages
-Access information about user’s direct messages
-Modify user’s direct messages
-Access your workspace’s profile information
-View email addresses of people on this workspace
-</list>
+   -Add a bot user with the username @bot
+   -Post to specific channels in Slack	
+   -Access user’s public channels
+   -Access information about user’s public channels
+   -Send messages as Test App
+   -Send messages as user
+   -Access content in user’s private channels
+   -Access content in user’s direct messages
+   -Access information about user’s direct messages
+   -Modify user’s direct messages
+   -Access your workspace’s profile information
+   -View email addresses of people on this workspace
 
 6. Clone the repo, using `git clone https://github.com/NCSU-CSC510-Group-E/WolfTutor.git`.
 7. Download node packages using `npm install && npm update`.
