@@ -10,6 +10,7 @@ Thumbs.db
 
 
 #Adding package.json and package-lock.json
+# use git rm -r --cached to untrack them after committing any changes
 #=================================
 package-lock.json
 package.json
