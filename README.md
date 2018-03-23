@@ -21,11 +21,11 @@ We have created a Slack application that can be added to any Slack workspace. We
 ### Steps to Install and Run (Developer Guide)
 
 1. Make sure `Node.JS` is installed and is working in your machine. (Check using `node -v`).
-2. Install `MongoDB` and start the server.
+2. Install `MongoDB` and start the server. (Start server with bin/'mongod.exe')
 3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app. Find your application's details at slack API home --> your apps --> (your app).
 4. Make sure you have a Bot User enabled in your new slack app.
 5. Add the following permissions to your app at OAuth & Permissions --> Scopes
-   * Add a bot user with the username @bot
+   - Add a bot user with the username @bot
    - Post to specific channels in Slack	
    - Access user’s public channels
    - Access information about user’s public channels
