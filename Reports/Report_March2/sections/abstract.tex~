@@ -1,0 +1,11 @@
+\begin{abstract}
+  Choosing a textbook for a class is something that many professors do
+  several times a year, but the vast number of available textbooks for
+  any given subject makes choosing one that both meets the needs of
+  the class and meets the budget constraints of today's students is a challenge.  
+  In this paper, we propose two methods for automatically learning
+  topics from books, a set of evaluations for those methods, and a
+  system that will use those methods in a web app that attempts to
+  suggest textbooks to a professor balancing covering all topics the
+  course requires while still being economical for students.  
+\end{abstract}
