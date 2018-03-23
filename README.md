@@ -22,9 +22,9 @@ We have created a Slack application that can be added to any Slack workspace. We
 
 1. Make sure `Node.JS` is installed and is working in your machine. (Check using `node -v`).
 2. Install `MongoDB` and start the server.
-3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app.
-4. Clone the repo, using `git clone https://github.com/rikenshah/WolfTutor`.
-5. Change to that directory `cd WolfTutor/botProject`.
+3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app. Find your application's details at slack API home --> your apps --> (your app)
+4. Make sure you have a Bot User enabled in your new slack app.
+5. Clone the repo, using `git clone https://github.com/NCSU-CSC510-Group-E/WolfTutor.git`.
 6. Download node packages using `npm install && npm update`.
 7. Rename `.env.example` to `.env`.
 8. Add appropriate tokens in `.env`. The four things you will need are,
@@ -39,7 +39,9 @@ MONGO_CONNECTION_STRING='Enter your mongo db url'
 SLACK_ACCESS_TOKEN can be found at Features --> OAuth & Permissions --> OAuth Access Token
 SLACK_VERIFICATION_TOKEN can be found at Basic Information --> App Credentials (Section) --> Verification Token
 BOT_TOKEN can be found at Features --> OAuth & Permissions --> Bot User OAuth Access Token
+MONGO_CONNECTION_STRING should be 'mongodb://localhost:27017', unless you choose a different port
 
+9. Use Mongo's Compass Community program to connect to the currently running server. Add a table, 'subjects' to already existing 'admin' database. Add at least one item to that table as name: 'subject'. These are the tutoring subjects the users can choose from.
 10. Run the tests by using `npm test`.
 11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
 12. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
