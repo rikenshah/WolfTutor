@@ -35,9 +35,10 @@ SLACK_VERIFICATION_TOKEN='Enter your slack app verification token'
 BOT_TOKEN='Enter your bot token here'
 MONGO_CONNECTION_STRING='Enter your mongo db url'
 ```
-	SLACK_ACCESS_TOKEN can be found at Features --> OAuth & Permissions --> OAuth Access Token
-	SLACK_VERIFICATION_TOKEN can be found at Basic Information --> App Credentials (Section)-->Verification Token
-	BOT_TOKEN can be found at Features --> OAuth & Permissions --> Bot User OAuth Access Token
+
+SLACK_ACCESS_TOKEN can be found at Features --> OAuth & Permissions --> OAuth Access Token
+SLACK_VERIFICATION_TOKEN can be found at Basic Information --> App Credentials (Section) --> Verification Token
+BOT_TOKEN can be found at Features --> OAuth & Permissions --> Bot User OAuth Access Token
 
 10. Run the tests by using `npm test`.
 11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
