@@ -1,0 +1,94 @@
+% Doc class required by class assignment.
+\documentclass{sig-alternate-05-2015}
+\usepackage{graphicx}
+% copyright and other misc things provided by template.
+% DOI
+\doi{10.475/123_4}
+
+% ISBN
+\isbn{123-4567-24-567/08/06}
+
+% Conference
+\conferenceinfo{PLDI '13}{June 16--19, 2013, Seattle, WA, USA}
+
+\acmPrice{\$15.00}
+% end copyright
+\begin{document}
+
+% Paper title
+\title{WolfTutor
+  % \titlenote{(Paper 1). For use with
+  % SIG-ALTERNATE.CLS. Supported by ACM.}
+}
+\subtitle{A Textbook Recommendation Application based on Topic Modeling
+  % \titlenote{A full version of this paper is available as
+  % \textit{Author's Guide to Preparing ACM SIG Proceedings Using
+  % \LaTeX$2_\epsilon$\ and BibTeX} at
+  % \texttt{www.acm.org/eaddress.htm}
+  % }
+}
+
+\numberofauthors{4} %  in this sample file, there are a *total*
+\author{
+  \alignauthor
+  {Monica Metro}\\
+  \affaddr{North Carolina State University}\\
+  \affaddr{3021 F Dorner Circle}\\
+  \affaddr{Raleigh, NC}\\
+  \email{mgmetro@ncsu.edu}
+  % 2nd. author
+  \alignauthor
+  {Zachery DeLong}\\
+  \affaddr{North Carolina State University}\\
+  \affaddr{2305 Horizon Hike Ct}\\
+  \affaddr{Raleigh, NC}\\
+  \email{zpdelong@ncsu.edu }
+  % 3rd. author
+  \alignauthor 
+  {Zhangqi Zha} \\
+  \affaddr{North Carolina State University}\\
+  \affaddr{1800 Vienna Wood Dr}\\
+  \affaddr{Raleigh, NC}\\
+  \email{zzha@ncsu.edu}
+}
+% Generate page header.
+\maketitle
+
+% Paper body
+% \input{sections/abstract.tex}
+
+\section{Introduction}
+\label{sec:intro}
+% \input{sections/introduction/intro_main.tex}
+
+\section{Literature Review}
+\label{sec:literature-review}
+% \input{sections/lit_review/lit_review_main.tex}
+
+\section{Architecture}
+\label{sec:architecture}
+% \input{sections/architecture/architecture_main.tex}
+
+\section{Progress}
+\label{sec:progress}
+% \input{sections/progress/progress_main.tex}
+
+\section{Validation}
+\label{sec:validation}
+% \input{sections/eval_plan/eval_plan_main.tex}
+
+\section{Conclusion}
+\label{sec:conclusion}
+% \input{sections/conclusion/conclusion_main.tex}
+
+
+% REMOVE NOCITE OR IT WILL LIST EVERYTHING IN YOUR DATABASE AS A REFERENCE
+% \nocite{*}
+
+% Bibliography/style
+\bibliographystyle{abbrv}
+
+\bibliography{export}
+% End bibliography/style
+
+\end{document}
