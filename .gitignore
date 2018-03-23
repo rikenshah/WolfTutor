@@ -8,6 +8,13 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+
+#Adding package.json and package-lock.json
+#=================================
+package-lock.json
+package.json
+
+
 # Node and related ecosystem
 # ==========================
 .nodemonignore
