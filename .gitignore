@@ -332,3 +332,5 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
+
+*~
