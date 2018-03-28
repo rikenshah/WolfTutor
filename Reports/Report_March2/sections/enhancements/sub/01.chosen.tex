@@ -1,0 +1,34 @@
+% What do we want to do?
+% - what is the goal?
+% - Why is that our goal?
+% - What do we propose?
+% - Why does that solve the problem we are setting out to solve?
+
+Given the surveying discussed above, it seems clear that what students
+in our class want is a way to more easily match with competent
+tutors.  To that end, WolfTutor currenly does very little in terms of
+matching.  It provides students with the ratings of the available
+tutors, which is a good first step, but it does nothing to help
+organize the available tutors and prioritize them to make searching
+sutdents' lives easier.  
+
+WolfTutor also has a significant amount of data about a student's
+history with their tutors, but it does fairly little with that
+information.  To help improve matching between students and tutors, we
+propose to use that historical data during the matching process. To do
+that, we will implement a suggestion algorithm that will pull out the
+students' previous interactions and use their positive reviews to push
+certain tutors higher in the list and their negative reviews to push
+other tutors lower on the list.
+
+This will hopefully make it easier for students to match with not only
+tutors that are well reviewed and rate well in the subjects they are
+interested in, but also encourage students to build longer-term
+mentoring relationships with tutors that work well with them.  
+
+Next we will discuss the application's architecture in section
+\ref{sec:architecture} and the evaluation plan for this idea \ref{sec:validation}.
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../../main"
+%%% End:
