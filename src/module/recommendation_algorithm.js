@@ -1,30 +1,30 @@
 require('dotenv').config();
-const axios = require('axios');
-const debug = require('debug')('slash-command-template:tutor');
-const qs = require('querystring');
-const MongoClient = require('mongodb').MongoClient;
-const UserModel = require('../model/user');
-var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
-var Botkit = require('botkit');
-var controller = Botkit.slackbot({
-    storage: mongoStorage,
-});
-
-const find = (slackUserId) => {
-  const body = { token: process.env.SLACK_ACCESS_TOKEN, user: slackUserId };
-  const promise = axios.post('https://slack.com/api/users.info', qs.stringify(body));
-  return promise;
-};
+// const axios = require('axios');
+// const debug = require('debug')('slash-command-template:tutor');
+// const qs = require('querystring');
+// const MongoClient = require('mongodb').MongoClient;
+// const UserModel = require('../model/user');
+// var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
+// var Botkit = require('botkit');
+// var controller = Botkit.slackbot({
+//     storage: mongoStorage,
+// });
+// 
+// const find = (slackUserId) => {
+//   const body = { token: process.env.SLACK_ACCESS_TOKEN, user: slackUserId };
+//   const promise = axios.post('https://slack.com/api/users.info', qs.stringify(body));
+//   return promise;
+// };
 
 const SCORE_ATTR = 'weightedScore';
 
-function Prioritize(people) {
+function Prioritize(people, current_user) {
     try{
         for(let person of people){
             // For each person, we need to pull out their individual review score, their overall review score, and their previous history to weight.
-            let individualScore = GetIndividualScore(person);
+            let individualScore = GetIndividualScore(person, current_user);
             let overallScore = GetOverallScore(person);
-            let previousInteractionScore = GetPreviousInteractionScore(person); 
+            let previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
 
             person[SCORE_ATTR] = CalculateWeightedAverage([individualScore, overallScore, previousInteractionScore], [1, 1, 1]);
         }
@@ -42,7 +42,7 @@ function Prioritize(people) {
 
 }
 
-function GetIndividualScore(person){
+function GetIndividualScore(person, current_user){
     throw {name : "NotImplementedError", message : "too lazy to implement"}; 
 }
 
@@ -50,7 +50,7 @@ function GetOverallScore(person){
     throw {name : "NotImplementedError", message : "too lazy to implement"}; 
 }
 
-function GetPreviousInteractionScore(person){
+function GetPreviousInteractionScore(person, current_user){
     throw {name : "NotImplementedError", message : "too lazy to implement"}; 
 }
 
@@ -63,12 +63,26 @@ function CalculateWeightedAverage(scores, weights){
     return (avg / scores.length);
 }
 
-function NormalizeAttribute(objects, attributeToNormalize){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+function NormalizeAttribute(objects, attribute_to_normalize){
+    let min = Math.min(objects.map( function(i){
+        return i.attribute_to_normalize;
+    }));
+
+    let max = Math.max(objects.map( function(i){
+        return i.attribute_to_normalize;
+    }));
+
+    for(let thing in objects){
+        thing[attribute_to_normalize] = (thing[attribute_to_normalize] - min) / (max = min);
+    }
+
+    return objects;
 }
 
-function SortPeopleByAttribute(objects, attributeToNormalize){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+function SortPeopleByAttribute(objects, attribute_to_sort){
+    return objects.sort(function(a, b) {
+        return a[attribute_to_sort] - b[attribute_to_sort];
+    });
 }
 
 module.exports = { Prioritize };
