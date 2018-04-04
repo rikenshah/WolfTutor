@@ -15,11 +15,11 @@ describe('Recommendations', function(){
 
             var orderedSet = recommendations.SortPeopleByAttribute(tutors, "weightedScore");
 
-            // The first element should be the worst tutor.
-            expect(tutors[0].name).to.equal("Bad Tutor");
+            // The first element should be the best tutor.
+            expect(tutors[0].name).to.equal("Good Tutor");
 
-            // The last element should be the best tutor.
-            expect(tutors[tutors.length-1].name).to.equal("Good Tutor");
+            // The last element should be the worst tutor.
+            expect(tutors[tutors.length-1].name).to.equal("Bad Tutor");
         });
     });
 

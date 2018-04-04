@@ -63,6 +63,8 @@ function CalculateWeightedAverage(scores, weights){
     return (avg / scores.length);
 }
 
+// Takes an array of objects and attemts to normalize the provided attribute
+// To between zero and one.  Operates in place and returns a reference to objects.
 function NormalizeAttribute(objects, attribute_to_normalize){
 
     let values = objects.map( function(i) {
@@ -81,7 +83,7 @@ function NormalizeAttribute(objects, attribute_to_normalize){
 
 function SortPeopleByAttribute(objects, attribute_to_sort){
     return objects.sort(function(a, b) {
-        return a[attribute_to_sort] - b[attribute_to_sort];
+        return b[attribute_to_sort] - a[attribute_to_sort];
     });
 }
 
