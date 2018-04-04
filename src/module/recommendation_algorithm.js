@@ -64,16 +64,16 @@ function CalculateWeightedAverage(scores, weights){
 }
 
 function NormalizeAttribute(objects, attribute_to_normalize){
-    let min = Math.min(objects.map( function(i){
-        return i.attribute_to_normalize;
-    }));
 
-    let max = Math.max(objects.map( function(i){
-        return i.attribute_to_normalize;
-    }));
+    let values = objects.map( function(i) {
+        return i[attribute_to_normalize];
+    });
 
-    for(let thing in objects){
-        thing[attribute_to_normalize] = (thing[attribute_to_normalize] - min) / (max = min);
+    let min = Math.min(...values);
+    let max = Math.max(...values);
+
+    for(let thing of objects){
+        thing[attribute_to_normalize] = (thing[attribute_to_normalize] - min) / (max - min);
     }
 
     return objects;
@@ -85,4 +85,8 @@ function SortPeopleByAttribute(objects, attribute_to_sort){
     });
 }
 
-module.exports = { Prioritize };
+module.exports = {
+    Prioritize: Prioritize,
+    NormalizeAttribute: NormalizeAttribute,
+    SortPeopleByAttribute: SortPeopleByAttribute
+};
