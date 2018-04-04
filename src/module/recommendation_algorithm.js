@@ -21,12 +21,20 @@ const SCORE_ATTR = 'weightedScore';
 function Prioritize(people, current_user) {
     try{
         for(let person of people){
-            // For each person, we need to pull out their individual review score, their overall review score, and their previous history to weight.
+            // For each person, we need to pull out their individual review score,
+            // their overall review score, and their previous history to weight.
             let individualScore = GetIndividualScore(person, current_user);
             let overallScore = GetOverallScore(person);
             let previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
 
-            person[SCORE_ATTR] = CalculateWeightedAverage([individualScore, overallScore, previousInteractionScore], [1, 1, 1]);
+            person[SCORE_ATTR] = CalculateWeightedAverage([
+                individualScore,
+                overallScore,
+                previousInteractionScore], [
+                    1, // Weight for individual scores
+                    1, // Weight for overall scores
+                    1  // Weight for previous interactions
+                ]);
         }
 
         people = NormalizeAttribute(people, SCORE_ATTR); 
@@ -81,6 +89,8 @@ function NormalizeAttribute(objects, attribute_to_normalize){
     return objects;
 }
 
+// Sorts array of objects by the attribute provided.
+// Attempts to sort from greatest to lowest.
 function SortPeopleByAttribute(objects, attribute_to_sort){
     return objects.sort(function(a, b) {
         return b[attribute_to_sort] - a[attribute_to_sort];
