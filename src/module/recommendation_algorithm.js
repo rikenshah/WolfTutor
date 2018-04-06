@@ -51,7 +51,20 @@ function Prioritize(people, current_user) {
 }
 
 function GetIndividualScore(person, current_user){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+    // TODO: fix users ID thing
+    var usersRatings = person.ratings.filter( function(rating){
+        return rating.usersID == current_user.usersID;
+    });
+
+    var averageRating = usersRatings.map(function(rating){
+        return rating.score;
+    }).reduce(function(sum, current){
+        return sum + current;
+    });
+
+    averageRating = averageRating / usersRatings.length;
+
+    return averageRating;
 }
 
 function GetOverallScore(person){
