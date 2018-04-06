@@ -39,4 +39,52 @@ describe('Recommendations', function(){
         });
     });
 
+    describe('Get individual score', function(){
+        it('Should calculate an individual score', function(){
+            let tutor = {
+                name: "Good Tutor",
+                reviews: [
+                    { userID: 1, rating: 3 },
+                    { userID: 1, rating: 1 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 },
+                    { userID: 2, rating: 5 }
+                ]
+            };
+
+            let student = {
+                id: 1
+            };
+
+            let score = recommendations.GetIndividualScore(tutor, student);
+
+            expect(score).to.equal(2);
+        });
+    });
+
+
+    describe('Get overall score', function(){
+        it('Should calculate an overall score', function(){
+            let tutor = {
+                name: "Good Tutor",
+                reviews: [
+                    { userID: 1, rating: 1 },
+                    { userID: 2, rating: 3 },
+                    { userID: 2, rating: 5 },
+                ]
+            };
+
+            let score = recommendations.GetOverallScore(tutor);
+
+            expect(score).to.equal(3);
+        });
+    });
+
 });

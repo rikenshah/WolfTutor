@@ -51,11 +51,45 @@ function Prioritize(people, current_user) {
 }
 
 function GetIndividualScore(person, current_user){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+    // TODO: fix users ID thing
+    var usersRatings = person.reviews.filter( function(rating){
+        return rating.userID == current_user.id;
+    });
+
+    var averageRating = usersRatings.map(function(review){
+        return review.rating;
+    }).reduce(function(sum, current){
+        return sum + current;
+    });
+
+    averageRating = averageRating / usersRatings.length;
+
+    return averageRating;
 }
 
 function GetOverallScore(person){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+    var d = new Date();
+    d.setMonth(d.getMonth() - 1);
+    
+    // Get reviwes in the past month.
+    var scores = person.reviews.filter(function(rating){
+        return rating.Date > d;
+    });
+
+    // If we have fewer than 5, just take the 5 most recent
+    if(scores.length < 5){
+        scores = person.reviews.slice(-5);
+    }
+
+    averageScore = scores.map(function(review) {
+        return review.rating;
+    }).reduce(function(sum, a){
+        return sum + a;
+    });
+
+    console.log(averageScore);
+
+    return averageScore / scores.length;
 }
 
 function GetPreviousInteractionScore(person, current_user){
@@ -100,5 +134,7 @@ function SortPeopleByAttribute(objects, attribute_to_sort){
 module.exports = {
     Prioritize: Prioritize,
     NormalizeAttribute: NormalizeAttribute,
-    SortPeopleByAttribute: SortPeopleByAttribute
+    SortPeopleByAttribute: SortPeopleByAttribute,
+    GetIndividualScore: GetIndividualScore,
+    GetOverallScore: GetOverallScore
 };
