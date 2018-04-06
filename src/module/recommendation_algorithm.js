@@ -68,7 +68,22 @@ function GetIndividualScore(person, current_user){
 }
 
 function GetOverallScore(person){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+    var d = new Date();
+    d.setMonth(d.getMonth() -3);
+    
+    var scores = person.ratings.filter(function(rating){
+        return rating.Date > d;
+    });
+
+    if(scores.length < 5){
+        scores = person.ratings.slice(-5);
+    }
+
+    averageScore = scores.reduce(function(sum, a){
+        sum += a;
+    });
+
+    return averageScore / scores.length;
 }
 
 function GetPreviousInteractionScore(person, current_user){
