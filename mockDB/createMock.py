@@ -4,7 +4,15 @@ import os
 import random
 
 def main():
-    database = 'heroku_d754621w'
+    """
+    Create a user with random stats, 
+    then make that user a tutor of one subject at one availability
+    """
+    NUM_USERS_TO_CREATE = 1  
+    MAX_PAY_RATE = 30
+
+    #------ Connect to Database ------
+    database = 'heroku_d754621w' #heroku_d754621w == database that is connected to heroku
 
     DIR = os.path.dirname(os.getcwd())
     load_dotenv(DIR + '/.env')
@@ -15,24 +23,23 @@ def main():
     client = MongoClient(URI) #or use the mlab URI
 
 
-    #### point to a database ####
+    #------ point to a database ------
     db = client[database] #or client.database
 
-    #### access a database collection ####
-    coll = db['user'] #or db.collection
+    #------ access a database collection ------
+    #coll = db['user'] #or db.collection
 
 
 
 
-    #### CREATE DOCUMENTS ####
+    #------ CREATE DOCUMENTS ------
     """
     'If you attempt to add documents to a collection that does not exist, 
       MongoDB will create the collection for you.'
     Document IDs are automatically added if one is not presented
     """
 
-    ## create users ##
-    users = 1 #number of users to add
+    #------create users ------
 
     print("Creating Users...")
     print()
@@ -46,7 +53,7 @@ def main():
     charList = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9']
     used = ['U9SNMABGR', 'UA2E6JQSF']
 
-    for user in range(users):
+    for user in range(NUM_USERS_TO_CREATE):
         coll = db.user
 
         #random sampling without replacement
@@ -71,15 +78,15 @@ def main():
             }
         )
 
-        ## create TUTOR after creating USER ##
+        # ------ create tutor after creating user ------
         print("Creating Tutors...")
         print()
         coll = db.tutor
         
 
-        subject = random.choice(subjects)
+        subject = random.choice(subjects) #random element chosen
         day = random.choice(days)
-        rate = random.randint(0, 30)
+        rate = random.randint(0, MAX_PAY_RATE)
         degree = random.choice(degrees)
         major = random.choice(majors)
 
