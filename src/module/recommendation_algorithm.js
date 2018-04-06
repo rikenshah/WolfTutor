@@ -52,12 +52,12 @@ function Prioritize(people, current_user) {
 
 function GetIndividualScore(person, current_user){
     // TODO: fix users ID thing
-    var usersRatings = person.ratings.filter( function(rating){
-        return rating.usersID == current_user.usersID;
+    var usersRatings = person.reviews.filter( function(rating){
+        return rating.userID == current_user.id;
     });
 
-    var averageRating = usersRatings.map(function(rating){
-        return rating.score;
+    var averageRating = usersRatings.map(function(review){
+        return review.rating;
     }).reduce(function(sum, current){
         return sum + current;
     });
@@ -69,19 +69,25 @@ function GetIndividualScore(person, current_user){
 
 function GetOverallScore(person){
     var d = new Date();
-    d.setMonth(d.getMonth() -3);
+    d.setMonth(d.getMonth() - 1);
     
-    var scores = person.ratings.filter(function(rating){
+    // Get reviwes in the past month.
+    var scores = person.reviews.filter(function(rating){
         return rating.Date > d;
     });
 
+    // If we have fewer than 5, just take the 5 most recent
     if(scores.length < 5){
-        scores = person.ratings.slice(-5);
+        scores = person.reviews.slice(-5);
     }
 
-    averageScore = scores.reduce(function(sum, a){
-        sum += a;
+    averageScore = scores.map(function(review) {
+        return review.rating;
+    }).reduce(function(sum, a){
+        return sum + a;
     });
+
+    console.log(averageScore);
 
     return averageScore / scores.length;
 }
@@ -128,5 +134,7 @@ function SortPeopleByAttribute(objects, attribute_to_sort){
 module.exports = {
     Prioritize: Prioritize,
     NormalizeAttribute: NormalizeAttribute,
-    SortPeopleByAttribute: SortPeopleByAttribute
+    SortPeopleByAttribute: SortPeopleByAttribute,
+    GetIndividualScore: GetIndividualScore,
+    GetOverallScore: GetOverallScore
 };
