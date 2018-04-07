@@ -91,6 +91,9 @@ module.exports = {
             // make a date without time because of werid UTC conversion
             var fixed_date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
             //same day, after ending reservation time
+              console.log(fixed_date - today);
+              console.log(current_time);
+              console.log(reservations[i]);
             if ((fixed_date - today == 0) && (current_time > reservations[i].to)) {
                 today_reservations.push(reservations[i]);
               }
@@ -110,12 +113,17 @@ module.exports = {
               return num_b - num_a;
               });
             tutor_id = today_reservations[0].tutorid;
+
+              console.log('The payload of the review');
+              console.log(payload.submission);
             // Enter the reviews in that particular tutor
             TutorModel.tutor.findOneAndUpdate({
               user_id: tutor_id
             }, {
               $push: {
                 reviews: {
+                  user_id: payload.user.id,
+                  date: today,
                   text: payload.submission.review,
                   rating: payload.submission.rating
                 }
@@ -129,7 +137,7 @@ module.exports = {
             // Set the active flag from yes to no
             reservationModel.set_inactive(today_reservations[0]);
             // Udate overall rating
-            TutorModel.overall_rating(today_reservations[0].tutorid,payload.submission.rating);
+            // TutorModel.overall_rating(today_reservations[0].tutorid,payload.submission.rating);
           }
         }
       }

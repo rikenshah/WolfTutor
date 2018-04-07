@@ -53,7 +53,7 @@ function Prioritize(people, current_user) {
 function GetIndividualScore(person, current_user){
     // TODO: fix users ID thing
     var usersRatings = person.reviews.filter( function(rating){
-        return rating.userID == current_user.id;
+        return rating.user_id == current_user.id;
     });
 
     var averageRating = usersRatings.map(function(review){
@@ -73,7 +73,7 @@ function GetOverallScore(person){
     
     // Get reviwes in the past month.
     var scores = person.reviews.filter(function(rating){
-        return rating.Date > d;
+        return rating.date > d;
     });
 
     // If we have fewer than 5, just take the 5 most recent

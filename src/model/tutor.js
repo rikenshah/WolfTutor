@@ -14,7 +14,9 @@ var tutor_schema = new configure.schema({
   summary: 'string',
   reviews: [{
     text: 'string',
-    rating: 'number'
+      rating: 'number',
+      user_id: 'string',
+      date: 'date'
   }],
   overall_rating: 'number'
 }, {
