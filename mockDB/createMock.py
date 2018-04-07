@@ -37,7 +37,7 @@ def main():
 
 
 
-    #------ CREATE DOCUMENTS ------
+    #------ CREATE DOCUMENTS IN MOCK DATABASE------
     """
     'If you attempt to add documents to a collection that does not exist, 
      MongoDB will create the collection for you.'
@@ -52,7 +52,6 @@ def main():
     print("Creating Users...")
     print()
 
-
     subjects = ['Operating Systems', 'Algorithms']
     days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     degrees = ['Bachelors', 'Masters', 'Associate', 'High School GED']
@@ -64,8 +63,6 @@ def main():
     coll = db.user
     
     for user in range(NUM_USERS_TO_CREATE):
-        
-
         #random sampling without replacement
         id_ = "".join(random.sample(charList, 9)) #9 = length of original user_id for myself
         while id_ in used:
@@ -91,8 +88,7 @@ def main():
     print()
     coll = db.tutor
 
-    for tutor in used[1:]:
-
+    for tutor in used[1:]: #avoid yourself if you are the first tutor
         subject = random.choice(subjects) #random element chosen
         day = random.choice(days)
         rate = random.randint(0, MAX_PAY_RATE)
