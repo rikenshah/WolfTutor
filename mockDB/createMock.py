@@ -10,6 +10,7 @@ def main():
     """
     NUM_USERS_TO_CREATE = 1  
     MAX_PAY_RATE = 30
+    MAX_NUM_REVIEWS = 5
 
     #------ Connect to Database ------
     database = 'heroku_d754621w' #heroku_d754621w == database that is connected to heroku
@@ -35,8 +36,11 @@ def main():
     #------ CREATE DOCUMENTS ------
     """
     'If you attempt to add documents to a collection that does not exist, 
-      MongoDB will create the collection for you.'
-    Document IDs are automatically added if one is not presented
+     MongoDB will create the collection for you.'
+
+      - Document IDs are automatically added if one is not presented
+      - but the fields inside the document will not receive IDs like they would if done naturally
+      - doesn't seem to be an issue
     """
 
     #------create users ------
@@ -46,12 +50,12 @@ def main():
 
 
     subjects = ['Operating Systems', 'Algorithms']
-    days = ['Sunday', 'Monday, Tuesday, Wednesday, Thursday, Friday, Saturday']
+    days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     degrees = ['Bachelors', 'Masters', 'Associate', 'High School GED']
     majors = ['Computer Science', 'Computer Engineering', 'Electrical Engineering', 'Mechanical Engineering', 'Chemical Engineering']
 
     charList = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9']
-    used = ['U9SNMABGR', 'UA2E6JQSF']
+    used = ['U9SNMABGR'] #my ID number in Heroku DB. add if needed
 
     for user in range(NUM_USERS_TO_CREATE):
         coll = db.user
@@ -63,8 +67,7 @@ def main():
         used.append(id_)
 
         name = "User " + str(user + 1)
-        email = "tutor" + str(user + 1) + "@ncsu.edu"
-        __v = 0
+        email = "tutor" + str(user +1) + "@ncsu.edu"
         
 
         coll.insert_one(
@@ -74,7 +77,6 @@ def main():
                 "email": email,
                 "phone": "",
                 "points": 100,
-                "__v": 0
             }
         )
 
@@ -89,7 +91,19 @@ def main():
         rate = random.randint(0, MAX_PAY_RATE)
         degree = random.choice(degrees)
         major = random.choice(majors)
+        num_of_reviews = random.randint(0, MAX_NUM_REVIEWS)
 
+        # REVIEWS
+        reviews = []
+        for k in range(num_of_reviews):
+            rating = random.randint(1, 5)
+            rating_text = "" #can add a list of possible responses?
+            reviews.append({
+                "text": rating_text,
+                "rating": rating
+                })
+
+        #AVAILABILITY
         #randomly choose time between 700 and 2230 hours
         time1 = int(str(random.randint(7, 15)) + random.choice(['00', '30']))
         time2 = int(str(random.randint(12, 22)) + random.choice(['00', '30']))
@@ -119,13 +133,12 @@ def main():
                     #     "to": 1230
                     # }
                 ],
-                "reviews": [],
+                "reviews": reviews,
                 "user_id": id_,
                 "major": major,
                 "degree": degree,
                 "rate": rate,
                 "summary": "",
-                "__v": 0
             }
         )
 
@@ -152,4 +165,42 @@ reservation
     "active": "yes",
     "__v": 0
 }
+
+
+
+TUTOR
+
+{
+    "_id": {
+        "$oid": "5ac9199ca933a619e0914bff"
+    },
+    "subjects": [
+        {
+            "name": "Algorithms"
+        }
+    ],
+    "availability": [
+        {
+            "day": "Sunday",
+            "from": 1130,
+            "to": 1600
+        }
+    ],
+    "reviews": [
+        {
+            "text": "",
+            "rating": 4
+        },
+        {
+            "text": "",
+            "rating": 5
+        }
+    ],
+    "user_id": "IWP2S7B49",
+    "major": "Computer Engineering",
+    "degree": "High School GED",
+    "rate": 28,
+    "summary": ""
+}
+
 """
