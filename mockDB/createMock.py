@@ -2,15 +2,19 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 import random
+import datetime
 
 def main():
     """
     Create a user with random stats, 
     then make that user a tutor of one subject at one availability
     """
-    NUM_USERS_TO_CREATE = 1  
+    NUM_USERS_TO_CREATE = 10  
     MAX_PAY_RATE = 30
-    MAX_NUM_REVIEWS = 5
+    MAX_NUM_REVIEWS = 9  #keep less than num of total users
+    #for random dates of reviews
+    YEARS_LOWER_BOUND = 2017
+    YEARS_UPPER_BOUND = 2018
 
     #------ Connect to Database ------
     database = 'heroku_d754621w' #heroku_d754621w == database that is connected to heroku
@@ -56,9 +60,11 @@ def main():
 
     charList = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9']
     used = ['U9SNMABGR'] #my ID number in Heroku DB. add if needed
-
+    
+    coll = db.user
+    
     for user in range(NUM_USERS_TO_CREATE):
-        coll = db.user
+        
 
         #random sampling without replacement
         id_ = "".join(random.sample(charList, 9)) #9 = length of original user_id for myself
@@ -76,15 +82,16 @@ def main():
                 "name": name,
                 "email": email,
                 "phone": "",
-                "points": 100,
+                "points": 100
             }
         )
 
-        # ------ create tutor after creating user ------
-        print("Creating Tutors...")
-        print()
-        coll = db.tutor
-        
+    # ------ create tutors after creating users ------
+    print("Creating Tutors...")
+    print()
+    coll = db.tutor
+
+    for tutor in used[1:]:
 
         subject = random.choice(subjects) #random element chosen
         day = random.choice(days)
@@ -96,20 +103,28 @@ def main():
         # REVIEWS
         reviews = []
         for k in range(num_of_reviews):
+            random_user_id = random.choice(used)
+            #make sure they can't review themselves
+            while random_user_id == tutor:
+                random_user_id = random.choice(used)
             rating = random.randint(1, 5)
             rating_text = "" #can add a list of possible responses?
+            random_date = datetime.datetime(random.randint(YEARS_LOWER_BOUND, YEARS_UPPER_BOUND), random.randint(1, 12), random.randint(1, 28))
+
             reviews.append({
                 "text": rating_text,
-                "rating": rating
+                "rating": rating,
+                "user_id": random_user_id,
+                "date": random_date
                 })
 
         #AVAILABILITY
         #randomly choose time between 700 and 2230 hours
         time1 = int(str(random.randint(7, 15)) + random.choice(['00', '30']))
-        time2 = int(str(random.randint(12, 22)) + random.choice(['00', '30']))
+        time2 = int(str(random.randint(11, 22)) + random.choice(['00', '30']))
         while time2 < time1:
             time1 = int(str(random.randint(7, 15)) + random.choice(['00', '30']))
-            time2 = int(str(random.randint(12, 22)) + random.choice(['00', '30']))
+            time2 = int(str(random.randint(11, 22)) + random.choice(['00', '30']))
 
         coll.insert_one(
             {
@@ -134,7 +149,7 @@ def main():
                     # }
                 ],
                 "reviews": reviews,
-                "user_id": id_,
+                "user_id": tutor,
                 "major": major,
                 "degree": degree,
                 "rate": rate,
@@ -144,63 +159,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-"""
---------- EXTRA DB INFO ---------
-
-reservation
-{
-    "_id": {
-        "$oid": "5ac7d9359aac8500140e48d9"
-    },
-    "userid": "U9SNMABGR",
-    "tutorid": "0N7AJED92",
-    "date": "Apr 08 2018 00:00:00 GMT-0500",
-    "day": "Sunday",
-    "from": "1030",
-    "to": "1100",
-    "active": "yes",
-    "__v": 0
-}
-
-
-
-TUTOR
-
-{
-    "_id": {
-        "$oid": "5ac9199ca933a619e0914bff"
-    },
-    "subjects": [
-        {
-            "name": "Algorithms"
-        }
-    ],
-    "availability": [
-        {
-            "day": "Sunday",
-            "from": 1130,
-            "to": 1600
-        }
-    ],
-    "reviews": [
-        {
-            "text": "",
-            "rating": 4
-        },
-        {
-            "text": "",
-            "rating": 5
-        }
-    ],
-    "user_id": "IWP2S7B49",
-    "major": "Computer Engineering",
-    "degree": "High School GED",
-    "rate": 28,
-    "summary": ""
-}
-
-"""
