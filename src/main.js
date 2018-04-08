@@ -18,6 +18,8 @@ const ReservationModel = require('./model/reservation');
 const SubjectModel = require('./model/subject');
 const message_handler =  require('./module/message_handler');
 
+const tutorRanking = require('./module/recommendation_algorithm.js');
+
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
@@ -306,21 +308,37 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                         if (flag == true) {
                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
                             tutor.getTutorsForSubject(response.text,slackUserName ,function (json_file) {
+
                                 var count = 0;
                                 for (var i in json_file) {
                                     count = count + 1;
                                 }
                                 // console.log("Json file length");
                                 // console.log(count);
+                                console.log(message);
+                                console.log(json_file);
+
+
                                 if (count == 0) {
                                     bot.reply(message, "Sorry! There are no tutor currently available for this course.\n Try to find a tutor again");
                                 }
                                 else
                                 {
-                                  for (var i in json_file)
-                                  {
-                                    bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
-                                  }
+
+                                    controller.storage.user.find({user_id: message.user}, function (error, users) {
+                                        let user = {}
+                                        if (users != null && users.length > 0) {
+                                            user = users[0];
+                                        }
+
+
+                                        json_file = tutorRanking.Prioritize(json_file, user);
+
+                                        for (var i in json_file)
+                                        {
+                                            bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
+                                        }
+                                    });
                                 }
                             });
                         }

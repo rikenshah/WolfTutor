@@ -22,7 +22,8 @@ function Prioritize(people, current_user) {
     try{
         // console.log("Pre re-ordering");
         // console.log(people);
-        for(let person of people){
+        for(let i in people){
+            let person = people[i];
             // For each person, we need to pull out their individual review score,
             // their overall review score, and their previous history to weight.
             let individualScore = GetIndividualScore(person, current_user);
@@ -148,6 +149,8 @@ function GetOverallScore(person){
 
 function GetPreviousInteractionScore(person, current_user){
     try {
+        if(!current_user.reviews)
+            return 0;
         let usersRatings = current_user.reviews.filter( function(rating){
             return rating.user_id == person.id;
         });
