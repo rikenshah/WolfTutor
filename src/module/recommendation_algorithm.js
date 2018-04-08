@@ -20,8 +20,8 @@ const SCORE_ATTR = 'weightedScore';
 
 function Prioritize(people, current_user) {
     try{
-        console.log("Pre re-ordering");
-        console.log(people);
+        // console.log("Pre re-ordering");
+        // console.log(people);
         for(let person of people){
             // For each person, we need to pull out their individual review score,
             // their overall review score, and their previous history to weight.
@@ -30,9 +30,9 @@ function Prioritize(people, current_user) {
             let previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
 
             person[SCORE_ATTR] = CalculateWeightedAverage([
-                individualScore,
-                overallScore,
-                previousInteractionScore], [
+                _PenalizeScore(individualScore),
+                _PenalizeScore(overallScore),
+                _PenalizeScore(previousInteractionScore)], [
                     1, // Weight for individual scores
                     1, // Weight for overall scores
                     1  // Weight for previous interactions
@@ -43,13 +43,13 @@ function Prioritize(people, current_user) {
 
         people = SortPeopleByAttribute(people, SCORE_ATTR);
 
-        console.log("Post re-ordering");
-        console.log(people);
+        // console.log("Post re-ordering");
+        // console.log(people);
 
         return people;
         
     }catch (e){
-        console.log("An exception occurred");
+        console.log("An exception occurred when attempting to prioritize tutors");
         console.log(e.message);
         console.log(e);
 
@@ -57,6 +57,31 @@ function Prioritize(people, current_user) {
     }
 
 }
+
+function _PenalizeScore(score){
+    try {
+        switch(score){
+        case 0:
+            return score;
+            break;
+        case 1:
+            return score - 2;
+            break;
+        case 2:
+        default:
+            return score;
+            break;
+        }
+    } catch(error) {
+        console.log("An exception occurred when attempting to penalize poor tutors");
+        console.log(e.message);
+        console.log(e);
+
+        return 0;
+    }
+
+}
+
 
 function GetIndividualScore(person, current_user){
     try {
