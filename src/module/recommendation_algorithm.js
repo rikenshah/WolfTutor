@@ -192,14 +192,16 @@ function CalculateWeightedAverage(scores, weights){
 // To between zero and one.  Operates in place and returns a reference to objects.
 function NormalizeAttribute(objects, attribute_to_normalize){
 
-    let values = objects.map( function(i) {
-        return i[attribute_to_normalize];
-    });
+    let values = [];
+    for(let i in objects){
+        values.push(objects[i][attribute_to_normalize]);
+    }
 
     let min = Math.min(...values);
     let max = Math.max(...values);
 
-    for(let thing of objects){
+    for(let i in objects){
+        let thing = objects[i];
         thing[attribute_to_normalize] = (thing[attribute_to_normalize] - min) / (max - min);
     }
 
