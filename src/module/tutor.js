@@ -175,7 +175,7 @@ function getUserForSubject(json_file, callback)
 
 function getTutorsForSubject(subject,slackUserName, callback) {
     controller.storage.tutor.all(function (err, tutors) {
-        var json_file = {};
+        var json_file = [];
 
         for (var i in tutors) {
 
@@ -195,7 +195,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
                             rate: tutors[i].rate/2,
                             reviews: tutors[i].reviews
                         }
-                    json_file[tutors[i].user_id] = json_temp;
+                    json_file.push(json_temp);
                 }
             }
         }
