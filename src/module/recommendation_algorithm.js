@@ -20,6 +20,8 @@ const SCORE_ATTR = 'weightedScore';
 
 function Prioritize(people, current_user) {
     try{
+        console.log("Pre re-ordering");
+        console.log(people);
         for(let person of people){
             // For each person, we need to pull out their individual review score,
             // their overall review score, and their previous history to weight.
@@ -41,59 +43,112 @@ function Prioritize(people, current_user) {
 
         people = SortPeopleByAttribute(people, SCORE_ATTR);
 
+        console.log("Post re-ordering");
+        console.log(people);
+
         return people;
         
     }catch (e){
         console.log("An exception occurred");
         console.log(e.message);
+        console.log(e);
+
+        return people;
     }
 
 }
 
 function GetIndividualScore(person, current_user){
-    // TODO: fix users ID thing
-    var usersRatings = person.reviews.filter( function(rating){
-        return rating.user_id == current_user.id;
-    });
+    try {
+        var usersRatings = person.reviews.filter( function(rating){
+            return rating.user_id == current_user.id;
+        });
 
-    var averageRating = usersRatings.map(function(review){
-        return review.rating;
-    }).reduce(function(sum, current){
-        return sum + current;
-    });
+        if(usersRatings < 1)
+            return 0;
 
-    averageRating = averageRating / usersRatings.length;
+        var averageRating = usersRatings.map(function(review){
+            return review.rating;
+        }).reduce(function(sum, current){
+            return sum + current;
+        });
 
-    return averageRating;
+        averageRating = averageRating / usersRatings.length;
+
+        return averageRating;
+    } catch(e) {
+        console.log("an error occurred when calculating individual score");
+        console.log(e.message);
+        console.log(e);
+
+        return 0;
+    }
+
 }
 
 function GetOverallScore(person){
-    var d = new Date();
-    d.setMonth(d.getMonth() - 1);
-    
-    // Get reviwes in the past month.
-    var scores = person.reviews.filter(function(rating){
-        return rating.date > d;
-    });
+    try {
+        var d = new Date();
+        d.setMonth(d.getMonth() - 1);
 
-    // If we have fewer than 5, just take the 5 most recent
-    if(scores.length < 5){
-        scores = person.reviews.slice(-5);
+        if(person.reviews.length < 1)
+            return 0;
+
+        // Get reviwes in the past month.
+        var scores = person.reviews.filter(function(rating){
+            return rating.date > d;
+        });
+
+        // If we have fewer than 5, just take the 5 most recent
+        if(scores.length < 5){
+            scores = person.reviews.slice(-5);
+        }
+
+        averageScore = scores.map(function(review) {
+            return review.rating;
+        }).reduce(function(sum, a){
+            return sum + a;
+        });
+
+        return averageScore / scores.length;
+    } catch(e) {
+        console.log("an error occurred when calculating overall score");
+        console.log(e.message);
+        console.log(e);
+
+        return 0;
     }
 
-    averageScore = scores.map(function(review) {
-        return review.rating;
-    }).reduce(function(sum, a){
-        return sum + a;
-    });
-
-    console.log(averageScore);
-
-    return averageScore / scores.length;
 }
 
 function GetPreviousInteractionScore(person, current_user){
-    throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+    try {
+        let usersRatings = current_user.reviews.filter( function(rating){
+            return rating.user_id == person.id;
+        });
+
+        if(usersRatings.length < 1)
+            return 0;
+
+        let ratings = usersRatings.map(function(review){
+            return review.rating;
+        })
+
+        let averageRating = ratings.reduce(function(sum, current){
+            return sum + current;
+        });
+
+        averageRating = averageRating / usersRatings.length;
+
+        return averageRating;
+    } catch(e) {
+        console.log("an error occurred when calculating previous interaction score");
+        console.log(e.message);
+        console.log(e);
+
+        return 0;
+    }
+
 }
 
 function CalculateWeightedAverage(scores, weights){
