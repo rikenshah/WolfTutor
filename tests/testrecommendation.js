@@ -139,4 +139,30 @@ describe('Recommendations', function(){
         });
     });
 
+    describe('Test usefulness', function(){
+        it('given a set of tutors and students, the recommendations should be useful', function(){
+            // TODO: load students
+            // TODO: load tutors
+            let students = []
+            let tutors = []
+            let predictedTutors = []
+
+            for( let s of students ) {
+                let tutors = recommendations.Prioritize(tutors, s);
+
+                let top5 = tutors.slice(0, 5);
+
+                for(let t of  top5){
+                    predictedTutors.push(t);
+                }
+            }
+
+            // TODO: tutors need to have their ratings
+            // attached directly to those objects so we can track them here
+
+            // TODO: save the tutors and their scores to a CSV file or
+            // something so we can calculate their effectiveness.   
+        });
+    });
+
 });
