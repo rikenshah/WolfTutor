@@ -86,5 +86,57 @@ describe('Recommendations', function(){
             expect(score).to.equal(3);
         });
     });
+    
+    describe('Make reecommendations', function(){
+        it('Make recommendations based on the reviews of a set of students', function(){
+            let tutors = [
+                {
+                    name: "Good Tutor",
+                    reviews: [
+                        { user_id: 1, rating: 1 },
+                        { user_id: 2, rating: 3 },
+                        { user_id: 2, rating: 5 },
+                    ]
+                },
+                {
+                    name: "Bad Tutor",
+                    reviews: [
+                        { user_id: 1, rating: 1 },
+                        { user_id: 2, rating: 1 },
+                        { user_id: 2, rating: 1 },
+                    ]
+                },
+                {
+                    name: "Mediocre Tutor",
+                    reviews: [
+                        { user_id: 1, rating: 1 },
+                        { user_id: 2, rating: 3 },
+                    ]
+                },
+                {
+                    name: "New Tutor",
+                    reviews: [
+                    ]
+                },
+            ]
+
+            let currentUser = {
+                id: 1,
+                reviews: [
+                    { user_id: 1, rating: 1 },
+                    { user_id: 2, rating: 3 },
+                    { user_id: 2, rating: 5 },
+                ]
+            }
+
+            let orderedSet = recommendations.Prioritize(tutors, currentUser);
+
+            // The first element should be the best tutor.
+            expect(tutors[0].name).to.equal("Good Tutor");
+
+            // The last element should be the worst tutor.
+            expect(tutors[tutors.length-1].name).to.equal("Bad Tutor");
+        });
+    });
 
 });
