@@ -22,18 +22,17 @@ function Prioritize(people, current_user) {
     try{
         // console.log("Pre re-ordering");
         // console.log(people);
-        for(let i in people){
-            let person = people[i];
+        for(let person of people){
             // For each person, we need to pull out their individual review score,
             // their overall review score, and their previous history to weight.
-            let individualScore = GetIndividualScore(person, current_user);
-            let overallScore = GetOverallScore(person);
-            let previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
+            person.individualScore = GetIndividualScore(person, current_user);
+            person.overallScore = GetOverallScore(person);
+            person.previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
 
             person[SCORE_ATTR] = CalculateWeightedAverage([
-                _PenalizeScore(individualScore),
-                _PenalizeScore(overallScore),
-                _PenalizeScore(previousInteractionScore)], [
+                _PenalizeScore(person.individualScore),
+                _PenalizeScore(person.overallScore),
+                _PenalizeScore(person.previousInteractionScore)], [
                     1, // Weight for individual scores
                     1, // Weight for overall scores
                     1  // Weight for previous interactions
