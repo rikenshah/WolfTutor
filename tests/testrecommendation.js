@@ -1,3 +1,4 @@
+var fs = require('fs');
 var chai = require('chai');
 var expect = chai.expect;
 var assert = chai.assert;
@@ -143,19 +144,22 @@ describe('Recommendations', function(){
         it('given a set of tutors and students, the recommendations should be useful', function(){
             // TODO: load students
             // TODO: load tutors
-            let students = []
-            let tutors = []
+            console.log(__dirname);
+            let students = JSON.parse(fs.readFileSync(__dirname + '/students.js', 'utf8'));
+            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'))
             let predictedTutors = []
 
             for( let s of students ) {
-                let tutors = recommendations.Prioritize(tutors, s);
+                let rec = recommendations.Prioritize(tutors, s);
 
-                let top5 = tutors.slice(0, 5);
+                let top5 = rec .slice(0, 5);
 
                 for(let t of  top5){
                     predictedTutors.push(t);
                 }
             }
+
+            console.log(predictedTutors);
 
             // TODO: tutors need to have their ratings
             // attached directly to those objects so we can track them here
