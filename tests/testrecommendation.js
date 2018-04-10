@@ -161,9 +161,6 @@ describe('Recommendations', function(){
 
             console.log(predictedTutors);
 
-            // TODO: tutors need to have their ratings
-            // attached directly to those objects so we can track them here
-
             // TODO: save the tutors and their scores to a CSV file or
             // something so we can calculate their effectiveness.   
         });
