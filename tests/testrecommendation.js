@@ -152,7 +152,7 @@ describe('Recommendations', function(){
             for( let s of students ) {
                 let rec = recommendations.Prioritize(tutors, s);
 
-                let top5 = rec .slice(0, 5);
+                let top5 = rec .slice(0, 3);
 
                 for(let t of  top5){
                     predictedTutors.push(t);

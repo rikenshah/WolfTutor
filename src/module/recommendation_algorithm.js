@@ -18,6 +18,12 @@ require('dotenv').config();
 
 const SCORE_ATTR = 'weightedScore';
 
+const WEIGHTS = {
+    individual:  3,
+    overall: 1,
+    previous: 5
+}
+
 function Prioritize(people, current_user) {
     try{
         // console.log("Pre re-ordering");
@@ -33,9 +39,9 @@ function Prioritize(people, current_user) {
                 _PenalizeScore(person.individualScore),
                 _PenalizeScore(person.overallScore),
                 _PenalizeScore(person.previousInteractionScore)], [
-                    1, // Weight for individual scores
-                    1, // Weight for overall scores
-                    1  // Weight for previous interactions
+                    WEIGHTS.individual, 
+                    WEIGHTS.overall, 
+                    WEIGHTS.previous  
                 ]);
         }
 
