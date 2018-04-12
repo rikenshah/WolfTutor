@@ -45,9 +45,111 @@ var bot = controller.spawn({
     token: process.env.BOT_TOKEN
 }).startRTM();
 
+controller.hears(
+    ['reservations history', 'history'], 
+    'direct_message,direct_mention,mention', 
+    function (bot, message){
+        bot.startConversation(message, function (err, convo) {
+            bot.api.users.info({user: message.user}, (error, response) => {
+                let {id, name, real_name} = response.user;
+                var hasReservationTutee=false;
+                var hasReservationTutor=false;
+                var loggedInUserId = id;//'U84DXQKPL';//id;//U84DXQKPL
+
+                controller.storage.reservation.find({tutorid: loggedInUserId, active: 'no'}, function (error,reservations) {
+
+                        if (reservations != null && reservations.length>0) {
+                            hasReservationTutor=true;
+                            for (var r in reservations) {
+                                bot.reply(message,
+                                    {
+                                        attachments:
+                                            [
+                                                {
+                                                    fields:
+                                                        [
+                                                            {
+                                                                title: 'Date',
+                                                                value: reservations[r].date,
+                                                                short: true,
+                                                            },
+                                                            {
+                                                                title: 'Day',
+                                                                value: reservations[r].day,
+                                                                short: true,
+                                                            },
+                                                            {
+                                                                title: 'Start time',
+                                                                value: reservations[r].from,
+                                                                short: true,
+                                                            },
+                                                            {
+                                                                title: 'End time',
+                                                                value: reservations[r].to,
+                                                                short: true,
+                                                            }
+                                                        ]
+                                                }
+                                            ]
+                                    }
+                                );
+                            }
+
+                        }
+                        //Here are your history as a tutee.
+                        controller.storage.reservation.find({userid: loggedInUserId, active: 'no'}, function (error, reservations) {
+                            if (reservations != null && reservations.length>0) {
+                                console.log(reservations);
+                                hasReservationTutee=true;
+
+                                for (var r in reservations) {
+                                    bot.reply(message,
+                                        {
+                                            attachments:
+                                                [
+                                                    {
+                                                        fields:
+                                                            [
+                                                                {
+                                                                    title: 'Date',
+                                                                    value: reservations[r].date,
+                                                                    short: true,
+                                                                },
+                                                                {
+                                                                    title: 'Day',
+                                                                    value: reservations[r].day,
+                                                                    short: true,
+                                                                },
+                                                                {
+                                                                    title: 'Start time',
+                                                                    value: reservations[r].from,
+                                                                    short: true,
+                                                                },
+                                                                {
+                                                                    title: 'End time',
+                                                                    value: reservations[r].to,
+                                                                    short: true,
+                                                                }
+                                                            ]
+                                                    }
+                                                ]
+                                        }
+                                    );
+                                }
+                            }
+                            if(hasReservationTutee===false && hasReservationTutor===false)
+                                bot.reply(message, 'No upcoming reservations');
+                        });
+                });
+            });
+        convo.stop();
+    });
+});
+
+
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
   bot.reply(message, 'Hello <@'+message.user+'>');
-  bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help.");
+  bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help dkjfdkfjdkf.");
   bot.reply(message, prompts.create_user_prompt);
 });
 
@@ -156,6 +258,7 @@ controller.hears(['My reservations'], 'direct_message,direct_mention,mention', f
         convo.stop();
     });
 });
+
 
 //Method for a user to view rewards
 controller.hears(['rewards','get my rewards','view my rewards','my points'], 'direct_message,direct_mention,mention', function (bot, message) {
