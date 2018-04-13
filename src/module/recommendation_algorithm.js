@@ -1,27 +1,12 @@
 require('dotenv').config();
-// const axios = require('axios');
-// const debug = require('debug')('slash-command-template:tutor');
-// const qs = require('querystring');
-// const MongoClient = require('mongodb').MongoClient;
-// const UserModel = require('../model/user');
-// var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_CONNECTION_STRING, tables: ['user','tutor','subject']});
-// var Botkit = require('botkit');
-// var controller = Botkit.slackbot({
-//     storage: mongoStorage,
-// });
-// 
-// const find = (slackUserId) => {
-//   const body = { token: process.env.SLACK_ACCESS_TOKEN, user: slackUserId };
-//   const promise = axios.post('https://slack.com/api/users.info', qs.stringify(body));
-//   return promise;
-// };
 
 const SCORE_ATTR = 'weightedScore';
 
 const WEIGHTS = {
     individual:  3,
     overall: 1,
-    previous: 5
+    previous: 5,
+    gpa: 1
 }
 
 function Prioritize(people, current_user) {
@@ -34,18 +19,19 @@ function Prioritize(people, current_user) {
             person.individualScore = GetIndividualScore(person, current_user);
             person.overallScore = GetOverallScore(person);
             person.previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
+            person.gpaScore = GetGPAScore(person);
 
             person[SCORE_ATTR] = CalculateWeightedAverage([
                 _PenalizeScore(person.individualScore),
                 _PenalizeScore(person.overallScore),
                 _PenalizeScore(person.previousInteractionScore)], [
-                    WEIGHTS.individual, 
-                    WEIGHTS.overall, 
-                    WEIGHTS.previous  
+                    WEIGHTS.individual,
+                    WEIGHTS.overall,
+                    WEIGHTS.previous
                 ]);
         }
 
-        people = NormalizeAttribute(people, SCORE_ATTR); 
+        people = NormalizeAttribute(people, SCORE_ATTR);
 
         people = SortPeopleByAttribute(people, SCORE_ATTR);
 
@@ -53,7 +39,6 @@ function Prioritize(people, current_user) {
         // console.log(people);
 
         return people;
-        
     }catch (e){
         console.log("An exception occurred when attempting to prioritize tutors");
         console.log(e.message);
@@ -64,18 +49,25 @@ function Prioritize(people, current_user) {
 
 }
 
+function GetGPAScore(person){
+    try{
+        throw { message: "Not Implemented", data: person};
+    }
+    catch(e){
+        console.log("An exception occurred when attempting to get GPA score for student " + person.id);
+        console.log(e.message);
+
+        return 0;
+    }
+
 function _PenalizeScore(score){
     try {
         switch(score){
         case 0:
             return score;
             break;
-        case 1:
-            return score - 2;
-            break;
-        case 2:
         default:
-            return score;
+            return score - 2;
             break;
         }
     } catch(error) {
