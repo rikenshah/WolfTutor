@@ -6,6 +6,7 @@ var tutor_schema = new configure.schema({
   degree: 'string',
   subjects: [],
   rate: 'number',
+  gpa: 'number',
   availability: [{
     day: 'string',
     from: 'number',
@@ -41,6 +42,18 @@ module.exports = {
       if (err) return err;
       console.log('1 entry added');
     });
+  },
+  update_tutor: function(payload){
+      try{
+          return tutor.save(payload)
+      }
+      catch(e){
+          console.log('An error occurred when attempting to update tutor: ' + payload);
+          console.log(e.message);
+          console.log(e);
+
+          return null;
+      }
   },
   add_more_subjects: function(payload) {
     // Check whether the subject already exists
