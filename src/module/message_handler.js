@@ -113,6 +113,13 @@ module.exports = {
           try{
           // immediately respond with a empty 200 response to let
           // Slack know the command was received
+
+          console.log(payload);
+          TutorModel.update_tutor({
+              user_id: payload.user.id,
+              gpa: payload.submission.gpa
+          });
+
           action.send_message(payload.channel.id, 'Thanks for submitting form', prompts.add_more_subjects_prompt);
 
           res.send('');

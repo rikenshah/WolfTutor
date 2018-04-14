@@ -33,6 +33,7 @@ module.exports = {
       user_id: payload.user.id,
       major: payload.submission.major,
       degree: payload.submission.degree,
+      gpa: payload.submission.gpa,
       subjects: [{
         name: payload.submission.subject
       }],
@@ -43,12 +44,21 @@ module.exports = {
       console.log('1 entry added');
     });
   },
-  update_tutor: function(payload){
+  update_tutor: function(tutorToUpdate){
       try{
-          return tutor.save(payload)
+
+          tutor.findOneAndUpdate(
+              {user_id: tutorToUpdate.user_id},
+              tutorToUpdate,
+              {new: true},
+              function(err, res){
+                if(err) throw err;
+                console.log('1 entry updated');
+              }
+          );
       }
       catch(e){
-          console.log('An error occurred when attempting to update tutor: ' + payload);
+          console.log('An error occurred when attempting to update tutor: ' + tutor.user_id);
           console.log(e.message);
           console.log(e);
 
