@@ -58,206 +58,206 @@ controller.hears(
 
                 controller.storage.reservation.find({tutorid: loggedInUserId, active: 'no'}, function (error,reservations) {
 
+                    if (reservations != null && reservations.length>0) {
+                        hasReservationTutor=true;
+                        for (var r in reservations) {
+                            bot.reply(message,
+                                      {
+                                          attachments:
+                                          [
+                                              {
+                                                  fields:
+                                                  [
+                                                      {
+                                                          title: 'Date',
+                                                          value: reservations[r].date,
+                                                          short: true,
+                                                      },
+                                                      {
+                                                          title: 'Day',
+                                                          value: reservations[r].day,
+                                                          short: true,
+                                                      },
+                                                      {
+                                                          title: 'Start time',
+                                                          value: reservations[r].from,
+                                                          short: true,
+                                                      },
+                                                      {
+                                                          title: 'End time',
+                                                          value: reservations[r].to,
+                                                          short: true,
+                                                      }
+                                                  ]
+                                              }
+                                          ]
+                                      }
+                                     );
+                        }
+
+                    }
+                    //Here are your history as a tutee.
+                    controller.storage.reservation.find({userid: loggedInUserId, active: 'no'}, function (error, reservations) {
                         if (reservations != null && reservations.length>0) {
-                            hasReservationTutor=true;
+                            console.log(reservations);
+                            hasReservationTutee=true;
+
                             for (var r in reservations) {
                                 bot.reply(message,
-                                    {
-                                        attachments:
-                                            [
-                                                {
-                                                    fields:
-                                                        [
-                                                            {
-                                                                title: 'Date',
-                                                                value: reservations[r].date,
-                                                                short: true,
-                                                            },
-                                                            {
-                                                                title: 'Day',
-                                                                value: reservations[r].day,
-                                                                short: true,
-                                                            },
-                                                            {
-                                                                title: 'Start time',
-                                                                value: reservations[r].from,
-                                                                short: true,
-                                                            },
-                                                            {
-                                                                title: 'End time',
-                                                                value: reservations[r].to,
-                                                                short: true,
-                                                            }
-                                                        ]
-                                                }
-                                            ]
-                                    }
-                                );
+                                          {
+                                              attachments:
+                                              [
+                                                  {
+                                                      fields:
+                                                      [
+                                                          {
+                                                              title: 'Date',
+                                                              value: reservations[r].date,
+                                                              short: true,
+                                                          },
+                                                          {
+                                                              title: 'Day',
+                                                              value: reservations[r].day,
+                                                              short: true,
+                                                          },
+                                                          {
+                                                              title: 'Start time',
+                                                              value: reservations[r].from,
+                                                              short: true,
+                                                          },
+                                                          {
+                                                              title: 'End time',
+                                                              value: reservations[r].to,
+                                                              short: true,
+                                                          }
+                                                      ]
+                                                  }
+                                              ]
+                                          }
+                                         );
                             }
-
                         }
-                        //Here are your history as a tutee.
-                        controller.storage.reservation.find({userid: loggedInUserId, active: 'no'}, function (error, reservations) {
-                            if (reservations != null && reservations.length>0) {
-                                console.log(reservations);
-                                hasReservationTutee=true;
-
-                                for (var r in reservations) {
-                                    bot.reply(message,
-                                        {
-                                            attachments:
-                                                [
-                                                    {
-                                                        fields:
-                                                            [
-                                                                {
-                                                                    title: 'Date',
-                                                                    value: reservations[r].date,
-                                                                    short: true,
-                                                                },
-                                                                {
-                                                                    title: 'Day',
-                                                                    value: reservations[r].day,
-                                                                    short: true,
-                                                                },
-                                                                {
-                                                                    title: 'Start time',
-                                                                    value: reservations[r].from,
-                                                                    short: true,
-                                                                },
-                                                                {
-                                                                    title: 'End time',
-                                                                    value: reservations[r].to,
-                                                                    short: true,
-                                                                }
-                                                            ]
-                                                    }
-                                                ]
-                                        }
-                                    );
-                                }
-                            }
-                            if(hasReservationTutee===false && hasReservationTutor===false)
-                                bot.reply(message, 'No upcoming reservations');
-                        });
+                        if(hasReservationTutee===false && hasReservationTutor===false)
+                            bot.reply(message, 'No upcoming reservations');
+                    });
                 });
             });
-        convo.stop();
+            convo.stop();
+        });
     });
-});
 
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-  bot.reply(message, 'Hello <@'+message.user+'>');
-  bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help dkjfdkfjdkf.");
-  bot.reply(message, prompts.create_user_prompt);
+    bot.reply(message, 'Hello <@'+message.user+'>');
+    bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help dkjfdkfjdkf.");
+    bot.reply(message, prompts.create_user_prompt);
 });
 
 //TODO show only active reservations, not the old ones
 controller.hears(['My reservations'], 'direct_message,direct_mention,mention', function (bot, message)
-{
-    bot.startConversation(message, function (err, convo) {
+                 {
+                     bot.startConversation(message, function (err, convo) {
 
-        bot.api.users.info({user: message.user}, (error, response) => {
-            let {id, name, real_name} = response.user;
-        var hasReservationTutee=false;
-        var hasReservationTutor=false;
-        var loggedInUserId = id;//'U84DXQKPL';//id;//U84DXQKPL
+                         bot.api.users.info({user: message.user}, (error, response) => {
+                             let {id, name, real_name} = response.user;
+                             var hasReservationTutee=false;
+                             var hasReservationTutor=false;
+                             var loggedInUserId = id;//'U84DXQKPL';//id;//U84DXQKPL
 
-            controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error,reservations) {
+                             controller.storage.reservation.find({tutorid: loggedInUserId, active: 'yes'}, function (error,reservations) {
 
-                if (reservations != null && reservations.length>0) {
-                    hasReservationTutor=true;
+                                 if (reservations != null && reservations.length>0) {
+                                     hasReservationTutor=true;
 
-                for (var r in reservations) {
-                    //if (reservations[r].tutorid === loggedInUserId || reservations[r].userid === loggedInUserId) {
-                    //controller.storage.tutor.find({user_id: reservations[r].tutorid}, function (error, users) {
-                      //      console.log(user_id, reservations[r].tutorid);
-                   // });
-                        bot.reply(message,
-                            {
-                                attachments:
-                                    [
-                                        {
-                                            fields:
-                                                [
-                                                    {
-                                                        title: 'Date',
-                                                        value: reservations[r].date,
-                                                        short: true,
-                                                    },
-                                                    {
-                                                        title: 'Day',
-                                                        value: reservations[r].day,
-                                                        short: true,
-                                                    },
-                                                    {
-                                                        title: 'Start time',
-                                                        value: reservations[r].from,
-                                                        short: true,
-                                                    },
-                                                    {
-                                                        title: 'End time',
-                                                        value: reservations[r].to,
-                                                        short: true,
-                                                    }
-                                                ]
-                                        }
-                                    ]
-                            });
-                    }
+                                     for (var r in reservations) {
+                                         //if (reservations[r].tutorid === loggedInUserId || reservations[r].userid === loggedInUserId) {
+                                         //controller.storage.tutor.find({user_id: reservations[r].tutorid}, function (error, users) {
+                                         //      console.log(user_id, reservations[r].tutorid);
+                                         // });
+                                         bot.reply(message,
+                                                   {
+                                                       attachments:
+                                                       [
+                                                           {
+                                                               fields:
+                                                               [
+                                                                   {
+                                                                       title: 'Date',
+                                                                       value: reservations[r].date,
+                                                                       short: true,
+                                                                   },
+                                                                   {
+                                                                       title: 'Day',
+                                                                       value: reservations[r].day,
+                                                                       short: true,
+                                                                   },
+                                                                   {
+                                                                       title: 'Start time',
+                                                                       value: reservations[r].from,
+                                                                       short: true,
+                                                                   },
+                                                                   {
+                                                                       title: 'End time',
+                                                                       value: reservations[r].to,
+                                                                       short: true,
+                                                                   }
+                                                               ]
+                                                           }
+                                                       ]
+                                                   });
+                                     }
 
-                }
-                //Here are your reservation as a tutee.
-                controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
-                    if (reservations != null && reservations.length>0) {
-                        console.log(reservations);
-                        hasReservationTutee=true;
+                                 }
+                                 //Here are your reservation as a tutee.
+                                 controller.storage.reservation.find({userid: loggedInUserId, active: 'yes'}, function (error, reservations) {
+                                     if (reservations != null && reservations.length>0) {
+                                         console.log(reservations);
+                                         hasReservationTutee=true;
 
-                        for (var r in reservations) {
-                            bot.reply(message,
-                                {
-                                    attachments:
-                                        [
-                                            {
-                                                fields:
-                                                    [
-                                                        {
-                                                            title: 'Date',
-                                                            value: reservations[r].date,
-                                                            short: true,
-                                                        },
-                                                        {
-                                                            title: 'Day',
-                                                            value: reservations[r].day,
-                                                            short: true,
-                                                        },
-                                                        {
-                                                            title: 'Start time',
-                                                            value: reservations[r].from,
-                                                            short: true,
-                                                        },
-                                                        {
-                                                            title: 'End time',
-                                                            value: reservations[r].to,
-                                                            short: true,
-                                                        }
-                                                    ]
-                                            }
-                                        ]
-                                });
-                        }
-                    }
-                    if(hasReservationTutee===false && hasReservationTutor===false)
-                        bot.reply(message, 'No upcoming reservations');
-                });
+                                         for (var r in reservations) {
+                                             bot.reply(message,
+                                                       {
+                                                           attachments:
+                                                           [
+                                                               {
+                                                                   fields:
+                                                                   [
+                                                                       {
+                                                                           title: 'Date',
+                                                                           value: reservations[r].date,
+                                                                           short: true,
+                                                                       },
+                                                                       {
+                                                                           title: 'Day',
+                                                                           value: reservations[r].day,
+                                                                           short: true,
+                                                                       },
+                                                                       {
+                                                                           title: 'Start time',
+                                                                           value: reservations[r].from,
+                                                                           short: true,
+                                                                       },
+                                                                       {
+                                                                           title: 'End time',
+                                                                           value: reservations[r].to,
+                                                                           short: true,
+                                                                       }
+                                                                   ]
+                                                               }
+                                                           ]
+                                                       });
+                                         }
+                                     }
+                                     if(hasReservationTutee===false && hasReservationTutor===false)
+                                         bot.reply(message, 'No upcoming reservations');
+                                 });
 
-            //}
-        });
-    });
-        convo.stop();
-    });
-});
+                                 //}
+                             });
+                         });
+                         convo.stop();
+                     });
+                 });
 
 
 //Method for a user to view rewards
@@ -267,20 +267,20 @@ controller.hears(['rewards','get my rewards','view my rewards','my points'], 'di
         bot.api.users.info({user: message.user}, (error, response) => {
             let {id, name, real_name} = response.user;
 
-        var loggedInUserId = id;//'U94AXQ6RL';//id;//
+            var loggedInUserId = id;//'U94AXQ6RL';//id;//
 
-        controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
-            if (users != null && users.length > 0) {
-                //update the user rewards
-                bot.reply(message, 'Your Reward points are ' + users[0].points);
-                bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
+            controller.storage.user.find({user_id: loggedInUserId}, function (error, users) {
+                if (users != null && users.length > 0) {
+                    //update the user rewards
+                    bot.reply(message, 'Your Reward points are ' + users[0].points);
+                    bot.reply(message, 'Keep tutoring to earn more points. #GoPack');
 
-            }
-            else
-                bot.reply(message,'You are not enrolled into the system! Enter Hi to enroll yourself');
-            convo.stop();
+                }
+                else
+                    bot.reply(message,'You are not enrolled into the system! Enter Hi to enroll yourself');
+                convo.stop();
+            });
         });
-    });
 
     });
 });
@@ -301,31 +301,31 @@ controller.hears(['my availability','availability', 'view my availability'], 'di
             var to = '';
             var flag = 0;
 
-        controller.storage.tutor.find({user_id: loggedInUserId}, function (error, tutors) {
-            if (tutors != null && tutors.length > 0) {
+            controller.storage.tutor.find({user_id: loggedInUserId}, function (error, tutors) {
+                if (tutors != null && tutors.length > 0) {
 
-                console.log(tutors[0].availability);
-                if(tutors[0].availability.length != 0)
-                {
-                  for(var i in tutors[0].availability)
-                  {
-                    flag = 1;
-                      day += tutors[0].availability[i].day + "\t"+ tutors[0].availability[i].from + "\t"+tutors[0].availability[i].to + "\n";
-                      from += tutors[0].availability[i].from +"\n";
-                      to += tutors[0].availability[i].to + "\n";
-                  }
-                  console.log(day, from, to);
-                  bot.reply(message, "Your availability are:\n"+day);
+                    console.log(tutors[0].availability);
+                    if(tutors[0].availability.length != 0)
+                    {
+                        for(var i in tutors[0].availability)
+                        {
+                            flag = 1;
+                            day += tutors[0].availability[i].day + "\t"+ tutors[0].availability[i].from + "\t"+tutors[0].availability[i].to + "\n";
+                            from += tutors[0].availability[i].from +"\n";
+                            to += tutors[0].availability[i].to + "\n";
+                        }
+                        console.log(day, from, to);
+                        bot.reply(message, "Your availability are:\n"+day);
+                    }
+
                 }
-
-            }
-            if(flag == 0)
-            {
-              bot.reply(message, "Sorry, you haven't entered any availability");
-            }
-            convo.stop();
+                if(flag == 0)
+                {
+                    bot.reply(message, "Sorry, you haven't entered any availability");
+                }
+                convo.stop();
+            });
         });
-    });
         console.log('availability end');
     });
 });
@@ -343,30 +343,30 @@ controller.hears(['my subject','subject', 'view my subject'], 'direct_message,di
             var user_subjects = '';
             var flag = 0;
 
-        controller.storage.tutor.find({user_id: loggedInUserId}, function (error, tutors) {
-            if (tutors != null && tutors.length > 0) {
+            controller.storage.tutor.find({user_id: loggedInUserId}, function (error, tutors) {
+                if (tutors != null && tutors.length > 0) {
 
-                console.log(tutors[0].subjects);
-                if(tutors[0].subjects.length != 0)
-                {
-                  for(var i in tutors[0].subjects)
-                  {
-                    flag = 1;
-                    user_subjects += tutors[0].subjects[i].name + "\n";
-                  }
+                    console.log(tutors[0].subjects);
+                    if(tutors[0].subjects.length != 0)
+                    {
+                        for(var i in tutors[0].subjects)
+                        {
+                            flag = 1;
+                            user_subjects += tutors[0].subjects[i].name + "\n";
+                        }
 
-                  console.log(user_subjects);
-                  bot.reply(message, "Your subjects are:\n"+user_subjects);
+                        console.log(user_subjects);
+                        bot.reply(message, "Your subjects are:\n"+user_subjects);
+                    }
+
                 }
-
-            }
-            if(flag == 0)
-            {
-              bot.reply(message, "Sorry, you haven't entered any subjects");
-            }
-            convo.stop();
+                if(flag == 0)
+                {
+                    bot.reply(message, "Sorry, you haven't entered any subjects");
+                }
+                convo.stop();
+            });
         });
-    });
 
     });
 });
@@ -377,87 +377,87 @@ controller.hears(['what can I do'], 'direct_message,direct_mention,mention', fun
 });
 
 controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'select a tutor'],
-    'direct_message,direct_mention,mention', function (bot, message) {
+                 'direct_message,direct_mention,mention', function (bot, message) {
 
-        var sub_list = '';
-        controller.storage.subject.all(function (err, subjects) {
+                     var sub_list = '';
+                     controller.storage.subject.all(function (err, subjects) {
 
-            for (var temp in subjects) {
-                sub_list = sub_list + subjects[temp].name.toString() + '\n ';
-            }
-            //TODO- how to handle the error-string statement?
-            if (err) {
-                throw new Error(err);
-            }
+                         for (var temp in subjects) {
+                             sub_list = sub_list + subjects[temp].name.toString() + '\n ';
+                         }
+                         //TODO- how to handle the error-string statement?
+                         if (err) {
+                             throw new Error(err);
+                         }
 
-            var subjects_display_list = 'Choose one of the subjects :-' + '\n' + sub_list+'\n'+'Enter exit to go back!';
-
-
-            bot.startConversation(message, function (err, convo) {
-                bot.api.users.info({user: message.user}, (error, response) => {
-                    let {id, name, real_name} = response.user;
-                console.log(id, name, real_name);
-
-                var slackUserName = id;//'U84DXQKPL';//id;
-                convo.addQuestion(prompts.SubjectList(subjects_display_list), function (response, convo) {
-                    //  console.log(response.text);
-                    if(response.text.toLowerCase()==='exit') {
-                        bot.reply(message,'Cool, you are out finding a tutor!');
-                        convo.stop();
-                        return;
-                    }
-                    //convo.say was not working
-                    subject.isValidSubject(response.text, function (flag) {
-                        if (flag == true) {
-                            bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                            tutor.getTutorsForSubject(response.text,slackUserName ,function (json_file) {
-
-                                var count = 0;
-                                for (var i in json_file) {
-                                    count = count + 1;
-                                }
-                                // console.log("Json file length");
-                                // console.log(count);
-                                console.log(message);
-                                console.log(json_file);
+                         var subjects_display_list = 'Choose one of the subjects :-' + '\n' + sub_list+'\n'+'Enter exit to go back!';
 
 
-                                if (count == 0) {
-                                    bot.reply(message, "Sorry! There are no tutor currently available for this course.\n Try to find a tutor again");
-                                }
-                                else
-                                {
+                         bot.startConversation(message, function (err, convo) {
+                             bot.api.users.info({user: message.user}, (error, response) => {
+                                 let {id, name, real_name} = response.user;
+                                 console.log(id, name, real_name);
 
-                                    controller.storage.user.find({user_id: message.user}, function (error, users) {
-                                        let user = {}
-                                        if (users != null && users.length > 0) {
-                                            user = users[0];
-                                        }
+                                 var slackUserName = id;//'U84DXQKPL';//id;
+                                 convo.addQuestion(prompts.SubjectList(subjects_display_list), function (response, convo) {
+                                     //  console.log(response.text);
+                                     if(response.text.toLowerCase()==='exit') {
+                                         bot.reply(message,'Cool, you are out finding a tutor!');
+                                         convo.stop();
+                                         return;
+                                     }
+                                     //convo.say was not working
+                                     subject.isValidSubject(response.text, function (flag) {
+                                         if (flag == true) {
+                                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                                             tutor.getTutorsForSubject(response.text,slackUserName ,function (json_file) {
+
+                                                 var count = 0;
+                                                 for (var i in json_file) {
+                                                     count = count + 1;
+                                                 }
+                                                 // console.log("Json file length");
+                                                 // console.log(count);
+                                                 console.log(message);
+                                                 console.log(json_file);
 
 
-                                        json_file = tutorRanking.Prioritize(json_file, user);
+                                                 if (count == 0) {
+                                                     bot.reply(message, "Sorry! There are no tutor currently available for this course.\n Try to find a tutor again");
+                                                 }
+                                                 else
+                                                 {
 
-                                        for (var i in json_file)
-                                        {
-                                            bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                        else {
-                            bot.reply(convo.source_message, 'Please select a valid subject.');
-                            convo.repeat();
-                        }
-                    });
+                                                     controller.storage.user.find({user_id: message.user}, function (error, users) {
+                                                         let user = {}
+                                                         if (users != null && users.length > 0) {
+                                                             user = users[0];
+                                                         }
 
-                    convo.next();
-                }, {}, 'default');
-                //});
-            });
-            });
-        });
-    });
+
+                                                         json_file = tutorRanking.Prioritize(json_file, user);
+
+                                                         for (var i in json_file)
+                                                         {
+                                                             bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
+                                                         }
+                                                     });
+                                                 }
+                                             });
+                                         }
+                                         else {
+                                             bot.reply(convo.source_message, 'Please select a valid subject.');
+                                             convo.repeat();
+                                         }
+                                     });
+
+                                     convo.next();
+                                 }, {}, 'default');
+                                 //});
+                             });
+                         });
+                     });
+                 });
 
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {
@@ -479,13 +479,13 @@ controller.hears(['buy', 'buy points'], 'direct_message', function(bot, message)
 
 app.get('/', (req, res) => {
     res.send('<h2>Welcome to Wolf Tutor</h2> <p>Follow the' +
-    ' instructions in the README to configure the Slack App and your environment variables.</p>');
+             ' instructions in the README to configure the Slack App and your environment variables.</p>');
 });
 
 app.post('/message', (req, res) =>
-{
-  message_handler.handle(req, res);
-});
+         {
+             message_handler.handle(req, res);
+         });
 
 app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}!`);
