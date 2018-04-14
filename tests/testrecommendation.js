@@ -12,7 +12,7 @@ describe('Recommendations', function(){
                 { name: "Good Tutor", weightedScore: 1 },
                 { name: "Bad Tutor", weightedScore: .5 },
                 { name: "Mediocre Tutor", weightedScore: .75 }
-            ]
+            ];
 
             var orderedSet = recommendations.SortPeopleByAttribute(tutors, "weightedScore");
 
@@ -30,7 +30,7 @@ describe('Recommendations', function(){
                 { name: "Good Tutor", weightedScore: 10 },
                 { name: "Bad Tutor", weightedScore: 100 },
                 { name: "Mediocre Tutor", weightedScore: 50 }
-            ]
+            ];
 
             let normalizedTutors = recommendations.NormalizeAttribute(tutors, "weightedScore");
 
