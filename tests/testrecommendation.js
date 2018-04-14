@@ -12,7 +12,7 @@ describe('Recommendations', function(){
                 { name: "Good Tutor", weightedScore: 1 },
                 { name: "Bad Tutor", weightedScore: .5 },
                 { name: "Mediocre Tutor", weightedScore: .75 }
-            ]
+            ];
 
             var orderedSet = recommendations.SortPeopleByAttribute(tutors, "weightedScore");
 
@@ -30,7 +30,7 @@ describe('Recommendations', function(){
                 { name: "Good Tutor", weightedScore: 10 },
                 { name: "Bad Tutor", weightedScore: 100 },
                 { name: "Mediocre Tutor", weightedScore: 50 }
-            ]
+            ];
 
             let normalizedTutors = recommendations.NormalizeAttribute(tutors, "weightedScore");
 
@@ -87,15 +87,15 @@ describe('Recommendations', function(){
             expect(score).to.equal(3);
         });
     });
-    
+
     describe('Make reecommendations', function(){
         it('Make recommendations based on the reviews of a set of students', function(){
             let tutors = [
                 {
                     name: "Good Tutor",
                     reviews: [
-                        { user_id: 1, rating: 1 },
-                        { user_id: 2, rating: 3 },
+                        { user_id: 1, rating: 3 },
+                        { user_id: 2, rating: 4 },
                         { user_id: 2, rating: 5 },
                     ]
                 },
@@ -110,7 +110,8 @@ describe('Recommendations', function(){
                 {
                     name: "Mediocre Tutor",
                     reviews: [
-                        { user_id: 1, rating: 1 },
+                        { user_id: 1, rating: 3 },
+                        { user_id: 2, rating: 3 },
                         { user_id: 2, rating: 3 },
                     ]
                 },
@@ -119,7 +120,7 @@ describe('Recommendations', function(){
                     reviews: [
                     ]
                 },
-            ]
+            ];
 
             let currentUser = {
                 id: 1,
@@ -128,7 +129,7 @@ describe('Recommendations', function(){
                     { user_id: 2, rating: 3 },
                     { user_id: 2, rating: 5 },
                 ]
-            }
+            };
 
             let orderedSet = recommendations.Prioritize(tutors, currentUser);
 
@@ -144,10 +145,9 @@ describe('Recommendations', function(){
         it('given a set of tutors and students, the recommendations should be useful', function(){
             // TODO: load students
             // TODO: load tutors
-            console.log(__dirname);
             let students = JSON.parse(fs.readFileSync(__dirname + '/students.js', 'utf8'));
-            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'))
-            let predictedTutors = []
+            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'));
+            let predictedTutors = [];
 
             for( let s of students ) {
                 let rec = recommendations.Prioritize(tutors, s);
@@ -158,8 +158,6 @@ describe('Recommendations', function(){
                     predictedTutors.push(t);
                 }
             }
-
-            console.log(predictedTutors);
 
             // TODO: save the tutors and their scores to a CSV file or
             // something so we can calculate their effectiveness.   

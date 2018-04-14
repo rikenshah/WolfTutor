@@ -2,15 +2,21 @@ require('dotenv').config();
 
 const SCORE_ATTR = 'weightedScore';
 
-const WEIGHTS = {
+var WEIGHTS = {
     individual:  3,
     overall: 1,
-    previous: 5,
+    previous: 3,
     gpa: 1
 }
 
-function Prioritize(people, current_user) {
+function Prioritize(people, current_user, weights) {
     try{
+        weights = weights || {};
+        WEIGHTS.individual = weights.individual || WEIGHTS.individual;
+        WEIGHTS.overall = weights.overall || WEIGHTS.overall;
+        WEIGHTS.previous = weights.previous || WEIGHTS.previous;
+        WEIGHTS.gpa = weights.gpa || WEIGHTS.gpa;
+
         // console.log("Pre re-ordering");
         // console.log(people);
         for(let person of people){
@@ -31,8 +37,6 @@ function Prioritize(people, current_user) {
                     WEIGHTS.previous,
                     WEIGHTS.gpa
                 ]);
-
-            //TODO: it might be better to normalize the scores first.  Not sure.
         }
 
         people = NormalizeAttribute(people, SCORE_ATTR);
@@ -55,7 +59,12 @@ function Prioritize(people, current_user) {
 
 function GetGPAScore(person){
     try{
-        throw { message: "Not Implemented", data: person};
+        if(person.gpa){
+            return person.gpa;
+        }
+        else{
+            return 0;
+        }
     }
     catch(e){
         console.log("An exception occurred when attempting to get GPA score for student " + person.id);
@@ -181,11 +190,10 @@ function GetPreviousInteractionScore(person, current_user){
 }
 
 function CalculateWeightedAverage(scores, weights){
-    let avg = 0;
-    for(var i=0; i<scores.length; i++){
+    var avg = 0;
+    for(let i in scores){
         avg += scores[i] * weights[i];
     }
-
     return (avg / scores.length);
 }
 
