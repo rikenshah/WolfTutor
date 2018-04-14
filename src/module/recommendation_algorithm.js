@@ -63,6 +63,7 @@ function GetGPAScore(person){
 
         return 0;
     }
+}
 
 function _PenalizeScore(score){
     try {
@@ -84,7 +85,7 @@ function _PenalizeScore(score){
 }
 
 
-function GetIndividualFile error: Cannot open load file, No such file or directory, bind-mapScore(person, current_user){
+function GetIndividualScore(person, current_user){
     try {
         var usersRatings = person.reviews.filter( function(rating){
             return rating.user_id == current_user.id;
@@ -160,7 +161,7 @@ function GetPreviousInteractionScore(person, current_user){
 
         let ratings = usersRatings.map(function(review){
             return review.rating;
-        })
+        });
 
         let averageRating = ratings.reduce(function(sum, current){
             return sum + current;
