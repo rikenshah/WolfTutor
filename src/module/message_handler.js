@@ -45,6 +45,8 @@ module.exports = {
 
         if (callback_id == 'become_tutor_prompt')
         {
+            console.log('In become a tutor prompt');
+
             //console.log(payload);
           var checkValue = payload.actions[0].value;
           if (checkValue == 'no')
