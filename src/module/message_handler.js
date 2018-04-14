@@ -1,8 +1,6 @@
 require('dotenv').config();
 
 const axios = require('axios');
-const express = require('express');
-const bodyParser = require('body-parser');
 const qs = require('querystring');
 const tutor = require('./tutor');
 const subject = require('./subject');
@@ -17,7 +15,8 @@ const SubjectModel = require('../model/subject');
 const BookingValidation = require('./booking_validation');
 
 
-var Botkit = require('botkit');
+var 
+Botkit = require('botkit');
 
 var mongoStorage = require('botkit-storage-mongo')({
     mongoUri: process.env.MONGO_CONNECTION_STRING,
@@ -45,7 +44,7 @@ module.exports = {
 
         if (callback_id == 'become_tutor_prompt')
         {
-            console.log('In become a tutor prompt');
+            //console.log('In become a tutor prompt');
 
             //console.log(payload);
           var checkValue = payload.actions[0].value;
@@ -57,7 +56,7 @@ module.exports = {
           else
           {
               // Yes on become a tutor prompt
-              console.log("Dialog is");
+              // console.log("Student responded yes, showing become a tutor dialog");
               dialogs.submit_tutor_info_dialog(function(dialog_attachment)
               {
                   const dialog =
@@ -71,16 +70,60 @@ module.exports = {
               });
           } // End of Else
       } // End of If
+      else if(callback_id == 'tutor_features_prompt'){
+          dialogs.submit_tutor_features_dialog(function(dialog_attachment)
+                                               {
+                                                   console.log('attempting to open new features dialog');
+                                                   const dialog =
+                                                         {
+                                                             token: process.env.SLACK_ACCESS_TOKEN,
+                                                             trigger_id,
+                                                             dialog: JSON.stringify(dialog_attachment),
+                                                         };
+                                                   // open the dialog by calling dialogs.open method and sending the payload
+                                                   action.open_dialog(dialog, res);
+                                               });
+      }
       else if (callback_id == 'submit_tutor_info_dialog')
       {
+        try{
+        // create a tutor
+        console.log('In submit_tutor_info_dialog');
+        TutorModel.create_new_tutor(payload);
+
         // immediately respond with a empty 200 response to let
         // Slack know the command was received
-        action.send_message(payload.channel.id, 'Thanks for submitting form', prompts.add_more_subjects_prompt);
-        // create a tutor
-        TutorModel.create_new_tutor(payload);
-        //tutor.create(payload.user.id, payload.submission);
+
+        console.log(prompts.tutor_features_prompt);
+        action.send_message(payload.channel.id, 'Add more features', prompts.tutor_features_prompt);
+
         res.send('');
+
+        }
+        catch(e){
+            console.log('An error occurred in the submit_tutor_info_dialog callback');
+            console.log(e.message);
+
+            console.log(e);
+        }
+        //tutor.create(payload.user.id, payload.submission);
       } // End of else if for submit tutor info
+      else if(callback_id == 'submit_tutor_features_dialog'){
+
+          try{
+          // immediately respond with a empty 200 response to let
+          // Slack know the command was received
+          action.send_message(payload.channel.id, 'Thanks for submitting form', prompts.add_more_subjects_prompt);
+
+          res.send('');
+          }
+          catch(e){
+              console.log('An error occurred in the submit_tutor_features_dialog callback');
+              console.log(e.message);
+
+              console.log(e);
+          }
+      }
       else if (callback_id == 'add_more_subjects_prompt')
       {
           var checkValue = payload.actions[0].value;
