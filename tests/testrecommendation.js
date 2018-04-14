@@ -94,8 +94,8 @@ describe('Recommendations', function(){
                 {
                     name: "Good Tutor",
                     reviews: [
-                        { user_id: 1, rating: 1 },
-                        { user_id: 2, rating: 3 },
+                        { user_id: 1, rating: 3 },
+                        { user_id: 2, rating: 4 },
                         { user_id: 2, rating: 5 },
                     ]
                 },
@@ -110,7 +110,8 @@ describe('Recommendations', function(){
                 {
                     name: "Mediocre Tutor",
                     reviews: [
-                        { user_id: 1, rating: 1 },
+                        { user_id: 1, rating: 3 },
+                        { user_id: 2, rating: 3 },
                         { user_id: 2, rating: 3 },
                     ]
                 },
@@ -144,7 +145,6 @@ describe('Recommendations', function(){
         it('given a set of tutors and students, the recommendations should be useful', function(){
             // TODO: load students
             // TODO: load tutors
-            console.log(__dirname);
             let students = JSON.parse(fs.readFileSync(__dirname + '/students.js', 'utf8'));
             let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'));
             let predictedTutors = [];
@@ -158,8 +158,6 @@ describe('Recommendations', function(){
                     predictedTutors.push(t);
                 }
             }
-
-            console.log(predictedTutors);
 
             // TODO: save the tutors and their scores to a CSV file or
             // something so we can calculate their effectiveness.   
