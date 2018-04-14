@@ -1,5 +1,76 @@
-# WolfTutor [![Build Status](https://travis-ci.org/rikenshah/WolfTutor.svg?branch=master)](https://travis-ci.org/rikenshah/WolfTutor)
-Software Engineering Spring 2018 project
+# WolfTutor - Group P
+# CSC 510 - Software Engineering Spring 2018
+
+## Contact Information
+[](https://github.com/zacherypd)<br>
+[Zachery DeLong](https://github.com/mateenrehan)  &ensp; email:  zpdelong@ncsu.edu <br>
+[Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email: mgmetro@ncsu.edu <br>
+[Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu <br>
+
+## How to Use
+<Details>
+   <p>Wolftutor has two types of users: students and tutors. </p>
+
+   ### Signup
+   <ol>
+      <li>Go to <code>slack page</code> and register a slack username.</li>  
+      <li>Click on the bot application found under the left App panel.
+          <br>
+          ![img]()
+         <br> </li>
+      <li>Type <code>hi</code> into the bot chat box and send.</li>
+      <li>Click <code>Yes</code> after the Wolftutor bot responds.
+         <br>
+         ![img]()
+         <br> </li>
+   </ol>
+
+   ### Students
+   <p>Students can: </p>
+   <ul>
+      <li>Find a tutor
+         <ol>
+            <li>Type <code>Find a tutor</code> into the bot chat box and send.</li>
+         </ol>
+         <Details>![img]()</Details></li>
+      <li>See the reviews for at tutor
+         <ol>
+            <li>Click <code>Reviews</code> under a tutor's displayed information</li>
+         </ol>
+         <Details>![img]()</Details>
+         </li>
+      <li>Schedule a 30 minute tutoring session
+          <ol>
+             <li>Click <code>Schedule</code> under a tutor's displayed information.</li>
+             <li>Click <code>Book</code> on the time slot you desire.</li>
+         </ol></li>
+      <li>Review a tutor from their last session (students have until the end of the day to review their tutor)
+         <ol>
+            <li>Type <code>Review</code> into the bot chat box and send.</li>
+            <li>Enter your review information as prompted and hit <code>Submit</code>.</li>
+         </ol></li>
+      <li>View scheduled tutoring sessions
+          <ol>
+             <li>Type <code>my reservations</code> into the bot chat box and send.</li>
+         </ol></li>
+      <li>View point balance
+         <ol>
+            <li>Type <code>rewards</code> into bot chat box and send</li>
+         </ol></li>
+   </ul>
+      
+   ### Tutors
+   <p>Tutors can: </p>
+   <ul>
+      <li>Become a tutor</li>
+      <li>View subjects and availability given to WolfTutor</li>
+      <li>View point balance</li>
+   </ul>
+</Details>
+   
+
+
+
 
 ### Problem Statement
 
@@ -165,17 +236,3 @@ We have used agile practices throughout. We used kanban project integration with
 
 **After**
 ![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agileDone.png)
-
-### Reports
-
-1. [Feb 1 report](https://github.com/rikenshah/WolfTutor/blob/master/Reports/Report_Feb/team_l_wolftutor_feb_report.pdf)
-
-### Team Information
-
-[Riken Shah](https://github.com/rikenshah)<br>
-[Mateenrehan Shaikh](https://github.com/mateenrehan)<br>
-[Himani Himani](https://github.com/hhimani)<br>
-[Aaroh Gala](https://github.com/AarohGala)<br>
-
-TA/Mentor : [Ken Tu](https://github.com/HuyTu7)<br>
-Professor : [Tim Menzies](https://github.com/timm)<br>
