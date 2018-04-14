@@ -54,12 +54,6 @@ module.exports= {
                         type: 'textarea',
                         name: 'summary',
                         optional: true,
-                    },
-                    {
-                        lable: 'GPA',
-                        type: 'text',
-                        name: 'gpa',
-                        optional: false
                     }
                 ],
             };
