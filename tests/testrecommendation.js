@@ -1,3 +1,4 @@
+var fs = require('fs');
 var chai = require('chai');
 var expect = chai.expect;
 var assert = chai.assert;
@@ -136,6 +137,32 @@ describe('Recommendations', function(){
 
             // The last element should be the worst tutor.
             expect(tutors[tutors.length-1].name).to.equal("Bad Tutor");
+        });
+    });
+
+    describe('Test usefulness', function(){
+        it('given a set of tutors and students, the recommendations should be useful', function(){
+            // TODO: load students
+            // TODO: load tutors
+            console.log(__dirname);
+            let students = JSON.parse(fs.readFileSync(__dirname + '/students.js', 'utf8'));
+            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'))
+            let predictedTutors = []
+
+            for( let s of students ) {
+                let rec = recommendations.Prioritize(tutors, s);
+
+                let top5 = rec .slice(0, 3);
+
+                for(let t of  top5){
+                    predictedTutors.push(t);
+                }
+            }
+
+            console.log(predictedTutors);
+
+            // TODO: save the tutors and their scores to a CSV file or
+            // something so we can calculate their effectiveness.   
         });
     });
 
