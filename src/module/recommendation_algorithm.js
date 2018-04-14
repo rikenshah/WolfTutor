@@ -24,11 +24,15 @@ function Prioritize(people, current_user) {
             person[SCORE_ATTR] = CalculateWeightedAverage([
                 _PenalizeScore(person.individualScore),
                 _PenalizeScore(person.overallScore),
-                _PenalizeScore(person.previousInteractionScore)], [
+                _PenalizeScore(person.previousInteractionScore),
+                person.gpaScore], [
                     WEIGHTS.individual,
                     WEIGHTS.overall,
-                    WEIGHTS.previous
+                    WEIGHTS.previous,
+                    WEIGHTS.gpa
                 ]);
+
+            //TODO: it might be better to normalize the scores first.  Not sure.
         }
 
         people = NormalizeAttribute(people, SCORE_ATTR);
@@ -77,11 +81,10 @@ function _PenalizeScore(score){
 
         return 0;
     }
-
 }
 
 
-function GetIndividualScore(person, current_user){
+function GetIndividualFile error: Cannot open load file, No such file or directory, bind-mapScore(person, current_user){
     try {
         var usersRatings = person.reviews.filter( function(rating){
             return rating.user_id == current_user.id;
