@@ -5,14 +5,14 @@ const SCORE_ATTR = 'weightedScore';
 const WEIGHTS = {
     individual:  3,
     overall: 1,
-    previous: 5,
+    previous: 3,
     gpa: 1
 }
 
 function Prioritize(people, current_user) {
     try{
-        // console.log("Pre re-ordering");
-        // console.log(people);
+        console.log("Pre re-ordering");
+        console.log(people);
         for(let person of people){
             // For each person, we need to pull out their individual review score,
             // their overall review score, and their previous history to weight.
@@ -31,16 +31,14 @@ function Prioritize(people, current_user) {
                     WEIGHTS.previous,
                     WEIGHTS.gpa
                 ]);
-
-            //TODO: it might be better to normalize the scores first.  Not sure.
         }
 
-        people = NormalizeAttribute(people, SCORE_ATTR);
+        // people = NormalizeAttribute(people, SCORE_ATTR);
 
         people = SortPeopleByAttribute(people, SCORE_ATTR);
 
-        // console.log("Post re-ordering");
-        // console.log(people);
+        console.log("Post re-ordering");
+        console.log(people);
 
         return people;
     }catch (e){
@@ -55,7 +53,12 @@ function Prioritize(people, current_user) {
 
 function GetGPAScore(person){
     try{
-        throw { message: "Not Implemented", data: person};
+        if(person.gpa){
+            return person.gpa;
+        }
+        else{
+            return 0;
+        }
     }
     catch(e){
         console.log("An exception occurred when attempting to get GPA score for student " + person.id);
@@ -181,11 +184,10 @@ function GetPreviousInteractionScore(person, current_user){
 }
 
 function CalculateWeightedAverage(scores, weights){
-    let avg = 0;
-    for(var i=0; i<scores.length; i++){
+    var avg = 0;
+    for(let i in scores){
         avg += scores[i] * weights[i];
     }
-
     return (avg / scores.length);
 }
 
