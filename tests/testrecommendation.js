@@ -87,7 +87,7 @@ describe('Recommendations', function(){
             expect(score).to.equal(3);
         });
     });
-    
+
     describe('Make reecommendations', function(){
         it('Make recommendations based on the reviews of a set of students', function(){
             let tutors = [
@@ -119,7 +119,7 @@ describe('Recommendations', function(){
                     reviews: [
                     ]
                 },
-            ]
+            ];
 
             let currentUser = {
                 id: 1,
@@ -128,7 +128,7 @@ describe('Recommendations', function(){
                     { user_id: 2, rating: 3 },
                     { user_id: 2, rating: 5 },
                 ]
-            }
+            };
 
             let orderedSet = recommendations.Prioritize(tutors, currentUser);
 
@@ -146,8 +146,8 @@ describe('Recommendations', function(){
             // TODO: load tutors
             console.log(__dirname);
             let students = JSON.parse(fs.readFileSync(__dirname + '/students.js', 'utf8'));
-            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'))
-            let predictedTutors = []
+            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'));
+            let predictedTutors = [];
 
             for( let s of students ) {
                 let rec = recommendations.Prioritize(tutors, s);
