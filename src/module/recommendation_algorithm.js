@@ -11,8 +11,8 @@ const WEIGHTS = {
 
 function Prioritize(people, current_user) {
     try{
-        console.log("Pre re-ordering");
-        console.log(people);
+        // console.log("Pre re-ordering");
+        // console.log(people);
         for(let person of people){
             // For each person, we need to pull out their individual review score,
             // their overall review score, and their previous history to weight.
@@ -33,12 +33,12 @@ function Prioritize(people, current_user) {
                 ]);
         }
 
-        // people = NormalizeAttribute(people, SCORE_ATTR);
+        people = NormalizeAttribute(people, SCORE_ATTR);
 
         people = SortPeopleByAttribute(people, SCORE_ATTR);
 
-        console.log("Post re-ordering");
-        console.log(people);
+        // console.log("Post re-ordering");
+        // console.log(people);
 
         return people;
     }catch (e){
