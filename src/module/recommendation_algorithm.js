@@ -2,15 +2,21 @@ require('dotenv').config();
 
 const SCORE_ATTR = 'weightedScore';
 
-const WEIGHTS = {
+var WEIGHTS = {
     individual:  3,
     overall: 1,
     previous: 3,
     gpa: 1
 }
 
-function Prioritize(people, current_user) {
+function Prioritize(people, current_user, weights) {
     try{
+        weights = weights || {};
+        WEIGHTS.individual = weights.individual || WEIGHTS.individual;
+        WEIGHTS.overall = weights.overall || WEIGHTS.overall;
+        WEIGHTS.previous = weights.previous || WEIGHTS.previous;
+        WEIGHTS.gpa = weights.gpa || WEIGHTS.gpa;
+
         // console.log("Pre re-ordering");
         // console.log(people);
         for(let person of people){
