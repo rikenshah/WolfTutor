@@ -1,0 +1,15 @@
+This is the test log for function test of commit 92603b.
+1, add user: pass
+2, become a tutor: pass
+	a, added new prompt and dialog to accept GPA info is working properly.
+	b, adding extra subject fail, still need add subject dirctly from DB.
+3, find a tutor: pass
+4, my reservations: pass
+5, history: pass
+	a, find an message error: when there is no reservation history, shall reply 'No reservation hestory'. Fixed in main.js.
+6, review: pass
+7, find a tutor with different tutor configurations:
+	a, two tutor, one GPA higher: did not show up with higher GPA above lower one.
+	b, two tutor, one rating higher: did not show up with higher rating above lower one.
+
+	above two cases has problems: one of the tutor is cloned in DB manully, and without actural reservations.
