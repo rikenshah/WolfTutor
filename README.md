@@ -150,7 +150,7 @@ MONGO_CONNECTION_STRING should be 'mongodb://localhost:27017', unless you choose
 
 ### Use Cases
 
-The four major use cases of our application are,
+The five major use cases of our application are,
 #### 1. Find a tutor
 <Details>
 <p> A user can find a tutor on our bot by just typing one of the following keywords,
@@ -160,6 +160,7 @@ The four major use cases of our application are,
 'select a tutor'.
 The user will get the list of all the available subjects from which the user can select one subject.
 Once a subject is selected we will be returning all the tutors who teach that subject.
+Based on the information provided to bot, the bot will return the tutors in a proper order: either in a higher rating recommended order, or the order based on user preference.
 </p>
 Here is the flow demonstrating this use case.<br>
 <img src="Reports/Wireframes/find_a_tutor.gif"></img>
@@ -208,7 +209,14 @@ Here is the flow demonstrating this use case.<br>
 </p>
 </Details>
 
-#### 5. List of all usecases
+#### 5. Reservation History
+
+<Details>
+<p> The user, either tutor or tutee, can access their non-active reservations by typing 'history' or 'reservation history'. In this way, they can look at their tutor history, who and when they have tutor a certain subject. The active reservations, those have not completed ones, can be accessed by 'my reservations' command.
+</p>
+</Details>
+
+#### 6. List of all usecases
 
 Here is a list of all possible commands that you can try out with the WolfTutor app.
 <br>
