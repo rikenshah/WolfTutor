@@ -376,88 +376,86 @@ controller.hears(['what can I do'], 'direct_message,direct_mention,mention', fun
     bot.reply(message, "You can enroll as a tutor by saying I want to be a tutor or become a tutor \nYou can find a tutor by saying find a tutor or I want a tutor." );
 });
 
-controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'select a tutor'],
-                 'direct_message,direct_mention,mention', function (bot, message) {
+controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'select a tutor'], 'direct_message,direct_mention,mention', function (bot, message) {
+    var sub_list = '';
+    controller.storage.subject.all(function (err, subjects) {
 
-                     var sub_list = '';
-                     controller.storage.subject.all(function (err, subjects) {
+        for (var temp in subjects) {
+            sub_list = sub_list + subjects[temp].name.toString() + '\n ';
+        }
+        //TODO- how to handle the error-string statement?
+        if (err) {
+            throw new Error(err);
+        }
 
-                         for (var temp in subjects) {
-                             sub_list = sub_list + subjects[temp].name.toString() + '\n ';
-                         }
-                         //TODO- how to handle the error-string statement?
-                         if (err) {
-                             throw new Error(err);
-                         }
-
-                         var subjects_display_list = 'Choose one of the subjects :-' + '\n' + sub_list+'\n'+'Enter exit to go back!';
+        var subjects_display_list = 'Choose one of the subjects :-' + '\n' + sub_list+'\n'+'Enter exit to go back!';
 
 
-                         bot.startConversation(message, function (err, convo) {
-                             bot.api.users.info({user: message.user}, (error, response) => {
-                                 let {id, name, real_name} = response.user;
-                                 console.log(id, name, real_name);
+        bot.startConversation(message, function (err, convo) {
+            bot.api.users.info({user: message.user}, (error, response) => {
+                let {id, name, real_name} = response.user;
+                console.log(id, name, real_name);
 
-                                 var slackUserName = id;//'U84DXQKPL';//id;
-                                 convo.addQuestion(prompts.SubjectList(subjects_display_list), function (response, convo) {
-                                     //  console.log(response.text);
-                                     if(response.text.toLowerCase()==='exit') {
-                                         bot.reply(message,'Cool, you are out finding a tutor!');
-                                         convo.stop();
-                                         return;
-                                     }
-                                     //convo.say was not working
-                                     subject.isValidSubject(response.text, function (flag) {
-                                         if (flag == true) {
-                                             bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
-                                             tutor.getTutorsForSubject(response.text,slackUserName ,function (json_file) {
+                var slackUserName = id;//'U84DXQKPL';//id;
+                convo.addQuestion(prompts.SubjectList(subjects_display_list), function (response, convo) {
+                    //  console.log(response.text);
+                    if(response.text.toLowerCase()==='exit') {
+                        bot.reply(message,'Cool, you are out finding a tutor!');
+                        convo.stop();
+                        return;
+                    }
+                    //convo.say was not working
+                    subject.isValidSubject(response.text, function (flag) {
+                        if (flag == true) {
+                            bot.reply(convo.source_message, 'Cool, you selected: ' + response.text);
+                            tutor.getTutorsForSubject(response.text,slackUserName ,function (json_file) {
 
-                                                 var count = 0;
-                                                 for (var i in json_file) {
-                                                     count = count + 1;
-                                                 }
-                                                 // console.log("Json file length");
-                                                 // console.log(count);
-                                                 console.log(message);
-                                                 console.log(json_file);
-
-
-                                                 if (count == 0) {
-                                                     bot.reply(message, "Sorry! There are no tutor currently available for this course.\n Try to find a tutor again");
-                                                 }
-                                                 else
-                                                 {
-
-                                                     controller.storage.user.find({user_id: message.user}, function (error, users) {
-                                                         let user = {}
-                                                         if (users != null && users.length > 0) {
-                                                             user = users[0];
-                                                         }
+                                var count = 0;
+                                for (var i in json_file) {
+                                    count = count + 1;
+                                }
+                                // console.log("Json file length");
+                                // console.log(count);
+                                console.log(message);
+                                console.log(json_file);
 
 
-                                                         json_file = tutorRanking.Prioritize(json_file, user);
+                                if (count == 0) {
+                                    bot.reply(message, "Sorry! There are no tutor currently available for this course.\n Try to find a tutor again");
+                                }
+                                else
+                                {
 
-                                                         for (var i in json_file)
-                                                         {
-                                                             bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
-                                                         }
-                                                     });
-                                                 }
-                                             });
-                                         }
-                                         else {
-                                             bot.reply(convo.source_message, 'Please select a valid subject.');
-                                             convo.repeat();
-                                         }
-                                     });
+                                    controller.storage.user.find({user_id: message.user}, function (error, users) {
+                                        let user = {}
+                                        if (users != null && users.length > 0) {
+                                            user = users[0];
+                                        }
 
-                                     convo.next();
-                                 }, {}, 'default');
-                                 //});
-                             });
-                         });
-                     });
-                 });
+
+                                        json_file = tutorRanking.Prioritize(json_file, user);
+
+                                        for (var i in json_file)
+                                        {
+                                            bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            bot.reply(convo.source_message, 'Please select a valid subject.');
+                            convo.repeat();
+                        }
+                    });
+
+                    convo.next();
+                }, {}, 'default');
+                //});
+            });
+        });
+    });
+});
 
 
 controller.hears('become a tutor', 'direct_message', function(bot, message) {

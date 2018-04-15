@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 
 const SCORE_ATTR = 'weightedScore';
@@ -24,7 +25,7 @@ function Prioritize(people, current_user, weights) {
             // their overall review score, and their previous history to weight.
             person.individualScore = GetIndividualScore(person, current_user);
             person.overallScore = GetOverallScore(person);
-            person.previousInteractionScore = GetPreviousInteractionScore(person, current_user); 
+            person.previousInteractionScore = GetPreviousInteractionScore(person, current_user);
             person.gpaScore = GetGPAScore(person);
 
             person[SCORE_ATTR] = CalculateWeightedAverage([
