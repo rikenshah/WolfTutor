@@ -138,7 +138,7 @@ controller.hears(
                             }
                         }
                         if(hasReservationTutee===false && hasReservationTutor===false)
-                            bot.reply(message, 'No upcoming reservations');
+                            bot.reply(message, 'No reservations history');
                     });
                 });
             });
