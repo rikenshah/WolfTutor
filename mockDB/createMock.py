@@ -15,6 +15,8 @@ def main():
     #for random dates of reviews
     YEARS_LOWER_BOUND = 2017
     YEARS_UPPER_BOUND = 2018
+    LOW_GPA = 3.0
+    HIGH_GPA = 4.0
 
     #------ Connect to Database ------
     database = 'heroku_d754621w' #heroku_d754621w == database that is connected to heroku
@@ -88,13 +90,14 @@ def main():
     print()
     coll = db.tutor
 
-    for tutor in used[1:]: #avoid yourself if you are the first tutor
+    for tutor in used: #used[1:]: avoid yourself if you are the first tutor
         subject = random.choice(subjects) #random element chosen
         day = random.choice(days)
         rate = random.randint(0, MAX_PAY_RATE)
         degree = random.choice(degrees)
         major = random.choice(majors)
         num_of_reviews = random.randint(0, MAX_NUM_REVIEWS)
+        gpa = round(random.uniform(LOW_GPA, HIGH_GPA), 1) #float with 1 decimal
 
         # REVIEWS
         reviews = []
@@ -148,6 +151,7 @@ def main():
                 "user_id": tutor,
                 "major": major,
                 "degree": degree,
+                "gpa": gpa,
                 "rate": rate,
                 "summary": "",
             }
