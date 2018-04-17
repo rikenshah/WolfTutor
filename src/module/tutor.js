@@ -46,6 +46,11 @@ const sendConfirmation = (tutor) => {
             short:true,
           },
           {
+            title: 'GPA',
+            value: tutor.gpa,
+            short:true,
+          },
+          {
             title: 'Subjects',
             value: tutor.subject,
             short:true,

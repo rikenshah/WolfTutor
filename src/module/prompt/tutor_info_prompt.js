@@ -32,6 +32,12 @@ const tutor_info_display = (json_file) =>
                         "short": true,
                     },
                     {
+                        "title": 'GPA',
+                        "value": json_file.gpa,
+                        "short": true,
+                    },
+
+                    {
                         "title": 'Summary',
                         "value": json_file.summary,
                         "short": true,
