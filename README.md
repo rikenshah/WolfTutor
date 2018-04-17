@@ -35,7 +35,7 @@
  ### Students Can:
  
 <ul>
-  <li> <b>Find a tutor</b> - Type <code>find a tutor</code> into bot chat box </li>
+  <li> <b>Find a tutor</b> - Type <code>find a tutor</code> into bot chat box. Students will first select the desired subject, then a tutor quality preference if any. The bot will return the tutors in a recommended order. </li>
 
   <li> <b>See the reviews for a tutor</b> - click <code>Reviews</code> under a tutor's displayed information
     <details><summary>Picture</summary><center>![img]()</center></details>
@@ -46,8 +46,10 @@
   </li>
 
   <li> <b>Review tutor from last session</b> (students have until the end of the day to review their tutor) - Type <code>Review</code> into the bot chat box. Next, enter review fields as prompted and <code>Submit</code>. </li>
+  
+  <li> <b>View past reservation history</b> - Type <code>history</code> or <code>reservation history</code> into the bot chat box. Displays tutor and subject reservation history. </li>
 
-  <li> <b>View scheduled tutoring sessions</b> - Type <code>my reservations</code> into bot chat box </li>
+  <li> <b>View currently scheduled tutoring sessions</b> - Type <code>my reservations</code> into bot chat box. </li>
 
 <li> <b>View point balance</b> - Type <code>rewards</code> into bot chat box</li>
 </ul>
