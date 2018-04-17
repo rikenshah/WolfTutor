@@ -1,6 +1,9 @@
 # comment .env when need to push .env to heroku
 .env
 
+package-lock.json
+package.json
+
 data/
 node_modules/
 npm-debug.log
@@ -10,7 +13,6 @@ npm-debug.log
 ehthumbs.db
 Icon?
 Thumbs.db
-
 
 
 # Node and related ecosystem
