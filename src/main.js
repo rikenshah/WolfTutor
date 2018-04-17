@@ -427,18 +427,47 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 {
 
                                     controller.storage.user.find({user_id: message.user}, function (error, users) {
-                                        let user = {}
+                                        let user = {};
                                         if (users != null && users.length > 0) {
                                             user = users[0];
                                         }
 
+                                        bot.reply(convo.source_message, 'What do you want to prioritize when matching with a tutor?' );
+                                        convo.addQuestion(prompts.SelectDesiredAttribute, function (response, convo) {
 
-                                        json_file = tutorRanking.Prioritize(json_file, user);
+                                            let confirmationStart = 'Cool, you selected ';
+                                            let confirmationEnd = ' I will work on maximizing that when matching you with a tutor';
+                                            let invalid = 'No problem, I\'ll just use the defaults.';
 
-                                        for (var i in json_file)
-                                        {
-                                            bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
-                                        }
+                                            let options = null;
+                                            switch(response.text.toLowerCase()){
+                                            case 'gpa':
+                                                bot.reply(convo.source_message, confirmationStart + 'GPA' + confirmationEnd);
+                                                options = {
+                                                    gpa: 10
+                                                };
+                                                break;
+                                            case 'experience':
+                                                bot.reply(convo.source_message, confirmationStart + 'tutor experience' + confirmationEnd);
+                                                options = {
+                                                    individual: 10
+                                                };
+                                                break;
+                                            case 'none':
+                                                bot.reply(convo.source_message, invalid);
+                                            default:
+                                                bot.reply(convo.source_message, 'I didn\'t recognize that. ' + invalid);
+                                                break;
+                                            }
+                                            convo.stop();
+                                            json_file = tutorRanking.Prioritize(json_file, user, options);
+
+                                            for (var i in json_file)
+                                            {
+                                                bot.reply(message, prompts.Tutor_Display_Info(json_file[i]));
+                                            }
+
+                                        });
                                     });
                                 }
                             });
