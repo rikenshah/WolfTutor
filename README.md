@@ -1,73 +1,69 @@
-# WolfTutor - Group P
 # CSC 510 - Software Engineering Spring 2018
+# WolfTutor - Group P
 
 ## Contact Information
-[](https://github.com/zacherypd)<br>
-[Zachery DeLong](https://github.com/mateenrehan)  &ensp; email:  zpdelong@ncsu.edu <br>
-[Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email: mgmetro@ncsu.edu <br>
-[Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu <br>
+<p>
+[Zachery DeLong](https://github.com/zacherypd)  &ensp; email:  zpdelong@ncsu.edu <br>
+[Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email:  mgmetro@ncsu.edu <br>
+[Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu
+</p>
 
 ## How to Use
-<Details>
-   <p>Wolftutor has two types of users: students and tutors. </p>
+<ol>
+  <li>First, wake up Heroku by going to `https://wolftutor-p.herokuapp.com/`. You may close the web page after it loads. </li><br>
 
-   ### Signup
-   <ol>
-      <li>Go to <code>slack page</code> and register a slack username.</li>  
-      <li>Click on the bot application found under the left App panel.
-          <br>
-          ![img]()
-         <br> </li>
-      <li>Type <code>hi</code> into the bot chat box and send.</li>
-      <li>Click <code>Yes</code> after the Wolftutor bot responds.
-         <br>
-         ![img]()
-         <br> </li>
-   </ol>
+  <li>Signup for the bot service (see Signup below). </li><br>
 
-   ### Students
-   <p>Students can: </p>
-   <ul>
-      <li>Find a tutor
-         <ol>
-            <li>Type <code>Find a tutor</code> into the bot chat box and send.</li>
-         </ol>
-         <Details>![img]()</Details></li>
-      <li>See the reviews for at tutor
-         <ol>
-            <li>Click <code>Reviews</code> under a tutor's displayed information</li>
-         </ol>
-         <Details>![img]()</Details>
-         </li>
-      <li>Schedule a 30 minute tutoring session
-          <ol>
-             <li>Click <code>Schedule</code> under a tutor's displayed information.</li>
-             <li>Click <code>Book</code> on the time slot you desire.</li>
-         </ol></li>
-      <li>Review a tutor from their last session (students have until the end of the day to review their tutor)
-         <ol>
-            <li>Type <code>Review</code> into the bot chat box and send.</li>
-            <li>Enter your review information as prompted and hit <code>Submit</code>.</li>
-         </ol></li>
-      <li>View scheduled tutoring sessions
-          <ol>
-             <li>Type <code>my reservations</code> into the bot chat box and send.</li>
-         </ol></li>
-      <li>View point balance
-         <ol>
-            <li>Type <code>rewards</code> into bot chat box and send</li>
-         </ol></li>
-   </ul>
-      
-   ### Tutors
-   <p>Tutors can: </p>
-   <ul>
-      <li>Become a tutor</li>
-      <li>View subjects and availability given to WolfTutor</li>
-      <li>View point balance</li>
-   </ul>
-</Details>
-   
+  <li>Follow instructions for user use cases depending on what type of user you would like to be. Wolftutor has two types of users: students and tutors. A user can be one or both. </li>
+
+</ol>
+
+ ### Signup
+ <ol>
+    <li>Go to `!!!!slack page!!!!` and register a slack username.</li>  
+
+    <li>Click on the bot application found under the left App panel.
+      <details><summary>Picture</summary>
+      <center>![img]()</center>
+      </details>
+      </li><br>
+
+    <li>Type `hi` into the bot chat box and send.</li><br>
+
+    <li>Click `Yes` after the Wolftutor bot responds.
+      <details><summary>Picture</summary>
+      <center>![img]()</center>
+      </details></li>
+ </ol>
+
+ ### Students Can:
+ <ul>
+    <li>**Find a tutor** - Type `find a tutor` into bot chat box </li>
+
+    <li>**See the reviews for a tutor** - click `Reviews` under a tutor's displayed information
+      <details><summary>Picture</summary>
+      <center>![img]()</center>
+      </details></li>
+
+    <li>**Schedule a 30 minute tutoring session** - Click `Schedule` under a tutor's displayed information. Next, click `Book` on the time slot you desire.
+      <details><summary>Picture</summary>
+      <center>![img]()</center>
+      </details></li>
+
+    <li>**Review tutor from last session** (students have until the end of the day to review their tutor) - Type `Review` into the bot chat box. Next, enter review fields as prompted and `Submit`. </li>
+
+    <li>**View scheduled tutoring sessions** - Type `my reservations` into bot chat box </li>
+
+    <li>**View point balance** - Type `rewards` into bot chat box</li>
+ </ul>
+
+ ### Tutors Can:
+ <ul>
+    <li>**Become a tutor**</li>
+    <li>**View subjects and availability given to WolfTutor**</li>
+    <li>**View point balance**</li>
+ </ul>
+
 
 
 
@@ -97,7 +93,7 @@ We have created a Slack application that can be added to any Slack workspace. We
 4. Make sure you have a Bot User enabled in your new slack app.
 5. Add the following permissions to your app at OAuth & Permissions --> Scopes
    - Add a bot user with the username @bot
-   - Post to specific channels in Slack	
+   - Post to specific channels in Slack
    - Access user’s public channels
    - Access information about user’s public channels
    - Send messages as Test App
