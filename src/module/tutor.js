@@ -194,6 +194,7 @@ function getTutorsForSubject(subject,slackUserName, callback) {
                             user_id: tutors[i].user_id,
                             major: tutors[i].major,
                             degree: tutors[i].degree,
+                            gpa: tutors[i].gpa,
                             summary: tutors[i].summary,
                             rate: tutors[i].rate/2,
                             reviews: tutors[i].reviews
