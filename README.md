@@ -1,73 +1,66 @@
-# WolfTutor - Group P
 # CSC 510 - Software Engineering Spring 2018
 
+# WolfTutor - Group P
+
 ## Contact Information
-[](https://github.com/zacherypd)<br>
-[Zachery DeLong](https://github.com/mateenrehan)  &ensp; email:  zpdelong@ncsu.edu <br>
-[Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email: mgmetro@ncsu.edu <br>
-[Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu <br>
+
+[Zachery DeLong](https://github.com/zacherypd)  &ensp; email:  zpdelong@ncsu.edu <br>
+[Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email:  mgmetro@ncsu.edu <br>
+[Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu
 
 ## How to Use
-<Details>
-   <p>Wolftutor has two types of users: students and tutors. </p>
 
-   ### Signup
-   <ol>
-      <li>Go to <code>slack page</code> and register a slack username.</li>  
-      <li>Click on the bot application found under the left App panel.
-          <br>
-          ![img]()
-         <br> </li>
-      <li>Type <code>hi</code> into the bot chat box and send.</li>
-      <li>Click <code>Yes</code> after the Wolftutor bot responds.
-         <br>
-         ![img]()
-         <br> </li>
-   </ol>
+1. First, wake up Heroku by going to `https://wolftutor-p.herokuapp.com/`. You may close the web page after it loads. 
 
-   ### Students
-   <p>Students can: </p>
-   <ul>
-      <li>Find a tutor
-         <ol>
-            <li>Type <code>Find a tutor</code> into the bot chat box and send.</li>
-         </ol>
-         <Details>![img]()</Details></li>
-      <li>See the reviews for at tutor
-         <ol>
-            <li>Click <code>Reviews</code> under a tutor's displayed information</li>
-         </ol>
-         <Details>![img]()</Details>
-         </li>
-      <li>Schedule a 30 minute tutoring session
-          <ol>
-             <li>Click <code>Schedule</code> under a tutor's displayed information.</li>
-             <li>Click <code>Book</code> on the time slot you desire.</li>
-         </ol></li>
-      <li>Review a tutor from their last session (students have until the end of the day to review their tutor)
-         <ol>
-            <li>Type <code>Review</code> into the bot chat box and send.</li>
-            <li>Enter your review information as prompted and hit <code>Submit</code>.</li>
-         </ol></li>
-      <li>View scheduled tutoring sessions
-          <ol>
-             <li>Type <code>my reservations</code> into the bot chat box and send.</li>
-         </ol></li>
-      <li>View point balance
-         <ol>
-            <li>Type <code>rewards</code> into bot chat box and send</li>
-         </ol></li>
-   </ul>
-      
-   ### Tutors
-   <p>Tutors can: </p>
-   <ul>
-      <li>Become a tutor</li>
-      <li>View subjects and availability given to WolfTutor</li>
-      <li>View point balance</li>
-   </ul>
-</Details>
-   
+2. Signup for the bot service (see Signup below).
+
+3. Follow instructions for user use cases depending on what type of user you would like to be. Wolftutor has two types of users: students and tutors. A user can be one or both.
+
+ ### Signup
+ 
+<ol>
+  <li> Go to <code>!!!!slack page!!!!</code> and register a slack username.</li>  
+
+  <li> Click on the bot application found under the left App panel.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li><br>
+
+  <li> Type <code>hi</code> into the bot chat box and send.</li><br>
+
+  <li> Click <code>Yes</code> after the Wolftutor bot responds.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+</ol>
+
+ ### Students Can:
+ 
+<ul>
+  <li> <b>Find a tutor</b> - Type <code>find a tutor</code> into bot chat box. Students will first select the desired subject, then a tutor quality preference if any. The bot will return the tutors in a recommended order. </li>
+
+  <li> <b>See the reviews for a tutor</b> - click <code>Reviews</code> under a tutor's displayed information
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+
+  <li> <b>Schedule a 30 minute tutoring session</b> - Click <code>Schedule</code> under a tutor's displayed information. Next, click <code>Book</code> on the time slot you desire.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+
+  <li> <b>Review tutor from last session</b> (students have until the end of the day to review their tutor) - Type <code>Review</code> into the bot chat box. Next, enter review fields as prompted and <code>Submit</code>. </li>
+  
+  <li> <b>View past reservation history</b> - Type <code>history</code> or <code>reservation history</code> into the bot chat box. Displays tutor and subject reservation history. </li>
+
+  <li> <b>View currently scheduled tutoring sessions</b> - Type <code>my reservations</code> into bot chat box. </li>
+
+<li> <b>View point balance</b> - Type <code>rewards</code> into bot chat box</li>
+</ul>
+
+### Tutors Can:
+<ul>
+  <li> <b>Become a tutor</b></li>
+  <li> <b>View subjects and availability given to WolfTutor</b></li>
+  <li ><b>View point balance</b></li>
+</ul>
+
 
 
 
@@ -97,7 +90,7 @@ We have created a Slack application that can be added to any Slack workspace. We
 4. Make sure you have a Bot User enabled in your new slack app.
 5. Add the following permissions to your app at OAuth & Permissions --> Scopes
    - Add a bot user with the username @bot
-   - Post to specific channels in Slack	
+   - Post to specific channels in Slack
    - Access user’s public channels
    - Access information about user’s public channels
    - Send messages as Test App
@@ -150,7 +143,7 @@ MONGO_CONNECTION_STRING should be 'mongodb://localhost:27017', unless you choose
 
 ### Use Cases
 
-The four major use cases of our application are,
+The five major use cases of our application are,
 #### 1. Find a tutor
 <Details>
 <p> A user can find a tutor on our bot by just typing one of the following keywords,
@@ -160,6 +153,7 @@ The four major use cases of our application are,
 'select a tutor'.
 The user will get the list of all the available subjects from which the user can select one subject.
 Once a subject is selected we will be returning all the tutors who teach that subject.
+Based on the information provided to bot, the bot will return the tutors in a proper order: either in a higher rating recommended order, or the order based on user preference.
 </p>
 Here is the flow demonstrating this use case.<br>
 <img src="Reports/Wireframes/find_a_tutor.gif"></img>
@@ -208,7 +202,14 @@ Here is the flow demonstrating this use case.<br>
 </p>
 </Details>
 
-#### 5. List of all usecases
+#### 5. Reservation History
+
+<Details>
+<p> The user, either tutor or tutee, can access their non-active reservations by typing 'history' or 'reservation history'. In this way, they can look at their tutor history, who and when they have tutor a certain subject. The active reservations, those have not completed ones, can be accessed by 'my reservations' command.
+</p>
+</Details>
+
+#### 6. List of all usecases
 
 Here is a list of all possible commands that you can try out with the WolfTutor app.
 <br>

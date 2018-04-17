@@ -1,3 +1,9 @@
+# comment .env when need to push .env to heroku
+.env
+
+package-lock.json
+package.json
+
 data/
 node_modules/
 npm-debug.log
@@ -7,13 +13,6 @@ npm-debug.log
 ehthumbs.db
 Icon?
 Thumbs.db
-
-
-#Adding package.json and package-lock.json
-#untrack them after committing any changes
-#=================================
-package-lock.json
-package.json
 
 
 # Node and related ecosystem
@@ -58,7 +57,7 @@ _site/
 *.swp
 logs/
 build/
-.env
+
 
 # Sublime editor
 # ==============
@@ -91,7 +90,6 @@ mongod
 *.ntvs*
 *.njsproj
 *.sln
-*.env*
 *#
 .#*
 
