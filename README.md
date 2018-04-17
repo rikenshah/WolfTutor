@@ -1,68 +1,63 @@
 # CSC 510 - Software Engineering Spring 2018
+
 # WolfTutor - Group P
 
 ## Contact Information
-<p>
+
 [Zachery DeLong](https://github.com/zacherypd)  &ensp; email:  zpdelong@ncsu.edu <br>
 [Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email:  mgmetro@ncsu.edu <br>
 [Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu
-</p>
 
 ## How to Use
-<ol>
-  <li>First, wake up Heroku by going to `https://wolftutor-p.herokuapp.com/`. You may close the web page after it loads. </li><br>
 
-  <li>Signup for the bot service (see Signup below). </li><br>
+1. First, wake up Heroku by going to `https://wolftutor-p.herokuapp.com/`. You may close the web page after it loads. 
 
-  <li>Follow instructions for user use cases depending on what type of user you would like to be. Wolftutor has two types of users: students and tutors. A user can be one or both. </li>
+2. Signup for the bot service (see Signup below).
 
-</ol>
+3. Follow instructions for user use cases depending on what type of user you would like to be. Wolftutor has two types of users: students and tutors. A user can be one or both.
 
  ### Signup
- <ol>
-    <li>Go to `!!!!slack page!!!!` and register a slack username.</li>  
+ 
+<ol>
+  <li> Go to <code>!!!!slack page!!!!</code> and register a slack username.</li>  
 
-    <li>Click on the bot application found under the left App panel.
-      <details><summary>Picture</summary>
-      <center>![img]()</center>
-      </details>
-      </li><br>
+  <li> Click on the bot application found under the left App panel.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li><br>
 
-    <li>Type `hi` into the bot chat box and send.</li><br>
+  <li> Type <code>hi</code> into the bot chat box and send.</li><br>
 
-    <li>Click `Yes` after the Wolftutor bot responds.
-      <details><summary>Picture</summary>
-      <center>![img]()</center>
-      </details></li>
- </ol>
+  <li> Click <code>Yes</code> after the Wolftutor bot responds.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+</ol>
 
  ### Students Can:
- <ul>
-    <li>**Find a tutor** - Type `find a tutor` into bot chat box </li>
+ 
+<ul>
+  <li> <b>Find a tutor</b> - Type <code>find a tutor</code> into bot chat box </li>
 
-    <li>**See the reviews for a tutor** - click `Reviews` under a tutor's displayed information
-      <details><summary>Picture</summary>
-      <center>![img]()</center>
-      </details></li>
+  <li> <b>See the reviews for a tutor</b> - click <code>Reviews</code> under a tutor's displayed information
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
 
-    <li>**Schedule a 30 minute tutoring session** - Click `Schedule` under a tutor's displayed information. Next, click `Book` on the time slot you desire.
-      <details><summary>Picture</summary>
-      <center>![img]()</center>
-      </details></li>
+  <li> <b>Schedule a 30 minute tutoring session</b> - Click <code>Schedule</code> under a tutor's displayed information. Next, click <code>Book</code> on the time slot you desire.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
 
-    <li>**Review tutor from last session** (students have until the end of the day to review their tutor) - Type `Review` into the bot chat box. Next, enter review fields as prompted and `Submit`. </li>
+  <li> <b>Review tutor from last session</b> (students have until the end of the day to review their tutor) - Type <code>Review</code> into the bot chat box. Next, enter review fields as prompted and <code>Submit</code>. </li>
 
-    <li>**View scheduled tutoring sessions** - Type `my reservations` into bot chat box </li>
+  <li> <b>View scheduled tutoring sessions</b> - Type <code>my reservations</code> into bot chat box </li>
 
-    <li>**View point balance** - Type `rewards` into bot chat box</li>
- </ul>
+<li> <b>View point balance</b> - Type <code>rewards</code> into bot chat box</li>
+</ul>
 
- ### Tutors Can:
- <ul>
-    <li>**Become a tutor**</li>
-    <li>**View subjects and availability given to WolfTutor**</li>
-    <li>**View point balance**</li>
- </ul>
+### Tutors Can:
+<ul>
+  <li> <b>Become a tutor</b></li>
+  <li> <b>View subjects and availability given to WolfTutor</b></li>
+  <li ><b>View point balance</b></li>
+</ul>
 
 
 
