@@ -149,7 +149,7 @@ controller.hears(
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
     bot.reply(message, 'Hello <@'+message.user+'>');
-    bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help dkjfdkfjdkf.");
+    bot.reply(message, "Welcome to WolfTutor, an on-campus peer-to-peer tutoring system. You can help your peers to understand difficult concepts and also get help.");
     bot.reply(message, prompts.create_user_prompt);
 });
 
