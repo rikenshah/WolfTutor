@@ -3,12 +3,9 @@ module.exports = {
         'title': 'Chose one of \'gpa\', \'experience\'',
         'attachments':[{
             fields:[{
-                value: 'gpa',
+                value: [ { name: 'gpa'}, { name: 'experience'}],
                 short: true,
-            },{
-                value: 'experience',
-                short: true
-            },]
+            }]
         }],
     }
 };
