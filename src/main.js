@@ -425,14 +425,15 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                 }
                                 else
                                 {
-
                                     controller.storage.user.find({user_id: message.user}, function (error, users) {
                                         let user = {};
                                         if (users != null && users.length > 0) {
                                             user = users[0];
                                         }
 
-                                        bot.reply(convo.source_message, 'What do you want to prioritize when matching with a tutor?' );
+                                        let priorityOptions = [ 'gpa', 'experience'];
+
+                                        bot.reply(convo.source_message, 'What do you want to prioritize when matching with a tutor? \n' + priorityOptions.join('\n'));
                                         convo.addQuestion(prompts.SelectDesiredAttribute, function (response, convo) {
 
                                             let confirmationStart = 'Cool, you selected ';
