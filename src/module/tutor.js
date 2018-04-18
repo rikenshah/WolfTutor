@@ -198,7 +198,10 @@ function getTutorsForSubject(subject,slackUserName, callback) {
                             summary: tutors[i].summary,
                             rate: tutors[i].rate/2,
                             reviews: tutors[i].reviews
-                        }
+                        };
+
+                    console.log('The tutor found');
+                    console.log(json_temp);
                     json_file.push(json_temp);
                 }
             }
