@@ -18,6 +18,7 @@ def main():
     LOW_GPA = 3.0
     HIGH_GPA = 4.0
 
+
     #------ Connect to Database ------
     database = 'heroku_d754621w' #heroku_d754621w == database that is connected to heroku
 
@@ -54,13 +55,13 @@ def main():
     print("Creating Users...")
     print()
 
-    subjects = ['Operating Systems', 'Algorithms']
+    
     days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     degrees = ['Bachelors', 'Masters', 'Associate', 'High School GED']
     majors = ['Computer Science', 'Computer Engineering', 'Electrical Engineering', 'Mechanical Engineering', 'Chemical Engineering']
 
     charList = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9']
-    used = ['U9SNMABGR'] #my ID number in Heroku DB. add if needed
+    used = [] 
     
     coll = db.user
     
@@ -91,7 +92,11 @@ def main():
     coll = db.tutor
 
     for tutor in used: #used[1:]: avoid yourself if you are the first tutor
-        subject = random.choice(subjects) #random element chosen
+        new_subjects = subjects
+        subject1 = random.sample(new_subjects, 1)[0] #random element chosen without replacement
+        subject2 = random.sample(new_subjects, 1)[0]
+        subject3 = random.sample(new_subjects, 1)[0]
+        subject4 = random.sample(new_subjects, 1)[0]
         day = random.choice(days)
         rate = random.randint(0, MAX_PAY_RATE)
         degree = random.choice(degrees)
@@ -129,11 +134,17 @@ def main():
             {
                 "subjects": [
                     {
-                        "name": subject
-                    }#,
-                    #{
-                    #    "name": "Algorithms"
-                    #}
+                        "name": subject1
+                    },
+                    {
+                        "name": subject2
+                    },
+                    {
+                        "name": subject3
+                    },
+                    {
+                        "name": subject4
+                    }
                 ],
                 "availability": [ #from 700 am to 2200 pm
                     {
