@@ -9,14 +9,16 @@ def main():
     Create a user with random stats, 
     then make that user a tutor of one subject at one availability
     """
-    NUM_USERS_TO_CREATE = 10  
+    NUM_USERS_TO_CREATE = 20 
     MAX_PAY_RATE = 30
-    MAX_NUM_REVIEWS = 9  #keep less than num of total users
+    MAX_NUM_REVIEWS = 10  #keep less than num of total users
     #for random dates of reviews
     YEARS_LOWER_BOUND = 2017
     YEARS_UPPER_BOUND = 2018
-    LOW_GPA = 3.0
+    LOW_GPA = 1.0
     HIGH_GPA = 4.0
+    subjects = ["Operating Systems", "Algorithms", "AI", "Data Mining"]
+
 
     #------ Connect to Database ------
     database = 'heroku_d754621w' #heroku_d754621w == database that is connected to heroku
@@ -54,13 +56,13 @@ def main():
     print("Creating Users...")
     print()
 
-    subjects = ['Operating Systems', 'Algorithms']
+    
     days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     degrees = ['Bachelors', 'Masters', 'Associate', 'High School GED']
     majors = ['Computer Science', 'Computer Engineering', 'Electrical Engineering', 'Mechanical Engineering', 'Chemical Engineering']
 
     charList = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9']
-    used = ['U9SNMABGR'] #my ID number in Heroku DB. add if needed
+    used = [] 
     
     coll = db.user
     
@@ -91,7 +93,6 @@ def main():
     coll = db.tutor
 
     for tutor in used: #used[1:]: avoid yourself if you are the first tutor
-        subject = random.choice(subjects) #random element chosen
         day = random.choice(days)
         rate = random.randint(0, MAX_PAY_RATE)
         degree = random.choice(degrees)
@@ -129,11 +130,17 @@ def main():
             {
                 "subjects": [
                     {
-                        "name": subject
-                    }#,
-                    #{
-                    #    "name": "Algorithms"
-                    #}
+                        "name": subjects[0]
+                    },
+                    {
+                        "name": subjects[1]
+                    },
+                    {
+                        "name": subjects[2]
+                    },
+                    {
+                        "name": subjects[3]
+                    }
                 ],
                 "availability": [ #from 700 am to 2200 pm
                     {
