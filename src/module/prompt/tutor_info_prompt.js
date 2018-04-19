@@ -47,6 +47,11 @@ const tutor_info_display = (json_file) =>
                         "value": json_file.rate,
                         "short": true,
                     },
+                    {
+                        "title": 'Average Review Score',
+                        "value": json_file.overallScore,
+                        "short": true
+                    }
 
                 ],
 
