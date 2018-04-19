@@ -1,4 +1,4 @@
-# comment .env when need to push .env to heroku
+# comment .env and package json when need to push to heroku
 .env
 
 package-lock.json
