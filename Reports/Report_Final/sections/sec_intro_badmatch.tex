@@ -6,10 +6,28 @@ available to instruct.  % TODO: what the fuck is "to instruct", zach?
 
 % TODO: we could make a better case for why this was the original featureset.
 While immediately useful, this is not nearly as far as the system could go in
-terms of matching students with tutors. 
+terms of matching students with tutors.  The team has built out a mechanism for
+enabling the matching of tutors on multiple criteria and has created an easy
+pathway to add or change the criteria easily.  
 
-This section should also introduce our system and explain why what we're doing
-is appropriate.
+One major concern for the team during development was the choice of a
+recommendation mechanism.  While the team knew immediately that adding some kind
+of recommendation algorithm was going to be necessary, the actual mechanism is
+something that was debated significantly.  In the end, the team opted for
+Occam's Razor: the simplest algorithm possible to create the most value
+possible, which in the future could easily be replaced or enhanced to compare
+performance.
+
+The tool the team chose was a simple weighted average.  The process is fairly
+simple: several criteria were chosen to each generate a respective ``score''.
+That score is then assigned a weight, and each tutor's score is averaged
+together with these weights, which can then be normalized and used to rank
+tutors. In this way, the problem of recommendation becomes a sorting problem,
+which can easily be solved using a number of very fast algorithms.
+
+This approach also has the advantage of leaving each tutor with an individual
+score which can be used as input to a number of other possible algorithms, which
+will be discussed in section \ref{sec:conclusion}.
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../main"
