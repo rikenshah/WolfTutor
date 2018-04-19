@@ -65,7 +65,7 @@ const tutor_info_display = (json_file) =>
                 [
                     {
                         "name": "review",
-                        "text": "Review",
+                        "text": "View Reviews",
                         "type": "button",
                         "value": json_file.user_id,
                     },
