@@ -43,7 +43,7 @@ const tutor_info_display = (json_file) =>
                         "short": true,
                     },
                     {
-                        "title": 'Rate',
+                        "title": 'Rate (in $)',
                         "value": json_file.rate,
                         "short": true,
                     },
