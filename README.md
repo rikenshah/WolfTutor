@@ -19,7 +19,7 @@
  ### Signup
  
 <ol>
-  <li> Go to <code>!!!!slack page!!!!</code> and register a slack username.</li>  
+  <li> Go to the Slack page at https://wolftutor-p.slack.com/messages and register a slack username.</li>  
 
   <li> Click on the bot application found under the left App panel.
     <details><summary>Picture</summary><center>![img]()</center></details>
