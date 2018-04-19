@@ -10,7 +10,7 @@
 
 ## How to Use
 
-1. First, wake up Heroku by going to `https://wolftutor-p.herokuapp.com/`. You may close the web page after it loads. 
+1. First, wake up Heroku by going to https://wolftutor-p.herokuapp.com. You may close the web page after it loads. 
 
 2. Signup for the bot service (see Signup below).
 
@@ -61,10 +61,66 @@
   <li ><b>View point balance</b></li>
 </ul>
 
+## Local Development Setup Instructions
+1. Setup the repository and the environmental variables file
+2. Install mongoDB and set up the database
+3. Install Node.js and ngrok
+2. Setup the Slack page
+6. Start the WolfTutor server
 
+### The Repository
+1. Clone the git repository from https://github.com/NCSU-CSC510-Group-E/WolfTutor.git 
+2. Open the .env.example file and save it as .env. This is the environmental variables configuration file.
 
+### MongoDB
+1. Download the [Community Server](https://www.mongodb.com/download-center#community) edition of mongoDB.
+2. Make sure the /bin path is added to your system's environmental variables.
+3. Run the server via `mongod`. (mongod.exe found in mongo's /bin directory)
+4. Use 'MongoDB Compass Community' to connect to your server running on the default port. Add the collection `Subject` to the `admin` database. Add at least one document (a course subject) to the new collection as `name: 'Subject'`. These will be the course subjects available to WolfTutor users. After adding the documents, you may close Compass.
 
+### Node.js and ngrok
+1. Download and install [Node.js](https://nodejs.org/en/download/). You can check if node is installed via `node -v`.
+2. In your command prompt, go to the project repository and run `npm install` and then run `npm update` to ensure all packages are installed and up-to-date.
+3. Install ngrok via `npm install ngrok`. 
+4. With your mongoDB server running, stat ngrok via `ngrok http 3000` for port 3000.
 
+### Slack Page
+1. Create a [Slack Workspace](https://slack.com/create#email)
+2. Create a new Slack App at [Slack API](https://api.slack.com/apps)
+3. While in the new app's settings, under the `Settings` side-panel, click on `Basic Information`. Copy the `Verification Token` found under `App Credentials` and paste it into the `SLACK_VERIFICATION_TOKEN` of the .env file.
+4. Go to the `Bot Users` side-panel and `Add a Bot User`. Make sure `Always Show My Bot as Online` is turned on and `Add Bot User`
+5. Go to the `OAuth & Permissions` side-panel and `Save Changes` after adding the following `Scopes`. Then, `Install App to Workspace` (at the top).
+     - Add a bot user with the username @<bot_name>
+     - Post to specific channels in Slack
+     - Access user’s public channels
+     - Access information about user’s public channels
+     - Send messages as <app_name>
+     - Send messages as user
+     - Access content in user’s private channels
+     - Access content in user’s direct messages
+     - Access information about user’s direct messages
+     - Modify user’s direct messages
+     - Access your workspace’s profile information
+     - View email addresses of people on this workspace
+6. Add the `OAuth Access Token` available after installing the bot to the `SLACK_ACCESS_TOKEN` field of the .env file
+7. Add the `Bot User OAuth Access Token` available after installing the bot to the `BOT_TOKEN` field of the .env file
+8. Go to the `Interactive Components` side-panel and `Enable Interactive Components`. Add the running ngrok URL to both the `Request URL` and `Options Load URL`. Add `/message` to the end of the URLs and `Enable Interactive Components`. (The ngrok URL is found at the 'Forwarding' field and looks like https://<URL>.ngrok.io)
+ 
+ ## Start the server
+ 1. Navigate back to your WolfTutor directory and start the server with `npm start`. 
+ 2. To check if the server is running, viewing your localhost in the browser should show a WolfTutor title page.
+
+## Production Setup Instructions
+<p>Production setup is the same as local development, with a few exceptions:</p>
+<ul>
+ <li>Instead of using ngrok to connect Slack to the database, use the home URL of the app and add <code>/message</code> to the end.</li>
+ <li>In your git repository, the .gitignore will need to be altered with these changes:
+ <ul>
+  <li>Remove .env from the .gitignore</li>
+  <li>Make sure package.json and package-lock.json are not in the .gitignore</li>
+  </ul></li>
+</ul>
+------------------------------------------------------------------------------------------------------------------------------------
 ### Problem Statement
 
 We present a peer to peer collaborative tutoring system that is based on peer reviews and rewards earned through tutoring. According to our preliminary studies, the current proportion of students who need outside tutoring for clarifications of conceptual doubts, is considerable. A platform designed for students where they can help each other to clear such doubts and help them perform better would be much appreciated. Although students have many resources available in the university like open office hours of TA, professor, etc. , still many students hesitate to ask TA/Professor the doubts and queries that they have. Also, they are more comfortable in asking silly doubts to their peers without the fear of losing marks. Hence, the system to facilitate this process and maintained by students themselves would create a positive impact in the campus community.
