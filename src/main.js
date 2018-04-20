@@ -51,7 +51,7 @@ controller.hears(
     function (bot, message){
         bot.startConversation(message, function (err, convo) {
             bot.api.users.info({user: message.user}, (error, response) => {
-                let {id, name, real_name} = response.user;
+                 let {id, name, real_name} = response.user;
                 var hasReservationTutee=false;
                 var hasReservationTutor=false;
                 var loggedInUserId = id;//'U84DXQKPL';//id;//U84DXQKPL
@@ -463,6 +463,8 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
                                             convo.stop();
                                             json_file = tutorRanking.Prioritize(json_file, user, options);
 
+                                            // in-place reversal, so the best match is at the bottom when things settle down.
+                                            json_file.reverse();
                                             bot.startConversation(message, function(err, c2){
                                                 for (var i in json_file) {
                                                     c2.say(prompts.Tutor_Display_Info(json_file[i]));
