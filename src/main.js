@@ -465,9 +465,9 @@ controller.hears(['find', 'need a tutor', 'find a tutor', 'want a tutor', 'selec
 
                                             // in-place reversal, so the best match is at the bottom when things settle down.
                                             json_file.reverse();
-                                            bot.startConversation(message, function(err, convo){
+                                            bot.startConversation(message, function(err, c2){
                                                 for (var i in json_file) {
-                                                    convo.say(prompts.Tutor_Display_Info(json_file[i]));
+                                                    c2.say(prompts.Tutor_Display_Info(json_file[i]));
                                                 }
                                             });
 
