@@ -145,20 +145,39 @@ describe('Recommendations', function(){
         it('given a set of tutors and students, the recommendations should be useful', function(){
             // TODO: load students
             // TODO: load tutors
-            let students = JSON.parse(fs.readFileSync(__dirname + '/students.js', 'utf8'));
-            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutors.js', 'utf8'));
-            let predictedTutors = [];
-
+            let students = JSON.parse(fs.readFileSync(__dirname + '/userlist.json', 'utf8'));
+            let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutorlist.json', 'utf8'));
+            
+            let predictedTutors_gpa = [];
+            let predictedTutors_rating = [];
+            // gpa test
+            let weights1 = {gpa:0}
             for( let s of students ) {
-                let rec = recommendations.Prioritize(tutors, s);
+                let rec = recommendations.Prioritize(tutors, s, weights1);
+                let top5 = rec.slice(0, 5);
 
-                let top5 = rec .slice(0, 3);
-
-                for(let t of  top5){
-                    predictedTutors.push(t);
+                for(let t of top5){
+                    predictedTutors_gpa.push(t);
                 }
             }
+            
+            fs.writeFile('gpa_data.json',JSON.stringify(predictedTutors_gpa),function(err){
+                if(err) throw err;
+            });
+            
+            // let weights2 = {individual:10}
+            // for( let s of students ) {
+            //     let rec = recommendations.Prioritize(tutors, s, weights2);
+            //     let top5 = rec.slice(0, 5);
 
+            //     for(let t of top5){
+            //         predictedTutors_rating.push(t);
+            //     }
+            // }
+            
+            // fs.writeFile('ind_data.json',JSON.stringify(predictedTutors_rating),function(err){
+            //     if(err) throw err;
+            // });
             // TODO: save the tutors and their scores to a CSV file or
             // something so we can calculate their effectiveness.   
         });
