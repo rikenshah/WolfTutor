@@ -147,37 +147,44 @@ describe('Recommendations', function(){
             // TODO: load tutors
             let students = JSON.parse(fs.readFileSync(__dirname + '/userlist.json', 'utf8'));
             let tutors =  JSON.parse(fs.readFileSync(__dirname + '/tutorlist.json', 'utf8'));
-            
+
             let predictedTutors_gpa = [];
             let predictedTutors_rating = [];
             // gpa test
-            let weights1 = {individual:0, overall: 0, previous: 0, gpa: 100};
+            let weights1 = { "individual":0, "overall": 0, "previous": 0, "gpa": 1};
             for( let s of students ) {
-                let rec = recommendations.Prioritize(tutors, s);
+                let rec = recommendations.Prioritize(tutors, s, weights1);
                 let top10 = rec.slice(0, 20);
 
                 for(let t of top10){
-                    predictedTutors_gpa.push(t);
+                    let a = {
+                        "weightedScore": t.weightedScore,
+                        "individualScore": t.individualScore,
+                        "overallScore": t.overallScore,
+                        "previousInteractionScore": t.previousInteractionScore,
+                        "gpaScore": t.gpaScore
+                    };
+                    predictedTutors_gpa.push(a);
                 }
             }
-            
+
             fs.writeFile('gpa_data.json',JSON.stringify(predictedTutors_gpa),function(err){
                 if(err) throw err;
             });
-            
-            let weights2 = {individual:0, overall: 10, previous: 0, gpa: 0};
-            for( let s of students ) {
-                let rec = recommendations.Prioritize(tutors, s, weights2);
-                let top10 = rec.slice(0, 20);
 
-                for(let t of top10){
-                    predictedTutors_rating.push(t);
-                }
-            }
-            
-            fs.writeFile('rating_data.json',JSON.stringify(predictedTutors_rating),function(err){
-                if(err) throw err;
-            });
+            // let weights2 = {individual:0, overall: 10, previous: 0, gpa: 0};
+            // for( let s of students ) {
+            //     let rec = recommendations.Prioritize(tutors, s, weights2);
+            //     let top10 = rec.slice(0, 20);
+
+            //     for(let t of top10){
+            //         predictedTutors_rating.push(t);
+            //     }
+            // }
+
+            // fs.writeFile('rating_data.json',JSON.stringify(predictedTutors_rating),function(err){
+            //     if(err) throw err;
+            // });
             // TODO: save the tutors and their scores to a CSV file or
             // something so we can calculate their effectiveness.   
         });

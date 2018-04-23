@@ -12,11 +12,20 @@ var WEIGHTS = {
 
 function Prioritize(people, current_user, weights) {
     try{
+        // console.log('The weights passed to the prioritize method');
+        // console.log(weights);
+
         weights = weights || {};
-        WEIGHTS.individual = weights.individual || WEIGHTS.individual;
-        WEIGHTS.overall = weights.overall || WEIGHTS.overall;
-        WEIGHTS.previous = weights.previous || WEIGHTS.previous;
-        WEIGHTS.gpa = weights.gpa || WEIGHTS.gpa;
+        // console.log('Weights after being checked for emptyness');
+        // console.log(weights);
+
+        WEIGHTS.individual = isSet(weights.individual) ? weights.individual : WEIGHTS.individual;
+        WEIGHTS.overall = isSet(weights.overall) ? weights.overall : WEIGHTS.overall;
+        WEIGHTS.previous = isSet(weights.previous) ? weights.previous : WEIGHTS.previous;
+        WEIGHTS.gpa = isSet(weights.gpa) ? weights.gpa : WEIGHTS.gpa;
+
+        // console.log('Weights being used');
+        // console.log(WEIGHTS);
 
         // console.log("Pre re-ordering");
         // console.log(people);
@@ -38,9 +47,12 @@ function Prioritize(people, current_user, weights) {
                     WEIGHTS.previous,
                     WEIGHTS.gpa
                 ]);
+            // console.log('');
+            // console.log('The person after calculating scores');
+            // console.log(person);
         }
 
-        people = NormalizeAttribute(people, SCORE_ATTR);
+        // people = NormalizeAttribute(people, SCORE_ATTR);
 
         people = SortPeopleByAttribute(people, SCORE_ATTR);
 
@@ -75,6 +87,18 @@ function GetGPAScore(person){
     }
 }
 
+function isSet(number){
+    if(number){
+        return true;
+    }
+    else if(number == 0){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 function _PenalizeScore(score){
     try {
         switch(score){
@@ -99,7 +123,7 @@ function GetIndividualScore(person, current_user){
     try {
         if(!person.reviews || person.reviews.length < 1)
             return 0;
-
+        
         var usersRatings = person.reviews.filter( function(rating){
             return rating.user_id == current_user.id;
         });
@@ -197,8 +221,14 @@ function CalculateWeightedAverage(scores, weights){
     var avg = 0;
     for(let i in scores){
         avg += scores[i] * weights[i];
+        // console.log('Adding ' + scores[i] + ' * ' + weights[i] + ' to produce ' + avg);
     }
-    return (avg / scores.length);
+
+    avg = avg / scores.length;
+
+    // console.log('Average score'+ avg);
+
+    return avg;
 }
 
 // Takes an array of objects and attemts to normalize the provided attribute
