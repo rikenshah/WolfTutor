@@ -97,6 +97,9 @@ function _PenalizeScore(score){
 
 function GetIndividualScore(person, current_user){
     try {
+        if(!person.reviews || person.reviews.length < 1)
+            return 0;
+
         var usersRatings = person.reviews.filter( function(rating){
             return rating.user_id == current_user.id;
         });
@@ -128,7 +131,7 @@ function GetOverallScore(person){
         var d = new Date();
         d.setMonth(d.getMonth() - 1);
 
-        if(person.reviews.length < 1)
+        if(!person.reviews || person.reviews.length < 1)
             return 0;
 
         // Get reviwes in the past month.
