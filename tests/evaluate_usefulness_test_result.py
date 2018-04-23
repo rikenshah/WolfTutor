@@ -8,17 +8,18 @@ topK = 10
 
 json_user = json.load(open('userlist.json'))
 json_tutor = json.load(open('tutorlist.json'))
-user_name = {}
-user_index = {}
-json_tutor_topK = sorted(json_tutor, key=lambda x: x['gpa'], reverse=True)[:topK+1]
 
+
+## These are from gemerated test data, processed to find the known answer for the test.
+# sort the json objects based on gpa scores, then pick the top K tutors.
+json_tutor_topK = sorted(json_tutor, key=lambda x: x['gpa'], reverse=True)[:topK+1]
 tutor_topK = set()
 for tutor in json_tutor_topK:
 	tutor_topK.add(tutor['user_id'])
 print '----Known: top K tutors ID base on gpa-first----'
 print tutor_topK
 
-
+#load the test results, count the algorithm suggested tutor counter
 test_gpa_data = json.load(open('../gpa_data.json'))
 tutor_gpa_counter = collections.defaultdict(int)
 for tutor in test_gpa_data:
@@ -26,11 +27,13 @@ for tutor in test_gpa_data:
 print '----Test Results: top K tutor ID base on gpa-first----'
 print tutor_gpa_counter
 
+#caculated the test accuracy by count if the suggested tutor in the known answer.
 correct_in_topK = 0
 for tutorID in tutor_gpa_counter.keys():
 	if tutorID in tutor_topK:
 		correct_in_topK += tutor_gpa_counter[tutorID]
-accracy = correct_in_topK * 100.0/len(test_gpa_data)
+accuracy = correct_in_topK * 100.0/len(test_gpa_data)
 
 print '--------------------'
-print 'The accuracy of gpa-first is: ' + str(accracy) + '%'
+print 'The accuracy of gpa-first is: ' + str(accuracy) + '%'
+
