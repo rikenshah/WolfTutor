@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
+from bson import json_util
 import os
 import random
 import datetime
@@ -11,14 +12,20 @@ try:
 except NameError:
     to_unicode = str
 
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, datetime):
+            return o.isoformat()
+
 def main():
     """
     Create a user with random stats, 
     then make that user a tutor of one subject at one availability
     """
-    NUM_USERS_TO_CREATE = 20 
+    NUM_USERS_TO_CREATE = 200 
     MAX_PAY_RATE = 30
-    MAX_NUM_REVIEWS = 20  #keep less than num of total users
+    MAX_NUM_REVIEWS = 200  #keep less than num of total users
     #for random dates of reviews
     YEARS_LOWER_BOUND = 2017
     YEARS_UPPER_BOUND = 2018
@@ -90,7 +97,7 @@ def main():
                 "text": rating_text,
                 "rating": rating,
                 "user_id": random_user_id,
-                # "date": random_date
+                "date": random_date
                 })
 
         #AVAILABILITY
@@ -140,12 +147,15 @@ def main():
         )
     # tutor_file_name = 'tutor_' + str(datetime.datetime.now()) + '.js'    
     with io.open('tutorlist.json', 'w', encoding='utf8') as outfile:
-        str_ = json.dumps(json_tutor,
+        str_ = json.dumps(json_tutor, default=json_util.default, 
                       indent=4, sort_keys=True,
                       separators=(',', ': '), ensure_ascii=False)
         outfile.write(to_unicode(str_))
 
-    # export tutor info to csv file
+    # export good tutors into csv file base on gpa scores
+
+
+
     user_name = {}
     user_index = {}
     with open("tutor_review.csv", "w") as text_file:
@@ -155,14 +165,17 @@ def main():
             user_index[u['user_id']] = i
             title = title + 'Rating' + str(i+1) + ','
         text_file.write(title+'\n')
+        json_tutor.sort(key=lambda x: x['gpa'], reverse=True)
         for tutor in json_tutor:
             line = tutor['user_id'] + ',' + user_name[tutor['user_id']] +',' + str(tutor['gpa'])
             lineofreview = ''
-            reviewrating = []
+            sum_review_rating = 0
             for review in tutor['reviews']:
-                lineofreview = lineofreview + ',' + str(review['rating'])
-                reviewrating.append(review['rating'])
-            line  = line + ',' + lineofreview
+                lineofreview = lineofreview + str(review['rating']) + ','
+                sum_review_rating += review['rating']
+            
+            if len(tutor['reviews']):
+                line  = line + ','+ str(sum_review_rating*1.0/len(tutor['reviews'])) + ','+ lineofreview
             text_file.write(line+'\n')
 
 
