@@ -176,6 +176,7 @@ def main():
             
             if len(tutor['reviews']):
                 line  = line + ','+ str(sum_review_rating*1.0/len(tutor['reviews'])) + ','+ lineofreview
+            else: line  = line + ','+ '0' + ','+ lineofreview
             text_file.write(line+'\n')
 
 
