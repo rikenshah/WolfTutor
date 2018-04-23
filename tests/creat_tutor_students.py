@@ -25,7 +25,7 @@ def main():
     """
     NUM_USERS_TO_CREATE = 200 
     MAX_PAY_RATE = 30
-    MAX_NUM_REVIEWS = 200  #keep less than num of total users
+    MAX_NUM_REVIEWS = 50  #keep less than num of total users
     #for random dates of reviews
     YEARS_LOWER_BOUND = 2017
     YEARS_UPPER_BOUND = 2018
@@ -80,16 +80,18 @@ def main():
         degree = random.choice(degrees)
         major = random.choice(majors)
         num_of_reviews = random.randint(0, MAX_NUM_REVIEWS)
-        gpa = round(random.uniform(LOW_GPA, HIGH_GPA), 1) #float with 1 decimal
+        gpa = round(random.uniform(LOW_GPA, HIGH_GPA), 3) #float with 1 decimal
 
         # REVIEWS
         reviews = []
+        sum_review_rating = 0
         for k in range(num_of_reviews):
             random_user_id = random.choice(used)
             #make sure they can't review themselves
             while random_user_id == tutor:
                 random_user_id = random.choice(used)
             rating = random.randint(1, 5)
+            sum_review_rating += rating
             rating_text = "" #can add a list of possible responses?
             random_date = datetime.datetime(random.randint(YEARS_LOWER_BOUND, YEARS_UPPER_BOUND), random.randint(1, 12), random.randint(1, 28))
 
@@ -107,9 +109,11 @@ def main():
         while time2 < time1:
             time1 = int(str(random.randint(7, 15)) + random.choice(['00', '30']))
             time2 = int(str(random.randint(11, 22)) + random.choice(['00', '30']))
-
+        if num_of_reviews: 
+            AvgRating = round(sum_review_rating*1.0/num_of_reviews,3)   
+        else: AvgRating = 0
         json_tutor.append(
-            {
+            {   "AvgRating": AvgRating,
                 "subjects": [
                     {
                         "name": subjects[0]
@@ -153,32 +157,34 @@ def main():
         outfile.write(to_unicode(str_))
 
     # export good tutors into csv file base on gpa scores
-
-
-
     user_name = {}
-    user_index = {}
-    with open("tutor_review.csv", "w") as text_file:
-        title = 'UserID,Name,GPA,AvgRating,'
-        for i, u in enumerate(json_user):
-            user_name[u['user_id']] = u['name']
-            user_index[u['user_id']] = i
-            title = title + 'Rating' + str(i+1) + ','
-        text_file.write(title+'\n')
-        json_tutor.sort(key=lambda x: x['gpa'], reverse=True)
-        for tutor in json_tutor:
-            line = tutor['user_id'] + ',' + user_name[tutor['user_id']] +',' + str(tutor['gpa'])
-            lineofreview = ''
-            sum_review_rating = 0
-            for review in tutor['reviews']:
-                lineofreview = lineofreview + str(review['rating']) + ','
-                sum_review_rating += review['rating']
-            
-            if len(tutor['reviews']):
-                line  = line + ','+ str(sum_review_rating*1.0/len(tutor['reviews'])) + ','+ lineofreview
-            else: line  = line + ','+ '0' + ','+ lineofreview
-            text_file.write(line+'\n')
+    title = 'UserID,Name,GPA,AvgRating,'
+    for i, u in enumerate(json_user):
+        user_name[u['user_id']] = u['name']
+        title = title + 'Rating' + str(i+1) + ','
+        
 
+    with open("tutorlist_gpa.csv", "w") as gpa_text_file:
+        gpa_text_file.write(title+'\n')
+        
+        json_tutor.sort(key=lambda x: x['gpa'], reverse=True)
+        
+        for tutor in json_tutor:
+            line = tutor['user_id'] + ',' + user_name[tutor['user_id']] +',' + str(tutor['gpa']) + ',' + str(tutor['AvgRating']) + ','
+            for review in tutor['reviews']:
+                line = line + str(review['rating']) + ','
+            gpa_text_file.write(line+'\n')
+    
+    with open("tutorlist_Avgrating.csv", "w") as rating_text_file:
+        rating_text_file.write(title+'\n')
+        
+        json_tutor.sort(key=lambda x: x['AvgRating'], reverse=True)
+        
+        for tutor in json_tutor:
+            line = tutor['user_id'] + ',' + user_name[tutor['user_id']] +',' + str(tutor['gpa']) + ',' + str(tutor['AvgRating']) + ','
+            for review in tutor['reviews']:
+                line = line + str(review['rating']) + ','
+            rating_text_file.write(line+'\n')
 
 if __name__ == "__main__":
     main()
