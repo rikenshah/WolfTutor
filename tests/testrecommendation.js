@@ -151,12 +151,12 @@ describe('Recommendations', function(){
             let predictedTutors_gpa = [];
             let predictedTutors_rating = [];
             // gpa test
-            let weights1 = {gpa:0}
+            let weights1 = {individual:0, overall: 0, previous: 0, gpa: 100};
             for( let s of students ) {
-                let rec = recommendations.Prioritize(tutors, s, weights1);
-                let top5 = rec.slice(0, 5);
+                let rec = recommendations.Prioritize(tutors, s);
+                let top10 = rec.slice(0, 20);
 
-                for(let t of top5){
+                for(let t of top10){
                     predictedTutors_gpa.push(t);
                 }
             }
@@ -165,19 +165,19 @@ describe('Recommendations', function(){
                 if(err) throw err;
             });
             
-            // let weights2 = {individual:10}
-            // for( let s of students ) {
-            //     let rec = recommendations.Prioritize(tutors, s, weights2);
-            //     let top5 = rec.slice(0, 5);
+            let weights2 = {individual:0, overall: 10, previous: 0, gpa: 0};
+            for( let s of students ) {
+                let rec = recommendations.Prioritize(tutors, s, weights2);
+                let top10 = rec.slice(0, 20);
 
-            //     for(let t of top5){
-            //         predictedTutors_rating.push(t);
-            //     }
-            // }
+                for(let t of top10){
+                    predictedTutors_rating.push(t);
+                }
+            }
             
-            // fs.writeFile('ind_data.json',JSON.stringify(predictedTutors_rating),function(err){
-            //     if(err) throw err;
-            // });
+            fs.writeFile('rating_data.json',JSON.stringify(predictedTutors_rating),function(err){
+                if(err) throw err;
+            });
             // TODO: save the tutors and their scores to a CSV file or
             // something so we can calculate their effectiveness.   
         });
