@@ -88,14 +88,14 @@ With the application's server up and running:
 2. Make sure the /bin path is added to your system's environmental variables.
 3. Run the server via `mongod`. (mongod.exe found in mongo's /bin directory)
 4. Use 'MongoDB Compass Community' to connect to your server running on the default port. Add the collection `Subject` to the `admin` database. Add at least one document (a course subject) to the new collection as `name: 'Subject'`. These will be the course subjects available to WolfTutor users. After adding the documents, you may close Compass.
-5. Add the URI of the mongo database to the <code>MONGO_CONNECTION_STRING</code> variable of the .env file. For local host using default port 27020, it should be <code>mongodb://localhost:27020/<database name></code>
+5. Add the URI of the mongo database to the <code>MONGO_CONNECTION_STRING</code> variable of the .env file. For local host using default port 27020, it should be <code>mongodb://localhost:27020/database_name</code>
 
 ### Node.js and ngrok
 1. Download and install [Node.js](https://nodejs.org/en/download/). You can check if node is installed via `node -v`.
 2. In your command prompt, go to the project repository and run `npm install` and then run `npm update` to ensure all packages are installed and up-to-date.
 3. Install ngrok via `npm install ngrok`. 
 4. With your mongoDB server running, stat ngrok via `ngrok http 3000` for port 3000.
-5. The URL given by ngrok will be added to the Slack app as detailed in the Slack Page section.  (The ngrok URL is found at the 'Forwarding' field and looks like <code> https://<characters>.ngrok.io</code>)
+5. The URL given by ngrok will be added to the Slack app as detailed in the Slack Page section.  (The ngrok URL is found at the 'Forwarding' field and looks like <code> https://unique_characters.ngrok.io</code>)
 
 ### Slack Page
 1. Create a [Slack Workspace](https://slack.com/create#email)
