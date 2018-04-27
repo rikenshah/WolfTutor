@@ -142,4 +142,4 @@ With the application's server up and running:
 
 ## Architectural Design
 
-![img](https://github.com/rikenshah/WolfTutor/blob/master/Reports/pictures/Architecture_final.png)
+![img](https://github.com/NCSU-CSC510-Group-E/WolfTutor/blob/master/Reports/pictures/new_architecture.png)
