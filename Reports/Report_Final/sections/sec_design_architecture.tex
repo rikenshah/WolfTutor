@@ -1,36 +1,39 @@
-The main architecture of the chatbot was broken up between the ways the user
-interacted with it and the helper functionality to support those interactions.  
+\subsubsection{Overview}
+\begin{figure*}[ht]
+\label{arch-pic}
+\caption{Architecture Design}
+\centering
+\includegraphics[width=\textwidth]{new_architecture.png}
+\end{figure*}
 
-% Main.js file
-Any interaction with the application via text is handled in the ``main.js''
-module. In this module are event listeners for text entry events in the Slack
-chatbot.  Any time a student is typing a response or initiating contact with the
-bot for the first time, the events for handling their inputs are in this file in
-a series of listeners and callbacks.  Interestingly, the Botkit API used for
-this project does not natively support a more modern JavasScript promise-based
-design.
+Figure \ref{arch-pic} outlines the architecture of the application.
+There are three main divisions: The user interface, the application server, and the database. 
+Slack was used as the user interface. A custom bot was installed to that Slack page to handle 
+interactive elements with the users. The applicaton was built with NodeJS. MongoDB was the 
+database chosen to hold user data. For development purposes, a local server of NodeJS was run 
+along with a local mongoDB database. Ngrok was used to tunnel webhooks between our local servers, 
+which was necessary to get past local NATs and firewalls securely. The specific infrastructures are discussed as followed.
 
-% Dialogs and Prompts
-Dialogs are the other main way that students interact with the system.  In
-Slack, a dialogue is a pop-up window that appears over the chat window and
-contains web-controls such as text boxes, radio buttons, or drop-down select
-boxes. These dialogs can be sent to the chat bot through the responses to user's
-input in the ``main.js'' module, and can provide a richer interface for
-providing structured data such as selecting subjects from a list or time slots
-in a calendar.  The dialogs themselves also have a ``message response''
-identifier which will be sent back to the slack bot when the user responds
-which is the other primary way users interact with the system.  These response
-identifiers provide an easy way to re-order or re-use messages without having to
-make large code changes.  % TODO: justify that a bit?
-Interestingly, slack only allows 5 controls to be in a single dialogue at one
-time.  
 
-% Modules
-The last major place for code is the modules folder.  The database access is
-handled through the models but helpers are built around complex tasks and stored
-in appropriate JS classes in the modules folder.  for example, the actual
-database manipulation for tutors happens in the tutor model, but a tutor module
-also exists that utilizes that module and adds business logic to it.  
+\subsubsection{Slack}
+\label{sec:slack}
+\input{sections/sec_design_inf_slack.tex}
+
+\subsubsection{NodeJS}
+\label{sec:nodejs}
+\input{sections/sec_design_inf_node.tex}
+
+\subsubsection{MongoDB}
+\label{sec:mongo}
+\input{sections/sec_design_inf_mongo.tex}
+
+\subsubsection{Heroku}
+\label{sec:heroku}
+\input{sections/sec_design_inf_heroku.tex}
+
+
+
+
 
 
 %%% Local Variables:
