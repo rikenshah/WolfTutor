@@ -70,6 +70,8 @@ With the application's server up and running:
   <li> <b>Redeem points</b> - Type <code>redeem</code> into bot chat box</li>   
 </ul>
 
+------------------------------------------------------------------------------------------------------------------------------------
+
 ## Local Development Setup Instructions
 1. Setup the repository and the environmental variables file
 2. Install mongoDB and set up the database
