@@ -27,10 +27,43 @@ ideal, simply higher rates of engagement between students and tutors would be
 one reasonable measure of success. Also, reducing time spent scheduling tutoring
 sessions between students in the traditional tutoring section and WolfTutor
 students would also be a reasonable win for students.  
+% TODO: another method of evaluation is asking students to rate their tutors and
+% seeing if they are consistently rating their tutors highly or poorly.
 
 \subsubsection{Future Enhancement}
 % TODO: describe the process of implementing a new algorithm in this setting
 \label{sec:future-enhancement}
+The other primary direction for future work is in the application itself.  The
+recommendation module has been developed in isolation from the rest of the code
+base, so it could easily be plugged into another process with minimal effort.
+Whatever module simply needs to implement a method that takes in a list of
+tutors and most of the integration work should be quite minimal.  The weighted
+average that has already been implemented in this paper can serve as a good
+baseline for future evaluation of other methods of classifying tutors.  Other
+algorithms that might be a good fit for this problem are clustering algorithms
+or classification algorithms.
+
+Clustering algorithms may be a good fit because they all amount to identifying
+groupings of similar entries in the population provided.  This is not unlike
+what we want to do when searching for a tutor, so it might be possible to
+cluster students and suggest tutors that exist in the same clusters as students.  
+
+It is also possible that simple classification algorithms like logistic
+regression on the simple end and SVM on the more complex end could be used to
+classify tutors as good or bad.  That said, performance is a major concern in a
+real-time application such as a chatbot, and such heavy algorithms as clustering
+and classification may be too complex to run reliably in a production
+environment.  
+
+Another direction for future work is identifying more dimensions on which to
+match tutors.  Currently we are matching on three review-related scores and one
+academic performance score (gpa).  This could easily be expanded by asking
+tutors and students more questions about what they are looking for.  Does the
+student prefer test-taking or projects?  Do they speak English natively or would
+they prefer to use some other language?  The team intended to implement more
+dimensions to match on during the project, but time constraints forced limiting
+it to four.  Fortunately, though, the application can easily be extended and
+adding more dimensions is a fairly easy future direction.
 
 %%% Local Variables:
 %%% mode: latex
