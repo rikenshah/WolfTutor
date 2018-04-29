@@ -1,0 +1,42 @@
+\subsubsection{Overview}
+\begin{figure*}[ht]
+\label{arch-pic}
+\caption{Architecture Design}
+\centering
+\includegraphics[height=0.5\textheight]{new_architecture.png}
+\end{figure*}
+
+Figure \ref{arch-pic} outlines the architecture of the application.
+There are three main divisions: The user interface, the application server, and the database. 
+Slack was used as the user interface. A custom bot was installed to that Slack page to handle 
+interactive elements with the users. The applicaton was built with NodeJS. MongoDB was the 
+database chosen to hold user data. For development purposes, a local server of NodeJS was run 
+along with a local mongoDB database. Ngrok was used to tunnel webhooks between our local servers, 
+which was necessary to get past local NATs and firewalls securely. The specific infrastructures are discussed as followed.
+
+
+\subsubsection{Slack}
+\label{sec:slack}
+\input{sections/sec_design_inf_slack.tex}
+
+\subsubsection{NodeJS}
+\label{sec:nodejs}
+\input{sections/sec_design_inf_node.tex}
+
+\subsubsection{MongoDB}
+\label{sec:mongo}
+\input{sections/sec_design_inf_mongo.tex}
+
+\subsubsection{Heroku}
+\label{sec:heroku}
+\input{sections/sec_design_inf_heroku.tex}
+
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

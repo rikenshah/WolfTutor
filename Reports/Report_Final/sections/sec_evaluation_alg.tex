@@ -1,0 +1,35 @@
+As we implement the enhancement of wolfTutor during each sprint, 
+a variety of tests were conducted to verify the functionality and performance. 
+For example, 1) unit tests were generated after the implementation of some 
+core part, like prioritize method, so that to make sure the functionality of the 
+new feature. 2) We also conducted a full user case manually tests after each 
+sprint, to verify the functionality of the whole application. This means we fire 
+up the server, mock the process by enrolling in the system,  becoming a tutor, 
+switching to another user account, finding a tutor,  reviewing a previous tutor 
+session, and also loading the history of previous tutor sessions.
+
+In order to verify tutor matching algorithm quantitively, we define tutor 
+suggestion accuracy as the percentage of how many the suggested tutors 
+are in the good tutor set. The good tutor set was generated manually or 
+automatically from a serial of matched tutors for a certain user, and this list 
+of tutors will be considered as labeled good tutors. Then we ran our matching 
+algorithm, logged the output and result into json files. Finally, we compared the 
+output with the labeled good tutors and computed the accuracy.
+
+\paragraph{Generate Dataset}
+We need a database which contains a fair mont of user and tutor to work with. 
+Manually adding users and tutors through the slack app interface will be too time-consuming. 
+Instead, we designed and coded a script file in python. This script can automatically generate fix number of user and tutor, along with their random assigned attributes. For example, the user name and user email. But the most important attributes are the ones related to tutor experience and academic performance. These attributes are directly used in the matching and suggestion algorithms. This script can also impute those generated data into Mongo database, to provide test data during the user test and survey.
+
+In this quantitative verification, we used this script to generated 300 users and 300 tutors. Each tutor was assigned a random number of reviews with random rating ranged from 1- 5. Each tutor also was assigned a random academic performance - GPA with a number ranged from 1-5. 
+
+\paragraph{Test Design and Excution} 
+test
+
+\paragraph{Accuracy Result} 
+test
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

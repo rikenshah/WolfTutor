@@ -1,157 +1,145 @@
-# WolfTutor [![Build Status](https://travis-ci.org/rikenshah/WolfTutor.svg?branch=master)](https://travis-ci.org/rikenshah/WolfTutor)
-Software Engineering Spring 2018 project
+# CSC 510 - Software Engineering Spring 2018
 
-### Problem Statement
+# WolfTutor - Group P
 
+## Contact Information
+
+[Zachery DeLong](https://github.com/zacherypd)  &ensp; email:  zpdelong@ncsu.edu <br>
+[Monica Metro](https://github.com/mgmetro4) &ensp; &ensp; email:  mgmetro@ncsu.edu <br>
+[Zhangqi Zha](https://github.com/zhazhangqi)   &ensp;&ensp;&ensp;&ensp; email: zzha@ncsu.edu
+
+## About WolfTutor
 We present a peer to peer collaborative tutoring system that is based on peer reviews and rewards earned through tutoring. According to our preliminary studies, the current proportion of students who need outside tutoring for clarifications of conceptual doubts, is considerable. A platform designed for students where they can help each other to clear such doubts and help them perform better would be much appreciated. Although students have many resources available in the university like open office hours of TA, professor, etc. , still many students hesitate to ask TA/Professor the doubts and queries that they have. Also, they are more comfortable in asking silly doubts to their peers without the fear of losing marks. Hence, the system to facilitate this process and maintained by students themselves would create a positive impact in the campus community.
 
-### Goals
+------------------------------------------------------------------------------------------------------------------------------------
 
-1. Rewards based system which enhances knowledge sharing among NC state students.
-2. Provide high quality tutoring through the platform that we build which will help students clear their concepts and succeed in the course.
-3. Tutors will get experience of teaching and will increase their confidence and will enhance their subject skills.
-4. A review and rating based system to maintain credibililty of tutoring provided, tutee can see reviews and ratings prior to booking a tutor.
-5. Tutors can share their success tips which can help student excel in that particular course.
+## How to Use
+With the application's server up and running:
+
+1. Signup for the bot service (see Signup below).
+
+2. Follow instructions for user use cases depending on what type of user you would like to be. Wolftutor has two types of users: students and tutors. Users are automatically students at signup, but can choose to become a tutor.
+
+ ### Signup
+ 
+<ol>
+  <li> Go to the Slack page hosting the app and register a slack username.</li>  
+
+  <li> Click on the bot application found under the left App panel.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li><br>
+
+  <li> Type <code>hi</code> into the bot chat box and send.</li><br>
+
+  <li> Click <code>Yes</code> after the Wolftutor bot responds.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+</ol>
+
+ ### Student Use Cases:
+ 
+<ul>
+  <li> <b>Find a tutor</b> - Type <code>find a tutor</code> into bot chat box. Students will first select the desired subject, then a tutor quality preference if any. The bot will return the tutors in a recommended order. </li>
+
+  <li> <b>See the reviews for a tutor</b> - click <code>Reviews</code> under a tutor's displayed information
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+
+  <li> <b>Schedule a 30 minute tutoring session</b> - Click <code>Schedule</code> under a tutor's displayed information. Next, click <code>Book</code> on the time slot you desire.
+    <details><summary>Picture</summary><center>![img]()</center></details>
+  </li>
+
+  <li> <b>Review tutor from last session</b> (students have until the end of the day to review their tutor) - Type <code>Review</code> into the bot chat box. Next, enter review fields as prompted and <code>Submit</code>. </li>
+
+  <li> <b>View past reservation history</b> - Type <code>history</code> or <code>reservation history</code> into the bot chat box. Displays tutor and subject reservation history. </li>
+
+  <li> <b>View currently scheduled tutoring sessions</b> - Type <code>my reservations</code> into bot chat box. </li>
+
+  <li> <b>View point balance</b> - Type <code>rewards</code> into bot chat box</li>
+  
+  <li> <b>Buy more points</b> - Type <code>buy</code> into bot chat box</li>   
 
 
-### Bot's description
+</ul>
 
-We have created a Slack application that can be added to any Slack workspace. We have designed various user query flows with which the user can interact with the application. We have hosted our backend on NodeJS server and for frontend we are using various Slack components like dialog boxes, message menus and other interactive elements. Instead of using the traditional text based chat interface for user interaction, we figured, using interactive elements it becomes easier for user to communicate thoughts more effectively while having full control over the flow of the application.
+### Additional Tutor Use Cases:
+<ul>
+  <li> <b>Become a tutor</b> - Type <code>become a tutor</code> into bot chat box. </li>
+  <li> <b>View tutoring subjects given to WolfTutor</b> - Type <code>my subjects</code> or just <code>subjects</code></li>
+  <li> <b>View tutoring availability given to WolfTutor</b> - Type <code>my availability</code> or just <code>availability</code></li>
+  <li> <b>Redeem points</b> - Type <code>redeem</code> into bot chat box</li>   
+</ul>
 
-### Steps to Install and Run (Developer Guide)
+------------------------------------------------------------------------------------------------------------------------------------
 
-1. Make sure `Node.JS` is installed and is working in your machine. (Check using `node -v`).
-2. Install `MongoDB` and start the server.
-3. Make sure you have a [Slack app](https://api.slack.com/slack-apps) up and running. You will need the various tokens for `.env` file. Note the workspace that you used to make the slack app.
-4. Clone the repo, using `git clone https://github.com/rikenshah/WolfTutor`.
-5. Change to that directory `cd WolfTutor/botProject`.
-6. Download node packages using `npm install && npm update`.
-7. Rename `.env.example` to `.env`.
-8. Add appropriate tokens in `.env`. The four things you will need are,
-    ```
-    SLACK_ACCESS_TOKEN='Enter your slack access token here'
-    PORT=3000
-    SLACK_VERIFICATION_TOKEN='Enter your slack app verification token'
-    BOT_TOKEN='Enter your bot token here'
-    MONGO_CONNECTION_STRING='Enter your mongo db url'
-    ```
-10. Run the tests by using `npm test`.
-11. Start the application by typing `npm start`. This will start the server at `localhost:3000`.
-12. Now, since you are runnning a server locally, we need a tunneling service like `ngrok` to tunnel requests sent from slack to localserver.
-13. Start the tunnel using `ngrok http 3000` ([see documentation](https://ngrok.com/docs)). This will start the service and tunnel the traffic from slack to localurl. Note the `http://<something>.ngrok.io` url when you start the service.
-14. Add the `ngrok url` that you noted in previous step under `Interactive Elements` settings in Slack App settings. This will tell slack where to send the post request.
-15. Reinstall the app to your workspace. And start communicating with the app via direct messages.
+## Local Development Setup Instructions
+1. Setup the repository and the environmental variables file
+2. Install mongoDB and set up the database
+3. Install Node.js and ngrok
+2. Setup the Slack page
+6. Start the WolfTutor server
 
-### General flow of the application
+### The Repository
+1. Clone the git repository from https://github.com/NCSU-CSC510-Group-E/WolfTutor.git 
+2. Open the .env.example file and save it as .env. This is the environmental variables configuration file.
 
-- There are two types of uses in the system, tutors and students. (They can be overlapping).
-- Anyone can enroll in the system by choosing so after saying `hi`. Note that all the communication is done with the `WolfTutor` bot.
-- Anyone can enroll in the system by saying `become a tutor` and following further instructions.
-- Students can `find a tutor` and `book a tutor` and make a reservation. This will also notify the tutor that the reservation is made. (Also, it can send email notification as per slack settings of that tutor).
-- Tutoring session is done offline (or online maybe on skype of hangout).
-- On reservation of the session, the points are deducted automatically from the student account and added to the tutor account
-- After the session the student can give review to the tutor, which will be added to tutor profile and later visible to all students.
-- There are bunch of other features, for details see usecases point #5.
+### MongoDB
+1. Download the [Community Server](https://www.mongodb.com/download-center#community) edition of mongoDB.
+2. Make sure the /bin path is added to your system's environmental variables.
+3. Run the server via `mongod`. (mongod.exe found in mongo's /bin directory)
+4. Use 'MongoDB Compass Community' to connect to your server running on the default port. Add the collection `Subject` to the `admin` database. Add at least one document (a course subject) to the new collection as `name: 'Subject'`. These will be the course subjects available to WolfTutor users. After adding the documents, you may close Compass.
+5. Add the URI of the mongo database to the <code>MONGO_CONNECTION_STRING</code> variable of the .env file. For local host using default port 27020, it should be <code>mongodb://localhost:27020/database_name</code>
 
-### Use Cases
+### Node.js and ngrok
+1. Download and install [Node.js](https://nodejs.org/en/download/). You can check if node is installed via `node -v`.
+2. In your command prompt, go to the project repository and run `npm install` and then run `npm update` to ensure all packages are installed and up-to-date.
+3. Install ngrok via `npm install ngrok`. 
+4. With your mongoDB server running, stat ngrok via `ngrok http 3000` for port 3000.
+5. The URL given by ngrok will be added to the Slack app as detailed in the Slack Page section.  (The ngrok URL is found at the 'Forwarding' field and looks like <code> https://unique_characters.ngrok.io</code>)
 
-The four major use cases of our application are,
-#### 1. Find a tutor
-<Details>
-    <p> A user can find a tutor on our bot by just typing one of the following keywords,
-       'find a tutor',
-       'need a tutor',
-       'want a tutor', or
-       'select a tutor'.
-        The user will get the list of all the available subjects from which the user can select one subject.
-        Once a subject is selected we will be returning all the tutors who teach that subject.
-      </p>
-    Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/find_a_tutor.gif"></img>
-</Details>
+### Slack Page
+1. Create a [Slack Workspace](https://slack.com/create#email)
+2. Create a new Slack App at [Slack API](https://api.slack.com/apps)
+3. While in the new app's settings, under the `Settings` side-panel, click on `Basic Information`. Copy the `Verification Token` found under `App Credentials` and paste it into the `SLACK_VERIFICATION_TOKEN` of the .env file.
+4. Go to the `Bot Users` side-panel and `Add a Bot User`. Make sure `Always Show My Bot as Online` is turned on and `Add Bot User`. The bot is responsible for interacting with the NodeJS application via the interactive elements (buttons, prompts, etc.)..
+5. Go to the `OAuth & Permissions` side-panel and `Save Changes` after adding the following `Scopes`. Then, `Install App to Workspace` (at the top).
+     - Add a bot user with the username @<bot_name>
+     - Post to specific channels in Slack
+     - Access user’s public channels
+     - Access information about user’s public channels
+     - Send messages as <app_name>
+     - Send messages as user
+     - Access content in user’s private channels
+     - Access content in user’s direct messages
+     - Access information about user’s direct messages
+     - Modify user’s direct messages
+     - Access your workspace’s profile information
+     - View email addresses of people on this workspace
+6. Add the `OAuth Access Token` available after installing the bot to the `SLACK_ACCESS_TOKEN` field of the .env file
+7. Add the `Bot User OAuth Access Token` available after installing the bot to the `BOT_TOKEN` field of the .env file
+8. Go to the `Interactive Components` side-panel and `Enable Interactive Components`. Add the running ngrok URL to both the `Request URL` and `Options Load URL`. Add `/message` to the end of the URLs and `Enable Interactive Components`.
+ 
+ ### Start the server
+ 1. Navigate back to your WolfTutor directory and start the server with `npm start`. 
+ 2. To check if the server is running, viewing your localhost in the browser should show a WolfTutor title page.
+ 
+------------------------------------------------------------------------------------------------------------------------------------
 
-#### 2. Book a tutor
-<Details>
-     <p>   Once the user finds the tutors who are teaching that subject then the user will have an option to see the reviews and rating of tutors and can book the tutor if he has enough points in his account.</p>
-       <p> Once the session is booked the tutor will be notified of the reservation and both of them can see their reservation by typing 'My reservation' in the slack bot.</p>
-    Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/book_a_tutor.gif"></img>
-    <img src="Reports/Wireframes/my_reservations.gif"></img>
- </Details>
 
-#### 3. Become a tutor
+## Production Setup Instructions
+<p>Production setup is the same as local development, with a few exceptions:</p>
+<ul>
+ <li>Instead of using ngrok to connect Slack to the database, use the home URL of the app and add <code>/message</code> to the end.</li>
+ <li>Make sure you use the correct URI for your mongo database</li>
+ <li>In your git repository, the .gitignore will need to be altered with these changes:
+ <ul>
+  <li>Remove .env from the .gitignore</li>
+  <li>Make sure package.json and package-lock.json are not in the .gitignore</li>
+  </ul></li>
+</ul>
 
-<Details>
-    <p> If a user wants to become a tutor, he/she will just type
-     'become a tutor'
-     and an interactive form will be displayed to the user where he will be asked to fill his availability, subjects he would like to teach, rate which he would like to charge, summary. Once he fills all this information a profile of the tutor is created.
-    </p>
-    Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/become_a_tutor.gif"></img>
-</Details>
+------------------------------------------------------------------------------------------------------------------------------------
 
-#### 4. Reward and Review the tutor
+## Architectural Design
 
-<Details>
-    <p> After the session is over the user(student) will have an option to review and rate the tutor.
-    If the user wil type 'review' a review form will open and the user can rate the tutor and can write a review,
-    so that the other users(students) can see the reviews and select the tutor.
-    The tutor can also set his rates according to the reviews that he gets.
-    We also have an option of keeping the rate to 0 for the tutors who want to teach for free.
-    <br><br>
-    All the users(tutors and students) of our system can check their rewards(points) by simply asking the bot one of the following. <br>
-    `My points`,`rewards`,`get my rewards`,`view my rewards` and the bot will show them their current points.<br><br>
-     Tutor can get rewards for his accumulated points, some of the rewards for WolfTutor points are as follows. <br>
-     1. Get $15 Giftcard of wolfoutfitter for 300 points.<br>
-     2. Get $30 Giftcard of wolfoutfitter 500 points.<br><br>
-     Tutee can also buy points in case his points get over, policies for buying rewards are :- <br>
-     1. Get 200 points for $25 <br>
-     2. Get 500 points for $40  <br>
-     3. Get 1000 points for $80  <br><br>
-     Here is the flow demonstrating this use case.<br>
-    <img src="Reports/Wireframes/review_rewards.gif"></img>
-    </p>
-</Details>
-
-#### 5. List of all usecases
-
-Here is a list of all possible commands that you can try out with the WolfTutor app.
-<br>
-- For enrolling in the system or viewing this list anytime, type `hi`
-- If you want to find a tutor type `find a tutor`
-- If you want to Become a tutor in our system type `become a tutor`
-- If you want to view your review a session type `review`
-- If you want to view your rewards type `rewards`
-- If you want to check your availability type `my availability`
-- If you want to check the subjects you are teaching type `my subjects`
-- If you want to check your reservations type `my reservations`
-- If you want to know how to redeem your rewards type `redeem`
-- If you want to buy points type `buy`
-
-### Architectural Design
-
-![img](https://github.com/rikenshah/WolfTutor/blob/master/Reports/pictures/Architecture_final.png)
-
-### Design Methodologies and Patterns
-
-We have used agile practices throughout. We used kanban project integration with github to track our progress. Here are some screenshots.
-
-**Before**
-![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agile.png)
-
-**After**
-![img](https://github.com/rikenshah/WolfTutor/raw/master/dump/agileDone.png)
-
-### Reports
-
-1. [Feb 1 report](https://github.com/rikenshah/WolfTutor/blob/master/Reports/Report_Feb/team_l_wolftutor_feb_report.pdf)
-
-### Team Information
-
-[Riken Shah](https://github.com/rikenshah)<br>
-[Mateenrehan Shaikh](https://github.com/mateenrehan)<br>
-[Himani Himani](https://github.com/hhimani)<br>
-[Aaroh Gala](https://github.com/AarohGala)<br>
-
-TA/Mentor : [Ken Tu](https://github.com/HuyTu7)<br>
-Professor : [Tim Menzies](https://github.com/timm)<br>
+![img](https://github.com/NCSU-CSC510-Group-E/WolfTutor/blob/master/Reports/pictures/new_architecture.png)

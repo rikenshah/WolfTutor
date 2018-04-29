@@ -46,6 +46,11 @@ const sendConfirmation = (tutor) => {
             short:true,
           },
           {
+            title: 'GPA',
+            value: tutor.gpa,
+            short:true,
+          },
+          {
             title: 'Subjects',
             value: tutor.subject,
             short:true,
@@ -173,7 +178,7 @@ function getUserForSubject(json_file, callback)
 
 function getTutorsForSubject(subject,slackUserName, callback) {
     controller.storage.tutor.all(function (err, tutors) {
-        var json_file = {};
+        var json_file = [];
 
         for (var i in tutors) {
 
@@ -189,10 +194,15 @@ function getTutorsForSubject(subject,slackUserName, callback) {
                             user_id: tutors[i].user_id,
                             major: tutors[i].major,
                             degree: tutors[i].degree,
+                            gpa: tutors[i].gpa,
                             summary: tutors[i].summary,
-                            rate: tutors[i].rate/2
-                        }
-                    json_file[tutors[i].user_id] = json_temp;
+                            rate: tutors[i].rate/2,
+                            reviews: tutors[i].reviews
+                        };
+
+                    console.log('The tutor found');
+                    console.log(json_temp);
+                    json_file.push(json_temp);
                 }
             }
         }

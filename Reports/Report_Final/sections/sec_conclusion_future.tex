@@ -1,0 +1,71 @@
+\subsubsection{Further Evaluation}
+\label{sec:further-evaluation}
+The team has made a best effort to evaluate the algorithm presented in this
+paper both using a manually-labeled data set and using in-person interviews with
+potential users. That said, true evaluation of educational software must be done
+in a classroom setting.  
+
+% TODO: describe ideal study
+A good way to evaluate the usefullness of this system would be to truly put it
+in the hands of students over a period of time. Over the course of several
+semesters, a different set of sections of one course should be evaluated.  For
+this reason, it may make sense to use a popular core course to a given major,
+such as Intro to Computer Science.  These sections could be grouped into 3
+groups, one with no intervention, one where students are pushed to use the
+university-sponsored tutoring facilities that exist today, and one where
+students are given access to the same facilities but are also given access to
+WolfTutor.  Interviews would need to be conducted after student tutoring
+sessions throughout the semester asking the students for feedback about the
+quality of their tutoring session specifically and features of the application
+more broadly.  At the end of the semester(s), the grades of the different groups
+could be compared to historical data for the course and some generalizations
+could be made about the usefulness of the software.
+
+It is important to note, however, that an improvement in grades may not be the
+right measure of success for this system. While better grades would certainly be
+ideal, simply higher rates of engagement between students and tutors would be
+one reasonable measure of success. Also, reducing time spent scheduling tutoring
+sessions between students in the traditional tutoring section and WolfTutor
+students would also be a reasonable win for students.  
+% TODO: another method of evaluation is asking students to rate their tutors and
+% seeing if they are consistently rating their tutors highly or poorly.
+
+\subsubsection{Future Enhancement}
+% TODO: describe the process of implementing a new algorithm in this setting
+\label{sec:future-enhancement}
+The other primary direction for future work is in the application itself.  The
+recommendation module has been developed in isolation from the rest of the code
+base, so it could easily be plugged into another process with minimal effort.
+Whatever module simply needs to implement a method that takes in a list of
+tutors and most of the integration work should be quite minimal.  The weighted
+average that has already been implemented in this paper can serve as a good
+baseline for future evaluation of other methods of classifying tutors.  Other
+algorithms that might be a good fit for this problem are clustering algorithms
+or classification algorithms.
+
+Clustering algorithms may be a good fit because they all amount to identifying
+groupings of similar entries in the population provided.  This is not unlike
+what we want to do when searching for a tutor, so it might be possible to
+cluster students and suggest tutors that exist in the same clusters as students.  
+
+It is also possible that simple classification algorithms like logistic
+regression on the simple end and SVM on the more complex end could be used to
+classify tutors as good or bad.  That said, performance is a major concern in a
+real-time application such as a chatbot, and such heavy algorithms as clustering
+and classification may be too complex to run reliably in a production
+environment.  
+
+Another direction for future work is identifying more dimensions on which to
+match tutors.  Currently we are matching on three review-related scores and one
+academic performance score (gpa).  This could easily be expanded by asking
+tutors and students more questions about what they are looking for.  Does the
+student prefer test-taking or projects?  Do they speak English natively or would
+they prefer to use some other language?  The team intended to implement more
+dimensions to match on during the project, but time constraints forced limiting
+it to four.  Fortunately, though, the application can easily be extended and
+adding more dimensions is a fairly easy future direction.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

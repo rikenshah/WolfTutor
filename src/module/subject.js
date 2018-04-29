@@ -11,15 +11,13 @@ function isValidSubject(mysubject, callback)
     controller.storage.subject.find({name: {$regex: new RegExp(mysubject.toString(), "i")}/*subject.toString()*/},
         function (error, subject) 
         {
-            if (error) 
-            {
-                //return false;
+            if (error) {
+                console.log("error with ", subject)
             }
-            //console.log(subject);
+
             var tuteeSubject=mysubject;
 
-            if (subject.length > 0 && (tuteeSubject.toLowerCase() === subject[0].name.toString().toLowerCase()))
-            {
+            if (subject.length > 0 && (tuteeSubject.toLowerCase() === subject[0].name.toString().toLowerCase())) {
                 flag = true;
             }
 

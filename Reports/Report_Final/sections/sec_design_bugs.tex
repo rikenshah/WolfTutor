@@ -1,0 +1,26 @@
+The existing code was of a reasonable quality at the time that it was handed off
+to group-p.  That said, there were a few issues that needed to be addressed
+before work could proceed.
+
+The first and most glaring is in the documentation.  The documentation provided
+to group-p was actually quite good.  The team was able to get an application up
+and running with the basic specification within a few hours, but one step was
+left out that prevented any registration as a tutor or searching for tutors: a
+database entry had to be created for at least one subject manually.  Once
+the team reached out to the original developers of WolfTutor, the problem was
+rectified within 24 hours and the appropriate documentation was updated.
+
+% TODO: is this right?  I can't recall.
+The next bug that had to be fixed was in the review process.  For whatever
+reason, the exisitng review functionality was nonfunctional when tested on
+group-p's development environments, and some time had to be spent getting that
+functionality working for testing.
+
+Lastly, there was a very minor issue that would cause a timeout message to
+appear every time the bot was restarted and a new student would start
+interacting with it.  This bug did not break the software, but the team did
+spend a little time to root it out just the same.
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

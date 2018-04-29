@@ -32,15 +32,26 @@ const tutor_info_display = (json_file) =>
                         "short": true,
                     },
                     {
+                        "title": 'GPA',
+                        "value": json_file.gpa,
+                        "short": true,
+                    },
+
+                    {
                         "title": 'Summary',
                         "value": json_file.summary,
                         "short": true,
                     },
                     {
-                        "title": 'Rate',
+                        "title": 'Rate (in $)',
                         "value": json_file.rate,
                         "short": true,
                     },
+                    {
+                        "title": 'Average Review Score',
+                        "value": json_file.overallScore,
+                        "short": true
+                    }
 
                 ],
 
@@ -54,7 +65,7 @@ const tutor_info_display = (json_file) =>
                 [
                     {
                         "name": "review",
-                        "text": "Review",
+                        "text": "View Reviews",
                         "type": "button",
                         "value": json_file.user_id,
                     },
